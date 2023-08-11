@@ -1,0 +1,152 @@
+# Code files
+[*.{cs,vb}]
+indent_style = tab
+indent_size = 4
+
+# Below are the StyleCop rules that we don't enforce
+
+# Single Line Comments Must Begin With Single Space
+dotnet_diagnostic.SA1005.severity = none
+
+# Prefix Local Calls With This
+dotnet_diagnostic.SA1101.severity = none
+
+# Make this field private..
+dotnet_diagnostic.S1104.severity = none
+
+# Split Parameters Must Start On Line After Declaration
+dotnet_diagnostic.SA1116.severity = none
+
+# Parameters Must Be On Same Line Or Separate Lines
+dotnet_diagnostic.SA1117.severity = none
+
+# Statement Must Not Use Unnecessary Parenthesis
+dotnet_diagnostic.SA1119.severity = none
+
+# Comments Must Contain Text
+dotnet_diagnostic.SA1120.severity = none
+
+# Use String Empty For Empty Strings
+dotnet_diagnostic.SA1122.severity = none
+
+# Do Not Place Regions Within Elements
+dotnet_diagnostic.SA1123.severity = none
+
+# Do Not Use Regions
+dotnet_diagnostic.SA1124.severity = none
+
+# Using Directives Must Be Placed Within Namespace
+dotnet_diagnostic.SA1200.severity = none
+
+# Elements Must Appear In The Correct Order
+dotnet_diagnostic.SA1201.severity = none
+
+# Elements Must Be Ordered By Access
+dotnet_diagnostic.SA1202.severity = none
+
+# Static Elements Must Appear Before Instance Elements
+dotnet_diagnostic.SA1204.severity = none
+
+# Readonly fields should appear before non-readonly fields.
+dotnet_diagnostic.SA1214.severity = none
+
+# Variable Names Must Not Be Prefixed
+dotnet_diagnostic.SA1308.severity = none
+
+# Variable Names Must Begin With Lower-Case Letter
+dotnet_diagnostic.SA1312.severity = none
+
+# Parameter Names Must Begin With Lower-Case Letter
+dotnet_diagnostic.SA1313.severity = none
+
+# Field should be private.
+dotnet_diagnostic.SA1401.severity = none
+
+# Debug Assert Must Provide Message Text
+dotnet_diagnostic.SA1405.severity = none
+
+# Arithmetic Expressions Must Declare Precedence
+dotnet_diagnostic.SA1407.severity = none
+
+# Single Line Comments Must Not Be Followed By Blank Line
+dotnet_diagnostic.SA1512.severity = none
+
+# Closing Curly Bracket Must Be Followed By Blank Line
+dotnet_diagnostic.SA1513.severity = none
+
+# Single Line Comment Must Be Preceded By Blank Line
+dotnet_diagnostic.SA1515.severity = none
+
+# Property Documentation Must Have Value
+dotnet_diagnostic.SA1609.severity = none
+
+# Element Parameters Must Be Documented
+dotnet_diagnostic.SA1611.severity = none
+
+# Element Return Value Must Be Documented
+dotnet_diagnostic.SA1615.severity = none
+
+# Generic Type Parameters Must Be Documented
+dotnet_diagnostic.SA1618.severity = none
+
+# Generic Type Parameters Must Be Documented Partial Class
+dotnet_diagnostic.SA1619.severity = none
+
+# Property Summary Documentation Must Match Accessors
+dotnet_diagnostic.SA1623.severity = none
+
+# Documentation Text Must End With A Period
+dotnet_diagnostic.SA1629.severity = none
+
+# Documentation Text Must Contain Whitespace
+dotnet_diagnostic.SA1630.severity = none
+
+# Documentation Text Must Meet Character Percentage
+dotnet_diagnostic.SA1631.severity = none
+
+# Documentation Text Must Meet Minimum Character Length
+dotnet_diagnostic.SA1632.severity = none
+
+# File Must Have Header
+dotnet_diagnostic.SA1633.severity = none
+
+# Constructor Summary Documentation Must Begin With Standard Text
+dotnet_diagnostic.SA1642.severity = none
+
+# Destructor Summary Documentation Must Begin With Standard Text
+dotnet_diagnostic.SA1643.severity = none
+
+# A violation of this rule occurs two or more attributes are placed within the same set of square brackets.
+dotnet_diagnostic.SA1133.severity = none
+
+# A violation of this rule occurs when a field name begins with an underscore.
+dotnet_diagnostic.SA1309.severity = none
+
+# The opening and closing braces of a chained if/else if/else construct were included for some clauses, but omitted for others.
+dotnet_diagnostic.SA1520.severity = none
+
+# The opening and closing braces for a C# statement have been omitted.
+dotnet_diagnostic.SA1503.severity = none
+
+# The C# code contains multiple blank lines in a row.
+dotnet_diagnostic.SA1507.severity = none
+
+# An item within a C# enumeration is missing an Xml documentation header.
+dotnet_diagnostic.SA1602.severity = none
+
+# An attribute is placed on the same line of code as another attribute or element.
+dotnet_diagnostic.SA1134.severity = none
+
+# Don't analyze any database migrations
+[**/Migrations/*.cs]
+generated_code = true
+dotnet_diagnostic.CS1591.severity = none
+
+# Don't analyze MAUI files
+[**/*.xaml.sg.cs]
+generated_code = true
+dotnet_diagnostic.CS1027.severity = none
+dotnet_diagnostic.CS1516.severity = none
+dotnet_diagnostic.CS1591.severity = none
+dotnet_diagnostic.CS1601.severity = none
+dotnet_diagnostic.CS1633.severity = none
