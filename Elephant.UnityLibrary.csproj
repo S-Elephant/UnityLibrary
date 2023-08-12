@@ -56,6 +56,7 @@
     <Compile Include="Extensions\RecycleExtensions.cs" />
     <Compile Include="Inputs\LockMouseCursor.cs" />
     <Compile Include="Maths\MathRd.cs" />
+    <Compile Include="Other\CoroutineStarter.cs" />
     <Compile Include="Other\PrefabReference.cs" />
     <Compile Include="Other\Utils.cs" />
     <Compile Include="Other\WorldTexts.cs" />
