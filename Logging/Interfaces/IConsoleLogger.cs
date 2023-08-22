@@ -20,17 +20,24 @@ namespace Elephant.UnityLibrary.Logging.Interfaces
 	{
 		/// <summary>
 		/// If true, logging is possible; otherwise, all log calls will be ignored.
-		/// Note that logging may still be stopped depending on the <see cref="FilterLogType"/> value.
 		/// </summary>
-		bool IsLogEnabled { get; set; }
+		/// <remarks>
+		/// Logging may still be stopped depending on the <see cref="FilterLogType"/> value.
+		/// Debug.unityLogger.logEnabled must also be enabled if you want to see it in the console.
+		/// </remarks>
+		bool LogEnabled { get; set; }
 
 		/// <summary>
 		/// Determines the minimum (inclusive) <see cref="UnityEngine.LogType"/> that is required for a
 		/// log to be logged. Logs that have a lower <see cref="UnityEngine.LogType"/> than this will
 		/// not be logged.
-		/// The order of importance is: <see cref="LogType.Assert"/>, <see cref="LogType.Log"/>,
-		/// <see cref="LogType.Warning"/>, <see cref="LogType.Error"/>, <see cref="LogType.Exception"/>.
+		/// The order of importance is: <see cref="LogType.Log"/>, <see cref="LogType.Warning"/>,
+		/// <see cref="LogType.Assert"/>, <see cref="LogType.Error"/>, <see cref="LogType.Exception"/>.
 		/// </summary>
+		/// <remarks>
+		/// Debug.unityLogger.filterLogType must also have the proper value if you want to see it in the console.
+		/// I recommend to leave Debug.unityLogger.filterLogType at <see cref="UnityEngine.LogType.Log"/>.
+		/// </remarks>
 		LogType FilterLogType { get; set; }
 
 		/// <summary>
@@ -77,7 +84,9 @@ namespace Elephant.UnityLibrary.Logging.Interfaces
 		/// <summary>
 		/// Returns true if the specified <paramref name="logType"/> is currently allowed to be logged.
 		/// Whether or not it is allowed depends on the <see cref="FilterLogType"/> value.
+		/// Note that  must also meet these conditions if you want to see it in the console.
 		/// </summary>
+		/// <param name="logType">The type of the log message in Debug.unityLogger.Log or delegate registered with Application.RegisterLogCallback.</param>
 		bool IsLogTypeAllowed(LogType logType);
 
 		/// <summary>
@@ -154,5 +163,12 @@ namespace Elephant.UnityLibrary.Logging.Interfaces
 		/// <param name="message">Log message.</param>
 		/// <param name="context">If you pass a GameObject or Component as the context parameter, Unity momentarily highlights that object in the Hierarchy window when you click the log message in the Console.</param>
 		void LogError(string tag, object message, Object? context);
+
+		/// <summary>
+		/// Log an assert.
+		/// </summary>
+		/// <param name="message">Log message.</param>
+		/// <param name="context">If you pass a GameObject or Component as the optional context parameter, Unity momentarily highlights that object in the Hierarchy window when you click the log message in the Console.</param>
+		void LogAssert(object message, Object? context = null);
 	}
 }

@@ -13,7 +13,7 @@ namespace Elephant.UnityLibrary.Logging
 	public class ConsoleLogger : IConsoleLogger
 	{
 		/// <inheritdoc/>
-		public bool IsLogEnabled { get; set; }
+		public bool LogEnabled { get; set; }
 
 		/// <inheritdoc/>
 		public LogType FilterLogType { get; set; }
@@ -23,9 +23,9 @@ namespace Elephant.UnityLibrary.Logging
 		/// </summary>
 		private static readonly Dictionary<LogType, int> LogTypeSeverityOrder = new()
 		{
-			{ LogType.Assert, 0 },
-			{ LogType.Log, 1 },
-			{ LogType.Warning, 2 },
+			{ LogType.Log, 0 },
+			{ LogType.Warning, 1 },
+			{ LogType.Assert, 2 }, // Note that in Unity, an assertion (LogType.Assert) is a special kind of log. When an assertion fails (or when you manually log with LogType.Assert), Unity displays it as an error in the console.
 			{ LogType.Error, 3 },
 			{ LogType.Exception, 4 },
 		};
@@ -50,9 +50,11 @@ namespace Elephant.UnityLibrary.Logging
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		public ConsoleLogger(string logTag = "")
+		public ConsoleLogger(string logTag = "", LogType filterLogType = LogType.Log, bool logEnabled = true)
 		{
 			LogTag = logTag;
+			FilterLogType = filterLogType;
+			LogEnabled = logEnabled;
 		}
 
 		/// <inheritdoc/>
@@ -62,8 +64,8 @@ namespace Elephant.UnityLibrary.Logging
 				return;
 
 			string formattedMessage = string.Format(format, args);
-			Debug.LogFormat(_logTag + "{0} [{1}] {2}", context, logType, formattedMessage);
-			OnLog?.Invoke(logType, string.Format("{0}{1}", LogTag, args), context);
+			Debug.LogFormat(logType, LogOption.None, context, "{0}{1}", _logTag, formattedMessage);
+			OnLog?.Invoke(logType, $"{LogTag}{args}", context);
 		}
 
 		/// <inheritdoc/>
@@ -90,7 +92,7 @@ namespace Elephant.UnityLibrary.Logging
 		/// <inheritdoc/>
 		public virtual bool IsLogTypeAllowed(LogType logType)
 		{
-			return IsLogEnabled && (LogTypeSeverityOrder[logType] >= LogTypeSeverityOrder[FilterLogType]);
+			return LogEnabled && (LogTypeSeverityOrder[logType] >= LogTypeSeverityOrder[FilterLogType]);
 		}
 
 		/// <inheritdoc/>
@@ -105,8 +107,8 @@ namespace Elephant.UnityLibrary.Logging
 			if (!IsLogTypeAllowed(logType))
 				return;
 
-			Debug.LogFormat(_logTag + "{0} [{1}] {2}", context, logType, message);
-			OnLog?.Invoke(logType, string.Format("{0}{1}", LogTag, message), context);
+			Debug.LogFormat(logType, LogOption.None, context, "{0}", message);
+			OnLog?.Invoke(logType, $"{LogTag}{message}", context);
 		}
 
 		/// <inheritdoc/>
@@ -160,6 +162,12 @@ namespace Elephant.UnityLibrary.Logging
 		{
 			string tagPrefix = string.IsNullOrEmpty(tag) ? string.Empty : $"[{tag}] ";
 			Log(LogType.Error, $"{tagPrefix}{message}", context);
+		}
+
+		/// <inheritdoc/>
+		public virtual void LogAssert(object message, Object? context = null)
+		{
+			Log(LogType.Assert, $"{LogTag}{message}", context);
 		}
 	}
 }

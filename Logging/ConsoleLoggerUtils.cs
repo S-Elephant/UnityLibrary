@@ -13,27 +13,34 @@ namespace Elephant.UnityLibrary.Logging
 	{
 		/// <summary>
 		/// If true, logging is possible; otherwise, all log calls will be ignored.
-		/// Note that logging may still be stopped depending on the <see cref="FilterLogType"/> value.
 		/// </summary>
-		public static bool IsLogEnabled { get; set; } = true;
+		/// <remarks>
+		/// Logging may still be stopped depending on the <see cref="FilterLogType"/> value.
+		/// Debug.unityLogger.logEnabled must also be enabled if you want to see it in the console.
+		/// </remarks>
+		public static bool LogEnabled { get; set; } = true;
 
 		/// <summary>
 		/// Determines the minimum (inclusive) <see cref="UnityEngine.LogType"/> that is required for a
 		/// log to be logged. Logs that have a lower <see cref="UnityEngine.LogType"/> than this will
 		/// not be logged.
-		/// The order of importance is: <see cref="LogType.Assert"/>, <see cref="LogType.Log"/>,
-		/// <see cref="LogType.Warning"/>, <see cref="LogType.Error"/>, <see cref="LogType.Exception"/>.
+		/// The order of importance is: <see cref="LogType.Log"/>, <see cref="LogType.Warning"/>,
+		/// <see cref="LogType.Assert"/>, <see cref="LogType.Error"/>, <see cref="LogType.Exception"/>.
 		/// </summary>
-		public static LogType FilterLogType { get; set; } = LogType.Assert;
+		/// <remarks>
+		/// Debug.unityLogger.filterLogType must also have the proper value if you want to see it in the console.
+		/// I recommend to leave Debug.unityLogger.filterLogType at <see cref="UnityEngine.LogType.Log"/>.
+		/// </remarks>
+		public static LogType FilterLogType { get; set; } = LogType.Log;
 
 		/// <summary>
 		/// A higher number means that it is more severe.
 		/// </summary>
 		private static readonly Dictionary<LogType, int> LogTypeSeverityOrder = new()
 		{
-			{ LogType.Assert, 0 },
-			{ LogType.Log, 1 },
-			{ LogType.Warning, 2 },
+			{ LogType.Log, 0 },
+			{ LogType.Warning, 1 },
+			{ LogType.Assert, 2 }, // Note that in Unity, an assertion (LogType.Assert) is a special kind of log. When an assertion fails (or when you manually log with LogType.Assert), Unity displays it as an error in the console.
 			{ LogType.Error, 3 },
 			{ LogType.Exception, 4 },
 		};
@@ -79,8 +86,8 @@ namespace Elephant.UnityLibrary.Logging
 				return;
 
 			string formattedMessage = string.Format(format, args);
-			Debug.LogFormat(_logTag + "{0} [{1}] {2}", context, logType, formattedMessage);
-			OnLog?.Invoke(logType, string.Format("{0}{1}", LogTag, args), context);
+			Debug.LogFormat(logType, LogOption.None, context, "{0}{1}", _logTag, formattedMessage);
+			OnLog?.Invoke(logType, $"{LogTag}{args}", context);
 		}
 
 		/// <summary>
@@ -119,10 +126,12 @@ namespace Elephant.UnityLibrary.Logging
 		/// <summary>
 		/// Returns true if the specified <paramref name="logType"/> is currently allowed to be logged.
 		/// Whether or not it is allowed depends on the <see cref="FilterLogType"/> value.
+		/// Note that  must also meet these conditions if you want to see it in the console.
 		/// </summary>
+		/// <param name="logType">The type of the log message in Debug.unityLogger.Log or delegate registered with Application.RegisterLogCallback.</param>
 		public static bool IsLogTypeAllowed(LogType logType)
 		{
-			return IsLogEnabled && (LogTypeSeverityOrder[logType] >= LogTypeSeverityOrder[FilterLogType]);
+			return LogEnabled && (LogTypeSeverityOrder[logType] >= LogTypeSeverityOrder[FilterLogType]);
 		}
 
 		/// <summary>
@@ -146,8 +155,8 @@ namespace Elephant.UnityLibrary.Logging
 			if (!IsLogTypeAllowed(logType))
 				return;
 
-			Debug.LogFormat(logType, LogOption.None, context, "{0}{1}", _logTag, message);
-			OnLog?.Invoke(logType, string.Format("{0}{1}", LogTag, message), context);
+			Debug.LogFormat(logType, LogOption.None, context, "{0}", message);
+			OnLog?.Invoke(logType, $"{LogTag}{message}", context);
 		}
 
 		/// <summary>
@@ -237,6 +246,16 @@ namespace Elephant.UnityLibrary.Logging
 		{
 			string tagPrefix = string.IsNullOrEmpty(tag) ? string.Empty : $"[{tag}] ";
 			Log(LogType.Error, $"{tagPrefix}{message}", context);
+		}
+
+		/// <summary>
+		/// Log an assert.
+		/// </summary>
+		/// <param name="message">Log message.</param>
+		/// <param name="context">If you pass a GameObject or Component as the optional context parameter, Unity momentarily highlights that object in the Hierarchy window when you click the log message in the Console.</param>
+		public static void LogAssert(object message, Object? context = null)
+		{
+			Log(LogType.Assert, $"{LogTag}{message}", context);
 		}
 	}
 }
