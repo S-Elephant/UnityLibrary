@@ -2,6 +2,10 @@
 
 Written for Unity Editor version **2022.3.7f1 (LTS)**. Note that most, if not all, earlier versions also seem to work but it's not recommend using this library in Unity Editor versions that are really old.
 
+# Installation
+
+Copy all Folders into your project. <u>Don't</u> put it in special Unity folders like "Editor" or "Resources".
+
 # CoroutineStarter
 
 Allows you to start coroutines from non-monobehaviour code and can optionally also manage and track coroutines because Unity does not support a CancellationToken.
@@ -137,3 +141,7 @@ FilterLogType = LogType.Log;
 // Allows logging.
 LogEnabled = true;
 ```
+
+# Version history
+
+There isn't any. I don't keep a version history for this project.
