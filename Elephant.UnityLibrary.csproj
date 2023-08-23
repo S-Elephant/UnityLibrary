@@ -46,6 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Audio\AudioMgr2D.cs" />
+    <Compile Include="Cameras\ResolutionIndependentCamera.cs" />
+    <Compile Include="Cameras\ScaleCameraWithScreenResolution.cs" />
     <Compile Include="Core\Singleton.cs" />
     <Compile Include="Core\SingletonNonPersistent.cs" />
     <Compile Include="Extensions\BetweenExtensions.cs" />
