@@ -1,6 +1,6 @@
 # Unity library
 
-Written for Unity Editor version **2022.3.7f1 (LTS)**. Note that most, if not all, earlier versions also seem to work but I don't recommend using it on Unity Editor versions that are really old.
+Written for Unity Editor version **2022.3.7f1 (LTS)**. Note that most, if not all, earlier versions also seem to work but it's not recommend using this library in Unity Editor versions that are really old.
 
 # CoroutineStarter
 

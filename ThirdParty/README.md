@@ -1,1 +1,0 @@
-﻿This folder contains code related to third party plugins, extensions, API's, etc.
