@@ -6,56 +6,69 @@ Written for Unity Editor version **2022.3.7f1 (LTS)**. Note that most, if not al
 
 Copy all Folders into your project. <u>Don't</u> put it in special Unity folders like "Editor" or "Resources".
 
+
 # CoroutineStarter
 
-Allows you to start coroutines from non-monobehaviour code and can optionally also manage and track coroutines because Unity does not support a CancellationToken.
+Allows you to start coroutines from non-monobehaviour code and can optionally also manage and track coroutines because Unity does not support a CancellationToken. Supports an OnCompleted event, has categories and tags. Example screenshot:
+
+![CoroutineStarter screenshot](ReadmeResources/CoroutineStarter.jpg)
 
 ## Example
 
 ```c#
-private IEnumerator GrowAllPikachus(int someValue, Action? SomeOptionalCallback)
+private IEnumerator WaitMe(float seconds)
 {
-	yield return new WaitForSeconds(3); // Do something that takes time.
-    SomeOptionalCallback?.Invoke();
+	yield return new WaitForSeconds(seconds);
+	Debug.Log($"Done waiting for {seconds} seconds.");
 }
 
 private void SomeOptionalCallback()
 {
-    // Do something after your coroutine finished.
+	Debug.Log("Finished.");
 }
 
 private void Awake()
 {
-	CoroutineStarter.Instance.StartCoroutineManaged(GrowAllPikachus(2, SomeOptionalCallback), "PokemonApi", "Growing");
+	CoroutineStarter.Instance.StartCoroutineManaged(WaitMe(2, SomeOptionalCallback), "Debug", "Example");
 }
 
 private void Start()
 {
-	CoroutineStarter.Instance.StopCoroutinesManaged("PokemonApi"); // Stops all coroutines in the "PokemonApi" main category.
-	CoroutineStarter.Instance.StopCoroutinesManaged("PokemonApi", "Growing"); // Stops all coroutines in the "PokemonApi" main-category that also are located in the "Growing sub-category".
+	CoroutineStarter.Instance.StopCoroutinesManaged("Debug"); // Stops all coroutines in the "Debug" main category.
+	CoroutineStarter.Instance.StopCoroutinesManaged("Debug", "Example"); // Stops all coroutines in the "Debug" main-category that also are located in the "Example" sub-category.
 }
 ```
 
 ## Methods, properties and functions
 
 ```c#
+// Events.
+public event EventHandler<CoroutineValue>? OnStartTrackingCoroutine;
+public event EventHandler<CoroutineValue>? OnStopTrackingCoroutine;
+
+// Methods and properties.
 CoroutineStarter.UncategorizedValue // Used as a default value when no main- or sub-category is specified.
 CoroutineStarter.Instance // Access the CoroutineStarter its singleton instance.    
-CoroutineStarter.StopAllOnUnloadScene // If true, will stop and untrack all coroutiness when the scene is being unloaded. Defaults to false.
+CoroutineStarter.StopAllTrackedOnUnloadScene // If true, will stop and untrack all coroutiness when the scene is being unloaded. Defaults to false.
 CoroutineStarter.MainCategoriesToStopOnUnloadScene // All main-categories to stop and untrack when the scene is being unloaded. Defaults to none.
+CoroutineStarter.TotalTrackedCoroutinesStarted;
+CoroutineStarter.TotalTrackedCoroutinesStopped;
 
-public Coroutine StartCoroutineManaged(IEnumerator routine, string mainCategory = UncategorizedValue, string subCategory = UncategorizedValue, params string[] tags)
+// Public functions.
+public virtual Coroutine StartCoroutineTracked(Func<IEnumerator> routine, string mainCategory = UncategorizedValue, string subCategory = UncategorizedValue, [CallerMemberName] string callerName = "", Action? onComplete = null, params string[] tags);
 
-public Coroutine StartCoroutineNamedManaged(IEnumerator routine, string? coroutineName = null, string mainCategory = UncategorizedValue, string subCategory = UncategorizedValue, bool stopExisting = true, params string[] tags)
+public virtual Coroutine StartCoroutineNamedTracked(Func<IEnumerator> routine, string? coroutineName = null, string mainCategory = UncategorizedValue, string subCategory = UncategorizedValue, bool stopExisting = true, [CallerMemberName] string callerName = "", Action? onComplete = null, params string[] tags);
 
-public int StopAllManagedCoroutines()
+public virtual bool StopTrackedCoroutine(string coroutineName);
 
-public bool StopCoroutineManaged(string coroutineName)
+public virtual bool StopTracking(string coroutineName);
 
-public List<string> StopCoroutinesManaged(string? mainCategory = null, string? subCategory = null, List<string>? tags = null)
+public virtual int StopAllTrackedCoroutines();
+
+public new void StopAllCoroutines();
+
+public virtual List<string> StopTrackedCoroutines(string? mainCategory = null, string? subCategory = null, List<string>? tags = null);
 ```
-
-
 
 # Loggers
 
@@ -141,6 +154,15 @@ FilterLogType = LogType.Log;
 // Allows logging.
 LogEnabled = true;
 ```
+
+# For developers whom want to edit this project directly
+
+If you need updated versions of the **UnityEditor.dll** and **UnityEngine.dll** files for when editing this project directly, they can be found in the following locations:
+
+- Windows:<Unity Installation Path>\Editor\Data\Managed\
+  - Example: C:\Program Files\Unity\Hub\Editor\2022.3.7f1\Editor\Data\Managed\UnityEditor.dll
+
+- MacOS: /Applications/Unity/Unity.app/Contents/Managed/
 
 # Version history
 

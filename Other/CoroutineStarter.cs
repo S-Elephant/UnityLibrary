@@ -3,14 +3,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Debug = UnityEngine.Debug;
 
 namespace Elephant.UnityLibrary.Other
 {
 	/// <summary>
 	/// Tracks and manages <see cref="Coroutine"/>s.
-	/// You can also use this for starting unmanaged <see cref="Coroutine"/>s.
+	/// You can also use this for starting unmanaged/untracked <see cref="Coroutine"/>s.
 	/// </summary>
 	/// <example>CoroutineStarter.Instance.StartCoroutine(MyCoroutine)</example>
 	public class CoroutineStarter : MonoBehaviour
@@ -21,10 +23,20 @@ namespace Elephant.UnityLibrary.Other
 		public const string UncategorizedValue = "Uncategorized";
 
 		/// <summary>
+		/// Is called after a <see cref="Coroutine"/> is being tracked.
+		/// </summary>
+		public event EventHandler<CoroutineValue>? OnStartTrackingCoroutine = null;
+
+		/// <summary>
+		/// Is called after a <see cref="Coroutine"/> is no longer being tracked.
+		/// </summary>
+		public event EventHandler<CoroutineValue>? OnStopTrackingCoroutine = null;
+
+		/// <summary>
 		/// Contains information about a tracked <see cref="Coroutine"/> and also contains the
 		/// <see cref="Coroutine"/> itself.
 		/// </summary>
-		private struct CoroutineValue
+		public struct CoroutineValue
 		{
 			/// <summary>
 			/// Main-category, used for tracking.
@@ -47,21 +59,34 @@ namespace Elephant.UnityLibrary.Other
 			public Coroutine Coroutine { get; }
 
 			/// <summary>
+			/// Name of the calling method.
+			/// </summary>
+			public string CallerName { get; }
+
+			/// <summary>
+			/// Triggers after <see cref="Coroutine"/> that belongs to this container finished executing.
+			/// </summary>
+			public Action? Oncomplete;
+
+			/// <summary>
 			/// Constructor.
 			/// </summary>
-			public CoroutineValue(string mainCategory, string subCategory, Coroutine coroutine, string[] tags)
+			public CoroutineValue(string mainCategory, string subCategory, Coroutine coroutine, string callerName, Action? onComplete, string[] tags)
 			{
 				MainCategory = mainCategory;
 				SubCategory = subCategory;
 				Coroutine = coroutine;
+				CallerName = callerName;
 				Tags = tags;
+				Oncomplete = onComplete;
 			}
 		}
 
 		/// <summary>
 		/// Contains all tracked <see cref="Coroutine"/> data.
+		/// The coroutine name is the key and the value contains the data.
 		/// </summary>
-		private readonly Dictionary<string, CoroutineValue> _coroutines = new();
+		public readonly Dictionary<string, CoroutineValue> CoroutineData = new();
 
 		/// <summary>
 		/// Singleton instance.
@@ -89,10 +114,10 @@ namespace Elephant.UnityLibrary.Other
 		}
 
 		/// <summary>
-		/// If true, will stop and untrack all <see cref="Coroutine"/>s when the scene is being unloaded.
+		/// If true, will stop and untrack all tracked <see cref="Coroutine"/>s when the scene is being unloaded.
 		/// Defaults to false.
 		/// </summary>
-		public bool StopAllOnUnloadScene = false;
+		public bool StopAllTrackedOnUnloadScene = false;
 
 		/// <summary>
 		/// All main-categories to stop and untrack when the scene is being unloaded.
@@ -101,24 +126,36 @@ namespace Elephant.UnityLibrary.Other
 		public HashSet<string> MainCategoriesToStopOnUnloadScene = new();
 
 		/// <summary>
+		/// Total amount of tracked <see cref="Coroutine"/>s that were started.
+		/// </summary>
+		public static int TotalTrackedCoroutinesStarted { get; private set; } = 0;
+
+		/// <summary>
+		/// Total amount of tracked <see cref="Coroutine"/>s that were stopped.
+		/// </summary>
+		public static int TotalTrackedCoroutinesStopped { get; private set; } = 0;
+
+		/// <summary>
 		/// SceneUnloaded occurs after OnDisable and OnDestroy, but before the next Scene has been
 		/// loaded (See end of this post for consequences of the event occurring after disable/destroy).
 		/// </summary>
 		private static void SceneManagerOnSceneUnloaded(Scene scene)
 		{
-			if (Instance.StopAllOnUnloadScene)
-				Instance.StopAllManagedCoroutines();
+			if (Instance.StopAllTrackedOnUnloadScene)
+				Instance.StopAllTrackedCoroutines();
 			else
 			{
 				foreach (string mainCategoryToStop in Instance.MainCategoriesToStopOnUnloadScene)
-					Instance.StopCoroutinesManaged(mainCategoryToStop);
+					Instance.StopTrackedCoroutines(mainCategoryToStop);
 			}
 		}
 
 		/// <summary>
 		/// Destroy.
 		/// </summary>
+#pragma warning disable IDE0051 // Ignored because OnDestroy is a Unity event.
 		private void OnDestroy()
+#pragma warning restore IDE0051
 		{
 			try
 			{
@@ -147,11 +184,16 @@ namespace Elephant.UnityLibrary.Other
 		/// <param name="routine">The <see cref="Coroutine"/> function to start and track.</param>
 		/// <param name="mainCategory">Is used for tracking and stopping <see cref="Coroutine"/>s by main-category.</param>
 		/// <param name="subCategory">Is used for tracking and stopping <see cref="Coroutine"/>s by sub-category.</param>
+		/// <param name="callerName">Calling method its name.</param>\
+		/// <param name="onComplete">Optional action to execute when this tracked <see cref="Coroutine"/> completes.</param>
 		/// <param name="tags">Is used for tracking and stopping <see cref="Coroutine"/>s.</param>
 		/// <returns>Started <see cref="Coroutine"/>.</returns>
-		public Coroutine StartCoroutineManaged(IEnumerator routine, string mainCategory = UncategorizedValue, string subCategory = UncategorizedValue, params string[] tags)
+		/// <remarks>Func is required to prevent reusing the same <see cref="IEnumerator"/>. This creates a new <see cref="IEnumerator"/> instead.</remarks>
+#pragma warning disable S3343
+		public virtual Coroutine StartCoroutineTracked(Func<IEnumerator> routine, string mainCategory = UncategorizedValue, string subCategory = UncategorizedValue, [CallerMemberName] string callerName = "", Action? onComplete = null, params string[] tags)
+#pragma warning restore S3343
 		{
-			return StartCoroutineNamedManaged(routine, null, mainCategory, subCategory, false, tags);
+			return StartCoroutineNamedTracked(routine, null, mainCategory, subCategory, false, callerName, onComplete, tags);
 		}
 
 		/// <summary>
@@ -161,27 +203,50 @@ namespace Elephant.UnityLibrary.Other
 		/// <param name="coroutineName">Unique name to identify each tracked <see cref="Coroutine"/>. If null then a random unique value will be assigned.</param>
 		/// <param name="mainCategory">Is used for tracking and stopping <see cref="Coroutine"/>s by main-category.</param>
 		/// <param name="subCategory">Is used for tracking and stopping <see cref="Coroutine"/>s by sub-category.</param>
-		/// <param name="stopExisting">If true, will stop and remove an existing <see cref="Coroutine"/> with the same name as <paramref name="coroutineName"/>.</param>
+		/// <param name="stopExisting">If true, will stop and remove an existing <see cref="Coroutine"/> with the same name as <paramref name="coroutineName"/>; otherwise, will untrack it but not stop it.</param>
+		/// <param name="callerName">Calling method its name.</param>\
+		/// <param name="onComplete">Optional action to execute when this tracked <see cref="Coroutine"/> completes.</param>
 		/// <param name="tags">Is used for tracking and stopping <see cref="Coroutine"/>s.</param>
 		/// <returns>Started <see cref="Coroutine"/>.</returns>
-		public Coroutine StartCoroutineNamedManaged(IEnumerator routine, string? coroutineName = null, string mainCategory = UncategorizedValue, string subCategory = UncategorizedValue, bool stopExisting = true, params string[] tags)
+		/// <remarks>Func<> is required to prevent reusing the same <see cref="IEnumerator"/>. This creates a new <see cref="IEnumerator"/> instead.</remarks>
+#pragma warning disable S3343
+		public virtual Coroutine StartCoroutineNamedTracked(Func<IEnumerator> routine, string? coroutineName = null, string mainCategory = UncategorizedValue, string subCategory = UncategorizedValue, bool stopExisting = true, [CallerMemberName] string callerName = "", Action? onComplete = null, params string[] tags)
+#pragma warning restore S3343
 		{
-			if (coroutineName != null && _coroutines.ContainsKey(coroutineName))
-			{
-				if (stopExisting)
-					Instance.StopCoroutine(_coroutines[coroutineName].Coroutine);
-				else
-					_coroutines.Remove(coroutineName);
-			}
-			else
+			if (string.IsNullOrEmpty(coroutineName))
 			{
 				coroutineName = $"NamelessCoroutine_{Guid.NewGuid()}";
 			}
+			else
+			{
+				// Handle existing co-routine.
+				if (CoroutineData.ContainsKey(coroutineName!))
+				{
+					if (stopExisting)
+						StopTrackedCoroutine(coroutineName!);
+					else
+						RemoveCoroutineByName(coroutineName!); // Don't stop but but stop tracking it instead.
+				}
+			}
 
-			Coroutine startedCoroutine = Instance.StartCoroutine(routine);
-			_coroutines.Add(coroutineName, new CoroutineValue(mainCategory, subCategory, startedCoroutine, tags));
+			Coroutine actualStartedCoroutine = Instance.StartCoroutine(routine());
+			Instance.StartCoroutine(InternalCoroutine(routine(), coroutineName!, null));
+			CoroutineValue newCoroutineValue = new(mainCategory, subCategory, actualStartedCoroutine, callerName, onComplete, tags);
+			CoroutineData.Add(coroutineName!, newCoroutineValue);
+			OnStartTrackingCoroutine?.Invoke(this, newCoroutineValue);
+			TotalTrackedCoroutinesStarted++;
 
-			return startedCoroutine;
+			return actualStartedCoroutine;
+		}
+
+		/// <summary>
+		/// This <see cref="Coroutine"/> wrapper is used to detect when the <paramref name="actualStartedRoutine"/> finished.
+		/// </summary>
+		private IEnumerator InternalCoroutine(IEnumerator actualStartedRoutine, string coroutineName, Action? onComplete)
+		{
+			yield return actualStartedRoutine;
+			RemoveCoroutineByName(coroutineName);
+			onComplete?.Invoke();
 		}
 
 		/// <summary>
@@ -190,29 +255,91 @@ namespace Elephant.UnityLibrary.Other
 		/// </summary>
 		/// <param name="coroutineName">Unique name of the tracked coroutine to stop.</param>
 		/// <returns>true if stopped and removed.</returns>
-		public bool StopCoroutineManaged(string coroutineName)
+		public virtual bool StopTrackedCoroutine(string coroutineName)
 		{
-			if (!_coroutines.TryGetValue(coroutineName, out CoroutineValue coroutineToStop))
+			if (!CoroutineData.TryGetValue(coroutineName, out CoroutineValue coroutineToStop))
 				return false;
 
 			StopCoroutine(coroutineToStop.Coroutine);
-			_coroutines.Remove(coroutineName);
+			RemoveCoroutineByName(coroutineName);
+			return true;
+		}
+
+		/// <summary>
+		/// Removes the specified coroutineValue by key name from <see cref="CoroutineData"/> and
+		/// fires <see cref="OnStopTrackingCoroutine"/> if it was removed.
+		/// Will do nothing if it wasn't found or if it wasn't removed.
+		/// Does not stop the <see cref="Coroutine"/> itself.
+		/// </summary>
+		private void RemoveCoroutineByName(string coroutineName, [CallerMemberName] string callerName = "")
+		{
+			if (coroutineName == string.Empty)
+			{
+				Debug.LogError($"Tried to remove a tracked coroutine with an empty key. Aborting removal. Was called by: {callerName}");
+				return;
+			}
+
+			bool exists = CoroutineData.TryGetValue(coroutineName, out CoroutineValue removedCoroutineValue);
+			if (!exists)
+				return;
+
+			bool isRemoved = CoroutineData.Remove(coroutineName);
+
+			if (isRemoved)
+			{
+				OnStopTrackingCoroutine?.Invoke(this, removedCoroutineValue);
+				TotalTrackedCoroutinesStopped++;
+			}
+		}
+
+		/// <summary>
+		/// Stop tracking the <see cref="Coroutine"/> with the <paramref name="coroutineName"/> name.
+		/// Does not stop the <see cref="Coroutine"/> itself.
+		/// </summary>
+		/// <param name="coroutineName">Name of the tracked <see cref="Coroutine"/> to stop tracking.</param>
+		/// <returns>true if tracking was stopped.</returns>
+		public virtual bool StopTracking(string coroutineName)
+		{
+			if (!CoroutineData.ContainsKey(coroutineName))
+				return false;
+
+			RemoveCoroutineByName(coroutineName);
 			return true;
 		}
 
 		/// <summary>
 		/// Stops and untracks all tracked coroutines.
+		/// Triggers <see cref="OnStopTrackingCoroutine"/> for each tracked coroutine after stopping them all.
 		/// </summary>
 		/// <returns>Amount stopped.</returns>
-		public int StopAllManagedCoroutines()
+		public virtual int StopAllTrackedCoroutines()
 		{
-			int count = _coroutines.Count;
+			int count = CoroutineData.Count;
 
-			foreach (var kvp in _coroutines)
+			foreach (var kvp in CoroutineData)
+			{
 				StopCoroutine(kvp.Value.Coroutine);
-			_coroutines.Clear();
+				RemoveCoroutineByName(kvp.Key);
+			}
+
+			CoroutineData.Clear();
 
 			return count;
+		}
+
+		/// <summary>
+		/// Stops and untracks all tracked and untracked coroutines anywhere in Unity.
+		/// Use with caution.
+		/// Triggers <see cref="OnStopTrackingCoroutine"/> for each tracked coroutine after stopping all <see cref="Coroutine"/>s.
+		/// </summary>
+		public new void StopAllCoroutines()
+		{
+			base.StopAllCoroutines();
+
+			foreach (var kvp in CoroutineData)
+				RemoveCoroutineByName(kvp.Key);
+
+			CoroutineData.Clear();
 		}
 
 		/// <summary>
@@ -231,7 +358,7 @@ namespace Elephant.UnityLibrary.Other
 		/// <param name="tags">Will stop <see cref="Coroutine"/> that match any of the supplies tags. This ignores
 		/// <paramref name="mainCategory"/> and <paramref name="subCategory"/> when matching.</param>
 		/// <returns>Names of all stopped <see cref="Coroutine"/>s.</returns>
-		public List<string> StopCoroutinesManaged(string? mainCategory = null, string? subCategory = null, List<string>? tags = null)
+		public virtual List<string> StopTrackedCoroutines(string? mainCategory = null, string? subCategory = null, List<string>? tags = null)
 		{
 			if (tags?.Count == 0)
 				tags = null;
@@ -242,7 +369,7 @@ namespace Elephant.UnityLibrary.Other
 
 			// Retrieve which keys to stop.
 			HashSet<string> coroutineKeysToStop = new();
-			foreach (var kvp in _coroutines)
+			foreach (var kvp in CoroutineData)
 			{
 				string name = kvp.Key;
 				CoroutineValue coroutineValue = kvp.Value;
@@ -283,7 +410,7 @@ namespace Elephant.UnityLibrary.Other
 
 			// Stop and untrack all matched.
 			foreach (string coroutineKeyToStop in coroutineKeysToStop)
-				StopCoroutineManaged(coroutineKeyToStop);
+				StopTrackedCoroutine(coroutineKeyToStop);
 
 			return coroutineKeysToStop.ToList();
 		}
