@@ -179,6 +179,19 @@ namespace Elephant.UnityLibrary.Other
 		}
 
 		/// <summary>
+		/// Returns true if a <see cref="Coroutine"/> with the name <paramref name="coroutineName"/> (case-sensitive)
+		/// is currently being tracked.
+		/// </summary>
+		/// <param name="coroutineName">The name of the <see cref="Coroutine"/> to check if it's being tracked.</param>
+		/// <returns>
+		/// true if a <see cref="Coroutine"/> with the name <paramref name="coroutineName"/> (case-sensitive) is currently being tracked.
+		/// </returns>
+		public virtual bool IsTrackingCoroutineWithName(string coroutineName)
+		{
+			return CoroutineData.ContainsKey(coroutineName);
+		}
+
+		/// <summary>
 		/// Start a new tracked <see cref="Coroutine"/>.
 		/// </summary>
 		/// <param name="routine">The <see cref="Coroutine"/> function to start and track.</param>
