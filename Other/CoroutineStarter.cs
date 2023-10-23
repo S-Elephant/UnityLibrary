@@ -66,7 +66,7 @@ namespace Elephant.UnityLibrary.Other
 			/// <summary>
 			/// Triggers after <see cref="Coroutine"/> that belongs to this container finished executing.
 			/// </summary>
-			public Action? Oncomplete;
+			public Action? OnComplete;
 
 			/// <summary>
 			/// Constructor.
@@ -78,7 +78,7 @@ namespace Elephant.UnityLibrary.Other
 				Coroutine = coroutine;
 				CallerName = callerName;
 				Tags = tags;
-				Oncomplete = onComplete;
+				OnComplete = onComplete;
 			}
 		}
 
@@ -228,12 +228,16 @@ namespace Elephant.UnityLibrary.Other
 		{
 			if (string.IsNullOrEmpty(coroutineName))
 			{
-				coroutineName = $"NamelessCoroutine_{Guid.NewGuid()}";
+				do
+				{
+					coroutineName = $"NamelessCoroutine_{Guid.NewGuid()}";
+				}
+				while (IsTrackingCoroutineWithName(coroutineName)); // Because there's an astronomically small chance that the GUID is not unique.
 			}
 			else
 			{
 				// Handle existing co-routine.
-				if (CoroutineData.ContainsKey(coroutineName!))
+				if (IsTrackingCoroutineWithName(coroutineName!))
 				{
 					if (stopExisting)
 						StopTrackedCoroutine(coroutineName!);
@@ -273,7 +277,8 @@ namespace Elephant.UnityLibrary.Other
 			if (!CoroutineData.TryGetValue(coroutineName, out CoroutineValue coroutineToStop))
 				return false;
 
-			StopCoroutine(coroutineToStop.Coroutine);
+			if (coroutineToStop.Coroutine == null) // I'm not sure why but it can be null.
+				StopCoroutine(coroutineToStop.Coroutine);
 			RemoveCoroutineByName(coroutineName);
 			return true;
 		}
@@ -390,7 +395,7 @@ namespace Elephant.UnityLibrary.Other
 				// Process filtering by categories.
 				if (mainCategory != null || subCategory != null)
 				{
-					if (mainCategory == null && subCategory != null)
+					if (mainCategory == null)
 					{
 						// Main-category is not specified but the sub-category is. Therefore add if it matches any sub-category, regardless of its main-category.
 						if (coroutineValue.SubCategory == subCategory)

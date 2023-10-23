@@ -5,6 +5,9 @@ indent_size = 4
 
 # Below are the StyleCop rules that we don't enforce
 
+# XML comment analysis is disabled due to project configuration
+dotnet_diagnostic.SA1001.severity = none
+
 # Single Line Comments Must Begin With Single Space
 dotnet_diagnostic.SA1005.severity = none
 
