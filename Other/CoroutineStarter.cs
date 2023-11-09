@@ -246,8 +246,7 @@ namespace Elephant.UnityLibrary.Other
 				}
 			}
 
-			Coroutine actualStartedCoroutine = Instance.StartCoroutine(routine());
-			Instance.StartCoroutine(InternalCoroutine(routine(), coroutineName!, onComplete));
+			Coroutine actualStartedCoroutine = Instance.StartCoroutine(InternalCoroutine(routine(), coroutineName!, onComplete)); // Note that the routine() parameter also starts the routine.
 			CoroutineValue newCoroutineValue = new(mainCategory, subCategory, actualStartedCoroutine, callerName, onComplete, tags);
 			CoroutineData.Add(coroutineName!, newCoroutineValue);
 			OnStartTrackingCoroutine?.Invoke(this, newCoroutineValue);
