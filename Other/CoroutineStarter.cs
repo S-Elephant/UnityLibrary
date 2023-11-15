@@ -276,7 +276,7 @@ namespace Elephant.UnityLibrary.Other
 			if (!CoroutineData.TryGetValue(coroutineName, out CoroutineValue coroutineToStop))
 				return false;
 
-			if (coroutineToStop.Coroutine == null) // I'm not sure why but it can be null.
+			if (coroutineToStop.Coroutine != null) // I'm not sure why but it can be null.
 				StopCoroutine(coroutineToStop.Coroutine);
 			RemoveCoroutineByName(coroutineName);
 			return true;

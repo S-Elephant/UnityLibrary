@@ -1,6 +1,8 @@
 ﻿#nullable enable
 
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -109,6 +111,55 @@ namespace Elephant.UnityLibrary.GeoSystems
 			}
 
 			return ring.Count > 0 ? ring : null;
+		}
+
+		/// <summary>
+		/// Convert points into a WKT string.
+		/// </summary>
+		public static string ToWktString(List<List<List<Vector2>>> multiPolygon)
+		{
+			StringBuilder sb = new();
+			sb.Append("MULTIPOLYGON(");
+			foreach (List<List<Vector2>> polygon in multiPolygon)
+			{
+				sb.Append("(");
+				foreach (List<Vector2> ring in polygon)
+				{
+					sb.Append("(");
+					foreach (Vector2 vertex in ring)
+						sb.Append(vertex.x.ToString(CultureInfo.InvariantCulture) + " " + vertex.y.ToString(CultureInfo.InvariantCulture) + ", ");
+					sb.Remove(sb.Length - 2, 2); // Remove trailing comma and space.
+					sb.Append(")");
+				}
+				sb.Append(")");
+			}
+			sb.Append(")");
+			return sb.ToString();
+		}
+
+		/// <summary>
+		/// Increment all <paramref name="points"/> by <paramref name="increment"/> and return it as a WKT string.
+		/// </summary>
+		public static string IncrementWktString(List<List<List<Vector2>>> points, Vector2 increment)
+		{
+			foreach (List<List<Vector2>>? polygonList in points)
+			{
+				foreach (List<Vector2>? polygon in polygonList)
+				{
+					for (int i = 0; i < polygon.Count; i++)
+						polygon[i] += increment;
+				}
+			}
+
+			return ToWktString(points);
+		}
+
+		/// <summary>
+		/// Increment all <paramref name="wktString"/> points by <paramref name="increment"/> and return it as a WKT string.
+		/// </summary>
+		public static string IncrementWktString(string wktString, Vector2 increment)
+		{
+			return IncrementWktString(ParseWKT(wktString), increment);
 		}
 	}
 }
