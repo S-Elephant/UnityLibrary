@@ -114,7 +114,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 		}
 
 		/// <summary>
-		/// Convert points into a WKT string.
+		/// Convert geometry into a WKT string.
 		/// </summary>
 		public static string ToWktString(List<List<List<Vector2>>> multiPolygon)
 		{
@@ -138,11 +138,11 @@ namespace Elephant.UnityLibrary.GeoSystems
 		}
 
 		/// <summary>
-		/// Increment all <paramref name="points"/> by <paramref name="increment"/> and return it as a WKT string.
+		/// Increment all <paramref name="geometry"/> by <paramref name="increment"/> and return it as a WKT string.
 		/// </summary>
-		public static string IncrementWktString(List<List<List<Vector2>>> points, Vector2 increment)
+		public static string IncrementWktString(List<List<List<Vector2>>> geometry, Vector2 increment)
 		{
-			foreach (List<List<Vector2>>? polygonList in points)
+			foreach (List<List<Vector2>>? polygonList in geometry)
 			{
 				foreach (List<Vector2>? polygon in polygonList)
 				{
@@ -151,11 +151,11 @@ namespace Elephant.UnityLibrary.GeoSystems
 				}
 			}
 
-			return ToWktString(points);
+			return ToWktString(geometry);
 		}
 
 		/// <summary>
-		/// Increment all <paramref name="wktString"/> points by <paramref name="increment"/> and return it as a WKT string.
+		/// Increment all <paramref name="wktString"/> geometry points by <paramref name="increment"/> and return it as a WKT string.
 		/// </summary>
 		public static string IncrementWktString(string wktString, Vector2 increment)
 		{

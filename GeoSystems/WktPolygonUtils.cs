@@ -12,11 +12,11 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// <summary>
 		/// Calculate bounds of a multi-polygon its points.
 		/// </summary>
-		/// <param name="points">List representing multi-polygons, where each multi-polygon is a list of polygons and each polygon consists of an exterior ring and zero or more interior rings (holes).</param>
+		/// <param name="geometry">List representing multi-polygons, where each multi-polygon is a list of polygons and each polygon consists of an exterior ring and zero or more interior rings (holes).</param>
 		/// <returns>Minimum bounds and maximum bounds.</returns>
-		public static (Vector2 MinBounds, Vector2 MaxBounds) PointsToBounds(List<List<List<Vector2>>> points)
+		public static (Vector2 MinBounds, Vector2 MaxBounds) PointsToBounds(List<List<List<Vector2>>> geometry)
 		{
-			if (!points.Any())
+			if (!geometry.Any())
 			{
 				Debug.LogError("Polygon is empty. Returning zero's instead");
 				return (Vector2.zero, Vector2.zero);
@@ -26,7 +26,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 			Vector2 minBounds = new(float.MaxValue, float.MaxValue);
 			Vector2 maxBounds = new(float.MinValue, float.MinValue);
 
-			foreach (var polygon in points)
+			foreach (var polygon in geometry)
 			{
 				foreach (var exteriorRing in polygon)
 				{
@@ -78,9 +78,9 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// <returns>New geometry data which is the rotated version of the original.</returns>
 		public static List<List<List<Vector2>>> RotateWktStringAsPoints(string wktString, float degrees, bool isClockwise, Vector2 origin)
 		{
-			List<List<List<Vector2>>> points = WktPolygonParser.ParseWkt(wktString);
+			List<List<List<Vector2>>> geometry = WktPolygonParser.ParseWkt(wktString);
 
-			return RotateGeometry(points, degrees, isClockwise, origin);
+			return RotateGeometry(geometry, degrees, isClockwise, origin);
 		}
 
 		/// <summary>
