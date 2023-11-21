@@ -9,7 +9,7 @@ namespace UnityLibraryTests.GeoSystems
 	public class WktPolygonParserTests
 	{
 		/// <summary>
-		/// Simple <see cref="WktPolygonParser.ParseWKT"/> test.
+		/// Simple <see cref="WktPolygonParser.ParseWkt"/> test.
 		/// </summary>
 		[Fact]
 		public void SimplePolygonParse()
@@ -27,7 +27,7 @@ namespace UnityLibraryTests.GeoSystems
 			List<List<List<Vector2>>> expected = new() { new List<List<Vector2>> { rings } };
 
 			// Act.
-			List<List<List<Vector2>>> result = WktPolygonParser.ParseWKT("POLYGON((30 10, 40 40, 20 40, 10 20, 30 10))");
+			List<List<List<Vector2>>> result = WktPolygonParser.ParseWkt("POLYGON((30 10, 40 40, 20 40, 10 20, 30 10))");
 
 			// Assert.
 			Assert.Single(result);

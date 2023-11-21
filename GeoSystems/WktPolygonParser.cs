@@ -21,7 +21,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// </summary>
 		/// <param name="wkt">WKT string to be parsed.</param>
 		/// <returns>List representing multi-polygons, where each multi-polygon is a list of polygons and each polygon consists of an exterior ring and zero or more interior rings (holes).</returns>
-		public static List<List<List<Vector2>>> ParseWKT(string wkt)
+		public static List<List<List<Vector2>>> ParseWkt(string wkt)
 		{
 			List<List<List<Vector2>>> multiPolygon = new();
 
@@ -159,7 +159,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// </summary>
 		public static string IncrementWktString(string wktString, Vector2 increment)
 		{
-			return IncrementWktString(ParseWKT(wktString), increment);
+			return IncrementWktString(ParseWkt(wktString), increment);
 		}
 	}
 }
