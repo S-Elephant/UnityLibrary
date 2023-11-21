@@ -54,5 +54,120 @@ namespace Elephant.UnityLibrary.GeoSystems
 		{
 			return (minBounds + maxBounds) / 2f;
 		}
+
+		/// <summary>
+		/// Rotates a complex geometry consisting of multiple polygons.
+		/// </summary>
+		/// <param name="geometry">Complex geometry to rotate, represented as a nested list of Vector2 points.</param>
+		/// <param name="degrees">Angle in degrees to rotate the geometry. Positive for counterclockwise rotation, negative for clockwise.</param>
+		/// <param name="isClockwise">If set to true, the rotation is clockwise; otherwise, it is counterclockwise.</param>
+		/// <param name="origin">Point of origin around which the geometry is rotated.</param>
+		/// <returns>New geometry data which is the rotated version of the original.</returns>
+		public static List<List<List<Vector2>>> RotatePoints(List<List<List<Vector2>>> geometry, float degrees, bool isClockwise, Vector2 origin)
+		{
+			return RotateGeometry(geometry, degrees, isClockwise, origin);
+		}
+
+		/// <summary>
+		/// Rotates a geometry represented by a WKT (Well-Known Text) string.
+		/// </summary>
+		/// <param name="wktString">WKT string representing the geometry to rotate.</param>
+		/// <param name="degrees">Angle in degrees to rotate the geometry. Positive for counterclockwise rotation, negative for clockwise.</param>
+		/// <param name="isClockwise">If set to true, the rotation is clockwise; otherwise, it is counterclockwise.</param>
+		/// <param name="origin">Point of origin around which the geometry is rotated.</param>
+		/// <returns>New geometry data which is the rotated version of the original.</returns>
+		public static List<List<List<Vector2>>> RotateWktStringAsPoints(string wktString, float degrees, bool isClockwise, Vector2 origin)
+		{
+			List<List<List<Vector2>>> points = WktPolygonParser.ParseWkt(wktString);
+
+			return RotateGeometry(points, degrees, isClockwise, origin);
+		}
+
+		/// <summary>
+		/// Rotates a geometry represented by a WKT string and returns the result as a WKT string.
+		/// </summary>
+		/// <param name="wktString">WKT string representing the geometry to rotate.</param>
+		/// <param name="degrees">Angle in degrees to rotate the geometry. Positive for counterclockwise rotation, negative for clockwise.</param>
+		/// <param name="isClockwise">If set to true, the rotation is clockwise; otherwise, it is counterclockwise.</param>
+		/// <param name="origin">Point of origin around which the geometry is rotated.</param>
+		/// <returns>Rotated geometry represented as a WKT string.</returns>
+		public static string RotateWktString(string wktString, float degrees, bool isClockwise, Vector2 origin)
+		{
+			// Apply rotation.
+			List<List<List<Vector2>>> rotatedGeometry = RotateWktStringAsPoints(wktString, degrees, isClockwise, origin);
+
+			// Convert back to WKT string and return.
+			return WktPolygonParser.ToWktString(rotatedGeometry);
+		}
+
+		/// <summary>
+		/// Normalizes the degrees to be within 0 to 359.99999..
+		/// </summary>
+		/// <param name="degrees">Degrees to be normalized.</param>
+		/// <returns>Degrees within the range of 0 - 359.99999..</returns>
+		/// <example>-5 will return 355 and 370 returns 10.</example>
+		public static float NormalizeDegrees(float degrees)
+		{
+			degrees %= 360;
+			if (degrees < 0)
+				degrees += 360;
+
+			return degrees;
+		}
+
+		/// <summary>
+		/// Helper method to perform the actual rotation of geometry.
+		/// </summary>
+		/// <param name="originalGeometry">Original geometry as a nested list of Vector2 points.</param>
+		/// <param name="degrees">Angle in degrees to rotate the geometry. Positive for counterclockwise rotation, negative for clockwise.</param>
+		/// <param name="isClockwise">If set to true, the rotation is clockwise; otherwise, it is counterclockwise.</param>
+		/// <param name="origin">Point of origin around which the geometry is rotated.</param>
+		/// <returns>Rotated geometry as a nested list of <see cref="Vector2"/> points.</returns>
+		private static List<List<List<Vector2>>> RotateGeometry(List<List<List<Vector2>>> originalGeometry, float degrees, bool isClockwise, Vector2 origin)
+		{
+			// Normalize the degrees to be within 0 to 359.99999..
+			degrees = NormalizeDegrees(degrees);
+
+			// Converts the normalized degrees to radians.
+			float radians = degrees * Mathf.Deg2Rad;
+			if (isClockwise)
+				radians = -radians; // Invert radians for clockwise rotation.
+
+			// Initializes a new list to store the rotated geometry.
+			List<List<List<Vector2>>> rotatedGeometry = new();
+
+			foreach (List<List<Vector2>> polygon in originalGeometry)
+			{
+				List<List<Vector2>> rotatedPolygon = new();
+				foreach (List<Vector2> ring in polygon)
+				{
+					List<Vector2> rotatedRing = new();
+					foreach (Vector2 point in ring)
+					{
+						// Translate point to origin.
+						Vector2 translatedPoint = new(point.x - origin.x, point.y - origin.y);
+
+						// Rotate point.
+						Vector2 rotatedPoint = new(
+							(translatedPoint.x * Mathf.Cos(radians)) - (translatedPoint.y * Mathf.Sin(radians)),
+							(translatedPoint.x * Mathf.Sin(radians)) + (translatedPoint.y * Mathf.Cos(radians)));
+
+						// Translate point back.
+						rotatedPoint = new Vector2(rotatedPoint.x + origin.x, rotatedPoint.y + origin.y);
+
+						// Adds rotated point to the rotated ring.
+						rotatedRing.Add(rotatedPoint);
+					}
+
+					// Adds rotated ring to the rotated polygon
+					rotatedPolygon.Add(rotatedRing);
+				}
+
+				// Adds rotated polygon to the rotated geometry.
+				rotatedGeometry.Add(rotatedPolygon);
+			}
+
+			return rotatedGeometry;
+		}
 	}
 }
