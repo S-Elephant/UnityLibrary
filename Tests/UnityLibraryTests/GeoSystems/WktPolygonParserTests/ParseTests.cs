@@ -1,7 +1,7 @@
 using Elephant.UnityLibrary.GeoSystems;
 using UnityEngine;
 
-namespace UnityLibraryTests.GeoSystems.WktPolygonParserTests.WktPolygonParserTests
+namespace UnityLibraryTests.GeoSystems.WktPolygonParserTests
 {
 	/// <summary>
 	/// <see cref="WktPolygonParser.ParsePolygon"/> tests.

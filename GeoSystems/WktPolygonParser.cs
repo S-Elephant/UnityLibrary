@@ -18,6 +18,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 
 		/// <summary>
 		/// Parse a WKT string representing either a POLYGON or a MULTIPOLYGON.
+		/// More info here: https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry.
 		/// </summary>
 		/// <param name="wkt">WKT string to be parsed.</param>
 		/// <returns>List representing multi-polygons, where each multi-polygon is a list of polygons and each polygon consists of an exterior ring and zero or more interior rings (holes).</returns>
@@ -139,7 +140,8 @@ namespace Elephant.UnityLibrary.GeoSystems
 		}
 
 		/// <summary>
-		/// Convert geometry into a WKT string.
+		/// Convert geometry into a POLYGON or MULTIPOLYGON WKT string.
+		/// More info here: More info here: https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry.
 		/// </summary>
 		/// <param name="geometry">Polygon or multi-polygon to be converted into a WKT string.</param>
 		/// <param name="forceAsMultiPolygon">If true, the string will always be a MULTIPOLYGON string.</param>
@@ -183,31 +185,6 @@ namespace Elephant.UnityLibrary.GeoSystems
 				sb.Remove(sb.Length - 1, 1);
 
 			return sb.ToString();
-		}
-
-		/// <summary>
-		/// Increment all <paramref name="geometry"/> by <paramref name="increment"/> and return it as a WKT string.
-		/// </summary>
-		public static string IncrementWktString(List<List<List<Vector2>>> geometry, Vector2 increment)
-		{
-			foreach (List<List<Vector2>>? polygonList in geometry)
-			{
-				foreach (List<Vector2>? polygon in polygonList)
-				{
-					for (int i = 0; i < polygon.Count; i++)
-						polygon[i] += increment;
-				}
-			}
-
-			return ToWktString(geometry);
-		}
-
-		/// <summary>
-		/// Increment all <paramref name="wktString"/> geometry points by <paramref name="increment"/> and return it as a WKT string.
-		/// </summary>
-		public static string IncrementWktString(string wktString, Vector2 increment)
-		{
-			return IncrementWktString(ParseWkt(wktString), increment);
 		}
 	}
 }
