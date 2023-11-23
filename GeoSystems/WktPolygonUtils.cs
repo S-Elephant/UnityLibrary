@@ -197,11 +197,11 @@ namespace Elephant.UnityLibrary.GeoSystems
 			// Apply translation to each point in each polygon.
 			foreach (List<List<Vector2>> polygon in geometry)
 			{
-				List<List<Vector2>> translatedPolygon = new List<List<Vector2>>();
+				List<List<Vector2>> translatedPolygon = new();
 
 				foreach (List<Vector2> ring in polygon)
 				{
-					List<Vector2> translatedRing = new List<Vector2>();
+					List<Vector2> translatedRing = new();
 
 					foreach (Vector2 point in ring)
 						translatedRing.Add(point + translation);
