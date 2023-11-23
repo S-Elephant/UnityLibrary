@@ -1,7 +1,7 @@
 using Elephant.UnityLibrary.GeoSystems;
 using UnityEngine;
 
-namespace UnityLibraryTests.GeoSystems.WktPolygonUtilities
+namespace UnityLibraryTests.GeoSystems.WktPolygonUtilitiesTests
 {
 	/// <summary>
 	/// <see cref="WktPolygonUtils.CalculateRelativeBounds"/> tests.

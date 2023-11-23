@@ -56,11 +56,28 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// <returns>List of WKT strings, each representing a single polygon.</returns>
 		private static List<string> SplitMultiPolygon(string wkt)
 		{
-			List<string> extractedPolygonStrings = new();
-			// Use a regular expression to find and extract polygon strings from the input WKT.
-			MatchCollection matches = Regex.Matches(wkt, PolygonKey + @"\s*\(([^()]*(?:\(.*?\))?[^()]*)\)");
-			foreach (Match match in matches)
-				extractedPolygonStrings.Add(PolygonKey + match.Groups[1].Value);
+			List<string> extractedPolygonStrings = new List<string>();
+			int openParenCount = 0;
+			int start = 0;
+
+			for (int i = 0; i < wkt.Length; i++)
+			{
+				if (wkt[i] == '(')
+				{
+					if (openParenCount == 0)
+						start = i;
+					openParenCount++;
+				}
+				else if (wkt[i] == ')')
+				{
+					openParenCount--;
+					if (openParenCount == 0)
+					{
+						// Extract the polygon string and add the POLYGON keyword.
+						extractedPolygonStrings.Add(PolygonKey + " " + wkt.Substring(start, i - start + 1));
+					}
+				}
+			}
 
 			return extractedPolygonStrings;
 		}
@@ -114,26 +131,57 @@ namespace Elephant.UnityLibrary.GeoSystems
 		}
 
 		/// <summary>
+		/// Returns true if the <paramref name="geometry"/> is truly a multi-polygon (instead of a regular polygon).
+		/// </summary>
+		public static bool IsMultiPolygon(List<List<List<Vector2>>> geometry)
+		{
+			return geometry.Count > 1 || (geometry.Count == 1 && geometry[0].Count > 1);
+		}
+
+		/// <summary>
 		/// Convert geometry into a WKT string.
 		/// </summary>
-		public static string ToWktString(List<List<List<Vector2>>> multiPolygon)
+		/// <param name="geometry">Polygon or multi-polygon to be converted into a WKT string.</param>
+		/// <param name="forceAsMultiPolygon">If true, the string will always be a MULTIPOLYGON string.</param>
+		/// <returns>WKT string without a space between "MULTIPOLYGON" or "POLYGON" and the first '(' character.</returns>
+		public static string ToWktString(List<List<List<Vector2>>> geometry, bool forceAsMultiPolygon = false)
 		{
 			StringBuilder sb = new();
-			sb.Append("MULTIPOLYGON(");
-			foreach (List<List<Vector2>> polygon in multiPolygon)
+
+			bool isMultiPolygon = forceAsMultiPolygon || geometry.Count > 1 || (geometry.Count == 1 && geometry[0].Count > 1);
+
+			sb.Append(isMultiPolygon ? "MULTIPOLYGON" : "POLYGON");
+
+			for (int i = 0; i < geometry.Count; i++)
 			{
-				sb.Append("(");
-				foreach (List<Vector2> ring in polygon)
+				if (i > 0) // We're in a multi-polygon and this is not the first polygon, add a comma
+					sb.Append(", ");
+
+				if (isMultiPolygon)
+					sb.Append("("); // Start of the polygon
+
+				for (int j = 0; j < geometry[i].Count; j++)
 				{
-					sb.Append("(");
-					foreach (Vector2 vertex in ring)
-						sb.Append(vertex.x.ToString(CultureInfo.InvariantCulture) + " " + vertex.y.ToString(CultureInfo.InvariantCulture) + ", ");
-					sb.Remove(sb.Length - 2, 2); // Remove trailing comma and space.
-					sb.Append(")");
+					if (j > 0) // This is not the first ring in the polygon, add a comma
+						sb.Append(", ");
+
+					sb.Append("(("); // Start of the ring
+
+					foreach (Vector2 vertex in geometry[i][j])
+					{
+						sb.AppendFormat(CultureInfo.InvariantCulture, "{0} {1}, ", vertex.x, vertex.y);
+					}
+
+					sb.Remove(sb.Length - 2, 2); // Remove the trailing comma and space
+					sb.Append("))"); // End of the ring
 				}
-				sb.Append(")");
+
+				sb.Append(")"); // End of the polygon
 			}
-			sb.Append(")");
+
+			if (!isMultiPolygon)
+				sb.Remove(sb.Length - 1, 1);
+
 			return sb.ToString();
 		}
 

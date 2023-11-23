@@ -26,11 +26,11 @@ namespace Elephant.UnityLibrary.GeoSystems
 			Vector2 minBounds = new(float.MaxValue, float.MaxValue);
 			Vector2 maxBounds = new(float.MinValue, float.MinValue);
 
-			foreach (var polygon in geometry)
+			foreach (List<List<Vector2>> polygon in geometry)
 			{
-				foreach (var exteriorRing in polygon)
+				foreach (List<Vector2> exteriorRing in polygon)
 				{
-					foreach (var point in exteriorRing)
+					foreach (Vector2 point in exteriorRing)
 					{
 						// Update AABB boundaries using the polygon points.
 						minBounds.x = Mathf.Min(minBounds.x, point.x);
@@ -168,6 +168,53 @@ namespace Elephant.UnityLibrary.GeoSystems
 			}
 
 			return rotatedGeometry;
+		}
+
+		/// <summary>
+		/// Translate the <paramref name="wktString"/> by <paramref name="translation"/>.
+		/// </summary>
+		public static string Translate(string wktString, Vector2 translation)
+		{
+			if (translation == Vector2.zero)
+				return wktString;
+
+			List<List<List<Vector2>>> geometry = WktPolygonParser.ParseWkt(wktString);
+			List<List<List<Vector2>>> translatedGeometry = Translate(geometry, translation);
+
+			return WktPolygonParser.ToWktString(translatedGeometry);
+		}
+
+		/// <summary>
+		/// Translate the <paramref name="geometry"/> by <paramref name="translation"/>.
+		/// </summary>
+		public static List<List<List<Vector2>>> Translate(List<List<List<Vector2>>> geometry, Vector2 translation)
+		{
+			if (translation == Vector2.zero)
+				return geometry;
+
+			List<List<List<Vector2>>> translatedGeometry = new();
+
+			// Apply translation to each point in each polygon.
+			foreach (List<List<Vector2>> polygon in geometry)
+			{
+				List<List<Vector2>> translatedPolygon = new List<List<Vector2>>();
+
+				foreach (List<Vector2> ring in polygon)
+				{
+					List<Vector2> translatedRing = new List<Vector2>();
+
+					foreach (Vector2 point in ring)
+						translatedRing.Add(point + translation);
+
+					// Add the translated ring to the translated polygon.
+					translatedPolygon.Add(translatedRing);
+				}
+
+				// Add the translated polygon to the translated geometry.
+				translatedGeometry.Add(translatedPolygon);
+			}
+
+			return translatedGeometry;
 		}
 	}
 }

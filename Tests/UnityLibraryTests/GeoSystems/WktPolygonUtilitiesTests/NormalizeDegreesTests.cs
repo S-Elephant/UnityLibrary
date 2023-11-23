@@ -1,6 +1,6 @@
 using Elephant.UnityLibrary.GeoSystems;
 
-namespace UnityLibraryTests.GeoSystems.WktPolygonUtilities
+namespace UnityLibraryTests.GeoSystems.WktPolygonUtilitiesTests
 {
 	/// <summary>
 	/// <see cref="WktPolygonUtils.NormalizeDegrees"/> tests.
