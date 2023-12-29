@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -19,7 +18,9 @@ namespace Elephant.UnityLibrary.Extensions
 		}
 
 
-
+		/// <summary>
+		/// Shuffle the <paramref name="list"/>.
+		/// </summary>
 		public static void Shuffle<T>(this IList<T> list)
 		{
 			int cnt = list.Count;

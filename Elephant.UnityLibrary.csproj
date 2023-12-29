@@ -61,6 +61,7 @@
     <Compile Include="Cameras\ScaleCameraWithScreenResolution.cs" />
     <Compile Include="Core\Singleton.cs" />
     <Compile Include="Core\SingletonNonPersistent.cs" />
+    <Compile Include="Editor\AutoOpenAndFocusConsole.cs" />
     <Compile Include="Extensions\BetweenExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\Extensions.cs" />
