@@ -170,15 +170,23 @@ namespace Elephant.UnityLibrary.GeoSystems
 					sb.Append("(("); // Start of the ring
 
 					foreach (Vector2 vertex in geometry[i][j])
-					{
 						sb.AppendFormat(CultureInfo.InvariantCulture, "{0} {1}, ", vertex.x, vertex.y);
+
+					// If the first and last vertices are not equal (this is required for a valid WKT string
+					// using polygons or multi-polygons) then duplicate the first item and add it to the last
+					// position.
+					if (geometry[i][j].Count > 0)
+					{
+						Vector2 firstVertext = geometry[i][j][0];
+						if (geometry[i][j][0] != geometry[i][j][geometry[i][j].Count - 1])
+							sb.AppendFormat(CultureInfo.InvariantCulture, "{0} {1}, ", firstVertext.x, firstVertext.y);
 					}
 
 					sb.Remove(sb.Length - 2, 2); // Remove the trailing comma and space
 					sb.Append("))"); // End of the ring
 				}
 
-				sb.Append(")"); // End of the polygon
+				sb.Append(")"); // End of the (multi-)polygon
 			}
 
 			if (!isMultiPolygon)
