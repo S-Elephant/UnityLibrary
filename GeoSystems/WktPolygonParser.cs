@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -16,14 +17,34 @@ namespace Elephant.UnityLibrary.GeoSystems
 		private const string PolygonKey = "POLYGON";
 		private const string MultiPolygonKey = "MULTIPOLYGON";
 
+		public const string EmptyPoint = "POINT EMPTY";
+		public const string EmptyLineString = "LINESTRING EMPTY";
+		public const string EmptyMultiPoint = "MULTIPOINT EMPTY";
+		public const string EmptyPolygon = "POLYGON EMPTY";
+		public const string EmptyMultiLineString = "MULTILINESTRING EMPTY";
+		public const string EmptyMultiPolygon = "MULTIPOLYGON EMPTY";
+		public const string EmptyGeometryCollection = "GEOMETRYCOLLECTION EMPTY";
+
 		/// <summary>
 		/// Parse a WKT string representing either a POLYGON or a MULTIPOLYGON.
 		/// More info here: https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry.
 		/// </summary>
 		/// <param name="wkt">WKT string to be parsed.</param>
 		/// <returns>List representing multi-polygons, where each multi-polygon is a list of polygons and each polygon consists of an exterior ring and zero or more interior rings (holes).</returns>
-		public static List<List<List<Vector2>>> ParseWkt(string wkt)
+		public static List<List<List<Vector2>>> ParseWkt(string? wkt)
 		{
+			if (string.IsNullOrEmpty(wkt) ||
+			    wkt == EmptyPoint ||
+			    wkt == EmptyLineString ||
+			    wkt == EmptyMultiPoint ||
+			    wkt == EmptyPolygon ||
+			    wkt == EmptyMultiLineString ||
+			    wkt == EmptyMultiPolygon ||
+			    wkt == EmptyGeometryCollection)
+			{
+				return new List<List<List<Vector2>>>();
+			}
+
 			List<List<List<Vector2>>> multiPolygon = new();
 
 			// Check if the input WKT represents a polygon.
@@ -145,9 +166,22 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// </summary>
 		/// <param name="geometry">Polygon or multi-polygon to be converted into a WKT string.</param>
 		/// <param name="forceAsMultiPolygon">If true, the string will always be a MULTIPOLYGON string.</param>
-		/// <returns>WKT string without a space between "MULTIPOLYGON" or "POLYGON" and the first '(' character.</returns>
-		public static string ToWktString(List<List<List<Vector2>>> geometry, bool forceAsMultiPolygon = false)
+		/// <param name="defaultValue">Default value to return if <paramref name="geometry"/> is empty.</param>
+		/// <returns>
+		/// WKT string without a space between "MULTIPOLYGON" or "POLYGON" and the first '(' character.
+		/// Returns <paramref name="defaultValue"/> if the geometry is empty, has any polygon w/o rings or has any ring with less than 3 points.
+		/// </returns>
+		public static string ToWktString(List<List<List<Vector2>>> geometry, bool forceAsMultiPolygon = false, string defaultValue = EmptyMultiPolygon)
 		{
+			if (!geometry.Any() || geometry.Any(polygon => !polygon.Any() || polygon.Any(ring => ring.Count < 3)))
+			{
+				// Return the default value if:
+				// 1. The geometry collection is empty.
+				// 2. Any polygon in the collection does not have at least one ring.
+				// 3. Any ring in any polygon does not have at least three points.
+				return defaultValue;
+			}
+
 			StringBuilder sb = new();
 
 			bool isMultiPolygon = forceAsMultiPolygon || geometry.Count > 1 || (geometry.Count == 1 && geometry[0].Count > 1);

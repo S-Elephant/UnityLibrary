@@ -11,8 +11,8 @@ namespace UnityLibraryTests.GeoSystems.WktPolygonParserTests
 		private const string Polygon1 = "POLYGON((30 10, 40 40, 20 40, 10 20, 30 10))";
 		private const string Polygon1AsMultiPolygon = "MULTIPOLYGON(((30 10, 40 40, 20 40, 10 20, 30 10)))";
 		private const string MultiPolygon1 = "MULTIPOLYGON(((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))";
-		private const string MultiPolygon2 = "MULTIPOLYGON(((3 1, 50 100, 3 1)), ((1 500, 10 10, 50 75)))";
-		private const string MultiPolygon3 = "MULTIPOLYGON(((3 1, 50 100, 3 1)), ((1 500, 10 10, 50 75)), ((10 5000, 100 100, 500 750)))";
+		private const string MultiPolygon2 = "MULTIPOLYGON(((3 1, 50 100, 3 1)), ((1 500, 10 10, 50 75, 1 500)))";
+		private const string MultiPolygon3 = "MULTIPOLYGON(((3 1, 50 100, 3 1)), ((1 500, 10 10, 50 75, 1 500)), ((10 5000, 100 100, 500 750, 10 5000)))";
 
 		private static List<List<List<Vector2>>> CreatePolygon1Geometry() => new()
 		{
@@ -48,6 +48,21 @@ namespace UnityLibraryTests.GeoSystems.WktPolygonParserTests
 				new List<Vector2> { new(1, 500), new(10, 10), new(50, 75) },
 				new List<Vector2> { new(10, 5000), new(100, 100), new(500, 750) }
 			}
+		};
+
+		private static List<List<List<Vector2>>> CreateMultiPolygon4InvalidGeometry() => new()
+		{
+			new()
+			{
+				new List<Vector2> { new(3, 1), new(50, 100) }, // First and last point are not the same.
+				new List<Vector2> { new(1, 500), new(10, 10), new(50, 75) },
+				new List<Vector2> { new(10, 5000), new(100, 100), new(500, 750) }
+			}
+		};
+
+		private static List<List<List<Vector2>>> CreateMultiPolygon5InvalidGeometry() => new()
+		{
+			new(), // Ring has no points.
 		};
 
 		/// <summary>
@@ -113,6 +128,32 @@ namespace UnityLibraryTests.GeoSystems.WktPolygonParserTests
 
 			// Assert.
 			Assert.Equal(MultiPolygon3, result);
+		}
+
+		/// <summary>
+		/// <see cref="WktPolygonParser.ToWktString"/> test using invalid input.
+		/// </summary>
+		[Fact]
+		public void ParseWktReturnsEmptyIfInvalidInput1()
+		{
+			// Act.
+			string result = WktPolygonParser.ToWktString(CreateMultiPolygon4InvalidGeometry(), defaultValue: WktPolygonParser.EmptyPoint);
+
+			// Assert.
+			Assert.Equal(WktPolygonParser.EmptyPoint, result);
+		}
+
+		/// <summary>
+		/// <see cref="WktPolygonParser.ToWktString"/> test using another invalid input.
+		/// </summary>
+		[Fact]
+		public void ParseWktReturnsEmptyIfInvalidInput2()
+		{
+			// Act.
+			string result = WktPolygonParser.ToWktString(CreateMultiPolygon5InvalidGeometry(), defaultValue: WktPolygonParser.EmptyPolygon);
+
+			// Assert.
+			Assert.Equal(WktPolygonParser.EmptyPolygon, result);
 		}
 	}
 }

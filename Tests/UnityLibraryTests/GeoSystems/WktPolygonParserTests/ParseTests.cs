@@ -79,5 +79,26 @@ namespace UnityLibraryTests.GeoSystems.WktPolygonParserTests
 			List<List<List<Vector2>>> expected = CreateMultiPolygon2Geometry();
 			Assert.Equal(expected, result);
 		}
+		
+		/// <summary>
+		/// 'Empty' WKT strings must result in empty geometry.
+		/// </summary>
+		[Theory]
+		[InlineData(WktPolygonParser.EmptyPoint)]
+		[InlineData(WktPolygonParser.EmptyLineString)]
+		[InlineData(WktPolygonParser.EmptyMultiPoint)]
+		[InlineData(WktPolygonParser.EmptyPolygon)]
+		[InlineData(WktPolygonParser.EmptyMultiLineString)]
+		[InlineData(WktPolygonParser.EmptyMultiPolygon)]
+		[InlineData(WktPolygonParser.EmptyGeometryCollection)]
+		public void ParseWktReturnsEmptyIfEmpty(string wktString)
+		{
+			// Act.
+			List<List<List<Vector2>>> result = WktPolygonParser.ParseWkt(wktString);
+
+			// Assert.
+			List<List<List<Vector2>>> expected = new();
+			Assert.Equal(expected, result);
+		}
 	}
 }

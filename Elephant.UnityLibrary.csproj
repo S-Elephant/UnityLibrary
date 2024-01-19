@@ -68,6 +68,7 @@
     <Compile Include="Cameras\FlyCam.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Extensions\RecycleExtensions.cs" />
+    <Compile Include="GeoSystems\MultiPolygon.cs" />
     <Compile Include="GeoSystems\WktPolygonUtils.cs" />
     <Compile Include="GeoSystems\WktPolygonParser.cs" />
     <Compile Include="Inputs\LockMouseCursor.cs" />
