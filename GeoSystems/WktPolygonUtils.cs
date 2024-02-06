@@ -60,12 +60,11 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// </summary>
 		/// <param name="geometry">Complex geometry to rotate, represented as a nested list of Vector2 points.</param>
 		/// <param name="degrees">Angle in degrees to rotate the geometry. Positive for counterclockwise rotation, negative for clockwise.</param>
-		/// <param name="isClockwise">If set to true, the rotation is clockwise; otherwise, it is counterclockwise.</param>
 		/// <param name="origin">Point of origin around which the geometry is rotated.</param>
 		/// <returns>New geometry data which is the rotated version of the original.</returns>
-		public static List<List<List<Vector2>>> RotatePoints(List<List<List<Vector2>>> geometry, float degrees, bool isClockwise, Vector2 origin)
+		public static List<List<List<Vector2>>> RotatePoints(List<List<List<Vector2>>> geometry, float degrees, Vector2 origin)
 		{
-			return RotateGeometry(geometry, degrees, isClockwise, origin);
+			return RotateGeometry(geometry, degrees, origin);
 		}
 
 		/// <summary>
@@ -73,14 +72,13 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// </summary>
 		/// <param name="wktString">WKT string representing the geometry to rotate.</param>
 		/// <param name="degrees">Angle in degrees to rotate the geometry. Positive for counterclockwise rotation, negative for clockwise.</param>
-		/// <param name="isClockwise">If set to true, the rotation is clockwise; otherwise, it is counterclockwise.</param>
 		/// <param name="origin">Point of origin around which the geometry is rotated.</param>
 		/// <returns>New geometry data which is the rotated version of the original.</returns>
-		public static List<List<List<Vector2>>> RotateWktStringAsPoints(string wktString, float degrees, bool isClockwise, Vector2 origin)
+		public static List<List<List<Vector2>>> RotateWktStringAsPoints(string wktString, float degrees, Vector2 origin)
 		{
 			List<List<List<Vector2>>> geometry = WktPolygonParser.ParseWkt(wktString);
 
-			return RotateGeometry(geometry, degrees, isClockwise, origin);
+			return RotateGeometry(geometry, degrees, origin);
 		}
 
 		/// <summary>
@@ -88,13 +86,12 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// </summary>
 		/// <param name="wktString">WKT string representing the geometry to rotate.</param>
 		/// <param name="degrees">Angle in degrees to rotate the geometry. Positive for counterclockwise rotation, negative for clockwise.</param>
-		/// <param name="isClockwise">If set to true, the rotation is clockwise; otherwise, it is counterclockwise.</param>
 		/// <param name="origin">Point of origin around which the geometry is rotated.</param>
 		/// <returns>Rotated geometry represented as a WKT string.</returns>
-		public static string RotateWktString(string wktString, float degrees, bool isClockwise, Vector2 origin)
+		public static string RotateWktString(string wktString, float degrees, Vector2 origin)
 		{
 			// Apply rotation.
-			List<List<List<Vector2>>> rotatedGeometry = RotateWktStringAsPoints(wktString, degrees, isClockwise, origin);
+			List<List<List<Vector2>>> rotatedGeometry = RotateWktStringAsPoints(wktString, degrees, origin);
 
 			// Convert back to WKT string and return.
 			return WktPolygonParser.ToWktString(rotatedGeometry);
@@ -120,18 +117,15 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// </summary>
 		/// <param name="originalGeometry">Original geometry as a nested list of Vector2 points.</param>
 		/// <param name="degrees">Angle in degrees to rotate the geometry. Positive for counterclockwise rotation, negative for clockwise.</param>
-		/// <param name="isClockwise">If set to true, the rotation is clockwise; otherwise, it is counterclockwise.</param>
 		/// <param name="origin">Point of origin around which the geometry is rotated.</param>
 		/// <returns>Rotated geometry as a nested list of <see cref="Vector2"/> points.</returns>
-		private static List<List<List<Vector2>>> RotateGeometry(List<List<List<Vector2>>> originalGeometry, float degrees, bool isClockwise, Vector2 origin)
+		private static List<List<List<Vector2>>> RotateGeometry(List<List<List<Vector2>>> originalGeometry, float degrees, Vector2 origin)
 		{
 			// Normalize the degrees to be within 0 to 359.99999..
 			degrees = NormalizeDegrees(degrees);
 
 			// Converts the normalized degrees to radians.
 			float radians = degrees * Mathf.Deg2Rad;
-			if (isClockwise)
-				radians = -radians; // Invert radians for clockwise rotation.
 
 			// Initializes a new list to store the rotated geometry.
 			List<List<List<Vector2>>> rotatedGeometry = new();
