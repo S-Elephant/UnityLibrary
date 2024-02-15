@@ -8,23 +8,38 @@ namespace UnityLibraryTests.GeoSystems
 	/// </summary>
 	public class MultiPolygonTests
 	{
-		private const string MultiPolygon1 = "MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))";
+		private const string MultiPolygon1 = "MULTIPOLYGON ((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5))";
 
 		private static List<List<List<Vector2>>> CreateMultiPolygon1Geometry() => new()
 		{
+			// First polygon.
 			new()
 			{
-				new List<Vector2> { new(30, 20), new(45, 40), new(10, 40), new(30, 20) },
+				new List<Vector2> { new(30, 20), new(45, 40), new(10, 40), new(30, 20) }
+			},
+			// Second polygon.
+			new()
+			{
 				new List<Vector2> { new(15, 5), new(40, 10), new(10, 20), new(5, 10), new(15, 5) }
 			}
 		};
 
 		private static List<List<List<Vector2>>> CreateMultiPolygon2Geometry() => new()
 		{
+			//new()
+			//{
+			//	new List<Vector2> { new(3, 1), new(50, 100), new(3, 1) },
+			//	new List<Vector2> { new(1, 500), new(10, 10), new(50, 75) }
+			//}
+			// First polygon.
 			new()
 			{
-				new List<Vector2> { new(3, 1), new(50, 100), new(3, 1) },
-				new List<Vector2> { new(1, 500), new(10, 10), new(50, 75) }
+				new List<Vector2> { new(3, 1), new(50, 100), new(3, 1) }
+			},
+			// Second polygon.
+			new()
+			{
+				new List<Vector2> { new(1, 500), new(10, 10), new(50, 75), new(1, 500) }
 			}
 		};
 

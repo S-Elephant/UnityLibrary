@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -11,6 +12,8 @@ namespace Elephant.UnityLibrary.GeoSystems
 {
 	/// <summary>
 	/// WKT (=Well Known Text) parser for Unity that supports multi-polygons and those with holes.
+	/// Note that WKT exterior rings MUST be counter-clockwise and interior rings must be clockwise.
+	/// For more info see: https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
 	/// </summary>
 	public static class WktPolygonParser
 	{
@@ -33,6 +36,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// <returns>List representing multi-polygons, where each multi-polygon is a list of polygons and each polygon consists of an exterior ring and zero or more interior rings (holes).</returns>
 		public static List<List<List<Vector2>>> ParseWkt(string? wkt)
 		{
+			// Handle null and empty values.
 			if (string.IsNullOrEmpty(wkt) ||
 			    wkt == EmptyPoint ||
 			    wkt == EmptyLineString ||
@@ -45,26 +49,64 @@ namespace Elephant.UnityLibrary.GeoSystems
 				return new List<List<List<Vector2>>>();
 			}
 
+			// Trim whitespace from the input string for cleaner processing.
+			wkt = wkt!.Trim();
 			List<List<List<Vector2>>> multiPolygon = new();
 
-			// Check if the input WKT represents a polygon.
+			// Check if the input WKT represents a single polygon.
 			if (wkt.StartsWith(PolygonKey))
 			{
-				// Parse the Polygon and add it to the MultiPolygon list.
+				// Parse the Polygon and add it to the MultiPolygon list as a single polygon.
 				List<List<Vector2>>? polygon = ParsePolygon(wkt);
 				if (polygon != null)
 					multiPolygon.Add(polygon);
 			}
-			// Check if the input WKT represents a multi-polygon.
+			// Determine if the input WKT represents a multi-polygon.
 			else if (wkt.StartsWith(MultiPolygonKey))
 			{
-				// Split the input into individual multi-polygons and iterate over them
-				foreach (string? polyStr in SplitMultiPolygon(wkt))
+				// Remove the 'MULTIPOLYGON' keyword and trim surrounding parentheses for easier splitting.
+				wkt = wkt.Substring(MultiPolygonKey.Length).Trim().TrimStart('(').TrimEnd(')');
+
+				// Split the input into individual polygons.
+				string[] polygons = wkt.Split(new[] { "), (" }, StringSplitOptions.RemoveEmptyEntries);
+
+				foreach (string polygon in polygons)
 				{
-					// Parse each MultiPolygon and add it to the multi-polygon list.
-					List<List<Vector2>>? polygon = ParsePolygon(polyStr);
-					if (polygon != null)
-						multiPolygon.Add(polygon);
+					List<List<Vector2>> newPolygon = new();
+					string trimmedPolygon = polygon.TrimStart('(').TrimEnd(')');
+
+					// Split the polygon into rings.
+					string[] rings = trimmedPolygon.Split(new[] { "), (" }, StringSplitOptions.RemoveEmptyEntries);
+
+					foreach (string ring in rings)
+					{
+						List<Vector2> newRing = new();
+						string trimmedRing = ring.TrimStart('(').TrimEnd(')');
+
+						// Split the ring into points.
+						string[] points = trimmedRing.Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+
+						foreach (string point in points)
+						{
+							string[] coords = point.Split(' ');
+							if (coords.Length == 2)
+							{
+								if (float.TryParse(coords[0], out float x) && float.TryParse(coords[1], out float y))
+								{
+									// Add the parsed point to the current ring.
+									newRing.Add(new Vector2(x, y));
+								}
+							}
+						}
+
+						// If the ring contains points, add it to the current polygon.
+						if (newRing.Count > 0)
+							newPolygon.Add(newRing);
+					}
+
+					// If the polygon contains rings, add it to the multiPolygon structure.
+					if (newPolygon.Count > 0)
+						multiPolygon.Add(newPolygon);
 				}
 			}
 
@@ -78,26 +120,19 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// <returns>List of WKT strings, each representing a single polygon.</returns>
 		private static List<string> SplitMultiPolygon(string wkt)
 		{
-			List<string> extractedPolygonStrings = new List<string>();
-			int openParenCount = 0;
-			int start = 0;
+			List<string> extractedPolygonStrings = new();
+			string pattern = $@"{MultiPolygonKey}\s*\(\(\(";
+			string[] multipolygons = Regex.Split(wkt, pattern)
+				.Where(s => !string.IsNullOrEmpty(s))
+				.ToArray();
 
-			for (int i = 0; i < wkt.Length; i++)
+			foreach (string multipolygon in multipolygons)
 			{
-				if (wkt[i] == '(')
+				string trimmedMultipolygon = multipolygon.Trim(' ', ')');
+				string[] polygons = trimmedMultipolygon.Split(new[] { ")), ((" }, StringSplitOptions.RemoveEmptyEntries);
+				foreach (string polygon in polygons)
 				{
-					if (openParenCount == 0)
-						start = i;
-					openParenCount++;
-				}
-				else if (wkt[i] == ')')
-				{
-					openParenCount--;
-					if (openParenCount == 0)
-					{
-						// Extract the polygon string and add the POLYGON keyword.
-						extractedPolygonStrings.Add(PolygonKey + " " + wkt.Substring(start, i - start + 1));
-					}
+					extractedPolygonStrings.Add($"{PolygonKey} (({polygon}))");
 				}
 			}
 
@@ -113,14 +148,14 @@ namespace Elephant.UnityLibrary.GeoSystems
 		{
 			List<List<Vector2>> rings = new();
 
-			// Use a regular expression to find and extract ring representations from the input string.
-			MatchCollection matches = Regex.Matches(wkt, @"\(([^()]*(?:\(.*?\))?[^()]*)\)");
+			// Use a regular expression to match the exterior ring and any interior rings.
+			string pattern = @"\(\(([^()]*)\)\)";
+			MatchCollection matches = Regex.Matches(wkt, pattern);
 
-			// Iterate over the matches and parse each ring.
 			foreach (Match match in matches)
 			{
-				// Attempt to parse the ring and add it to the list if it's valid.
-				List<Vector2>? ring = ParseRing(match.Groups[1].Value);
+				// Parse each ring and add it to the list.
+				List<Vector2>? ring = ParseRing(match.Groups[1].Value.Trim());
 				if (ring != null)
 					rings.Add(ring);
 			}
@@ -211,9 +246,9 @@ namespace Elephant.UnityLibrary.GeoSystems
 					// position.
 					if (geometry[i][j].Count > 0)
 					{
-						Vector2 firstVertext = geometry[i][j][0];
+						Vector2 firstVertex = geometry[i][j][0];
 						if (geometry[i][j][0] != geometry[i][j][geometry[i][j].Count - 1])
-							sb.AppendFormat(CultureInfo.InvariantCulture, "{0} {1}, ", firstVertext.x, firstVertext.y);
+							sb.AppendFormat(CultureInfo.InvariantCulture, "{0} {1}, ", firstVertex.x, firstVertex.y);
 					}
 
 					sb.Remove(sb.Length - 2, 2); // Remove the trailing comma and space

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -6,6 +7,8 @@ namespace Elephant.UnityLibrary.GeoSystems
 {
 	/// <summary>
 	/// WKT (=Well Known Text) polygon utilities.
+	/// Note that WKT exterior rings MUST be counter-clockwise and interior rings must be clockwise.
+	/// For more info see: https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
 	/// </summary>
 	public static class WktPolygonUtils
 	{
@@ -210,5 +213,97 @@ namespace Elephant.UnityLibrary.GeoSystems
 
 			return translatedGeometry;
 		}
+
+		/// <summary>
+		/// Calculates the area of a polygonal ring using the shoelace formula.
+		/// </summary>
+		/// <param name="ring">List of Vector2 points that define the polygonal ring. The ring should be closed,
+		/// meaning the first and last points should be the same.</param>
+		/// <returns>Calculated area of the ring. The sign of the area can indicate the orientation
+		/// of the ring (positive for counter-clockwise, negative for clockwise).
+		/// Returns 0f if the ring is empty.</returns>
+		/// <remarks>WARNING: accuracy may be off by about 10 square km when performing tests. Use this only for rough estimates.</remarks>
+		public static float CalculateRingArea(List<Vector2> ring)
+		{
+			float area = 0f;
+			for (int i = 0; i < ring.Count; i++)
+			{
+				// This line calculates the index of the next vertex in the ring, wrapping around to 0 when i reaches the last index.
+				// The modulus operator (%) ensures that when iterating through the ring vertices, the calculation loops back to the
+				// starting vertex after reaching the end, thereby closing the loop of the polygon.
+				int j = (i + 1) % ring.Count;
+
+				// This line contributes to calculating the area of a polygonal ring using the shoelace formula(also known as Gauss's area formula).
+				// The formula sums over the edges of the polygon, multiplying the x-coordinate of the current vertex by the y-coordinate of the next vertex,
+				// and subtracting the product of the y-coordinate of the current vertex by the x-coordinate of the next vertex.
+				//
+				// Explanation of the components:
+				// - ring[i].x * ring[j].y: Multiplies the x-coordinate of the current vertex (i) by the y-coordinate of the next vertex (j).
+				// - ring[j].x * ring[i].y: Multiplies the x-coordinate of the next vertex (j) by the y-coordinate of the current vertex (i).
+				// - The difference between these two products is then added to the 'area' accumulator.
+				//
+				// This approach effectively calculates the signed area of the polygon. The sign of the result (positive or negative)
+				// indicates the winding direction of the vertices:
+				// - A positive area implies that the vertices are ordered counter-clockwise.
+				// - A negative area implies that the vertices are ordered clockwise.
+				//
+				// The final area is divided by 2.0f at the end of the loop to complete the calculation as per the shoelace formula.
+				area += (ring[i].x * ring[j].y) - (ring[j].x * ring[i].y);
+			}
+			return area / 2.0f; // Direct calculation, sign indicates orientation.
+		}
+
+		/// <summary>
+		/// Calculates the total surface area of a multipolygon, accounting for both exterior and interior rings (holes).
+		/// </summary>
+		/// <param name="multipolygon">List representing a multipolygon. Each element in the list is a polygon,
+		/// which is itself a list of rings. The first ring in each polygon is the exterior ring, and any subsequent
+		/// rings are considered interior rings (holes).</param>
+		/// <returns>Total surface area of the multipolygon. Interior ring areas are subtracted from their
+		/// respective exterior ring area, and the total area is always returned as a positive value.
+		/// Returns 0f if the multipolygon is empty.</returns>
+		/// <remarks>WARNING: accuracy may be off by about 10 square km when performing tests. Use this only for rough estimates.</remarks>
+		public static float CalculateSurfaceArea(List<List<List<Vector2>>> multipolygon)
+		{
+			float totalArea = 0f;
+
+			// Iterate over each polygon within the multipolygon. Each polygon is represented as a list of rings,
+			// where the first ring is the exterior boundary, and any subsequent rings are interior boundaries (holes).
+			foreach (List<List<Vector2>> polygon in multipolygon)
+			{
+				// Initialize a variable to hold the area of the current polygon. This variable will accumulate the
+				// area of the exterior ring and subtract the areas of any interior rings.
+				float polygonArea = 0f;
+
+				// Iterate over each ring within the current polygon.
+				for (int i = 0; i < polygon.Count; i++)
+				{
+					// Calculate the area of the current ring using the CalculateRingArea method.
+					float ringArea = CalculateRingArea(polygon[i]);
+
+					// If this is the first ring (i == 0), it's the exterior ring. Add its area to the polygon's total area.
+					if (i == 0)
+					{
+						polygonArea += ringArea;
+					}
+					else
+					{
+						// For all subsequent rings (interior rings/holes), subtract their area from the polygon's total area.
+						// Use Math.Abs to ensure the subtraction regardless of the calculated ring area's sign.
+						// This is necessary because the interior ring should always reduce the polygon's total area,
+						// even if the ring area calculation results in a negative value.
+						polygonArea -= Math.Abs(ringArea);
+					}
+				}
+
+				// Add the calculated area of the current polygon to the total area of the multipolygon.
+				totalArea += polygonArea;
+			}
+
+			// Return the absolute value of the total area calculated for the multipolygon.
+			// This ensures the returned surface area is always positive, as area measurements should not be negative.
+			return Math.Abs(totalArea);
+		}
+
 	}
 }
