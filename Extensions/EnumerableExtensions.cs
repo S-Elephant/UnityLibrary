@@ -12,11 +12,19 @@ namespace Elephant.UnityLibrary.Extensions
 	public static class EnumerableExtensions
 	{
 		/// <summary>
-		/// Get random element(s).
+		/// Return random element(s).
 		/// </summary>
 		public static IEnumerable<T> GetRandom<T>(this IEnumerable<T> source, int count)
 		{
 			return source.Shuffle().Take(count);
+		}
+
+		/// <summary>
+		/// Return random element.
+		/// </summary>
+		public static T GetRandom<T>(this IEnumerable<T> source)
+		{
+			return source.Shuffle().Take(1).Single();
 		}
 
 		/// <summary>

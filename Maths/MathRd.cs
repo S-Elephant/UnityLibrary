@@ -154,7 +154,7 @@ namespace Elephant.UnityLibrary.Maths
 			// Split into coordinate pairs.
 			string[] coordinatePairs = data.Split(CoordinateSeparators, StringSplitOptions.None);
 
-			var result = new List<(float, float)>();
+			List<(float, float)> result = new();
 			foreach (string coordinatePair in coordinatePairs)
 			{
 				string[] splitCoordinatePair = coordinatePair.Split(' ');

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#nullable enable
+
+using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -12,11 +14,6 @@ namespace Elephant.UnityLibrary.Debugging
 	[RequireComponent(typeof(Renderer))]
 	public class RenderNormals : MonoBehaviour
 	{
-		/// <summary>
-		/// Reference to the MeshFilter component from which the mesh data is obtained.
-		/// </summary>
-		private MeshFilter _meshFilter = null!;
-
 		/// <summary>
 		/// The maximum number of normals to draw. This is a performance optimization to prevent the editor
 		/// from becoming sluggish when working with complex meshes that have a large number of normals.
@@ -41,14 +38,6 @@ namespace Elephant.UnityLibrary.Debugging
 		#region Unity events
 
 #if UNITY_EDITOR
-
-		/// <summary>
-		/// Unity's Start event. For more info see: https://docs.unity3d.com/Manual/ExecutionOrder.html.
-		/// </summary>
-		private void Start()
-		{
-			_meshFilter = GetComponent<MeshFilter>();
-		}
 
 		/// <summary>
 		/// Called when the object is selected in the editor. Updates wire frame visibility and renders
@@ -81,8 +70,15 @@ namespace Elephant.UnityLibrary.Debugging
 		/// <param name="isSelected">Whether the object is selected.</param>
 		protected virtual void RenderAll(bool isSelected)
 		{
-			// Pre-fetch data from mesh to avoid repetitive calls within loops.
-			Mesh mesh = _meshFilter.sharedMesh;
+			MeshFilter? meshFilter = GetComponent<MeshFilter>();
+
+			if (meshFilter == null)
+			{
+				Debug.LogError($"A valid {nameof(MeshFilter)} is required and must be attached to the same {nameof(GameObject)} as the {nameof(RenderNormals)} is attached to.");
+				return;
+			}
+
+			Mesh mesh = meshFilter.sharedMesh;
 			int[] triangles = mesh.triangles;
 			Vector3[] vertices = mesh.vertices;
 			Vector3[] normals = mesh.normals;

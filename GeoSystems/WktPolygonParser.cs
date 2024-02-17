@@ -38,13 +38,13 @@ namespace Elephant.UnityLibrary.GeoSystems
 		{
 			// Handle null and empty values.
 			if (string.IsNullOrEmpty(wkt) ||
-			    wkt == EmptyPoint ||
-			    wkt == EmptyLineString ||
-			    wkt == EmptyMultiPoint ||
-			    wkt == EmptyPolygon ||
-			    wkt == EmptyMultiLineString ||
-			    wkt == EmptyMultiPolygon ||
-			    wkt == EmptyGeometryCollection)
+				wkt == EmptyPoint ||
+				wkt == EmptyLineString ||
+				wkt == EmptyMultiPoint ||
+				wkt == EmptyPolygon ||
+				wkt == EmptyMultiLineString ||
+				wkt == EmptyMultiPolygon ||
+				wkt == EmptyGeometryCollection)
 			{
 				return new List<List<List<Vector2>>>();
 			}
@@ -60,83 +60,60 @@ namespace Elephant.UnityLibrary.GeoSystems
 				List<List<Vector2>>? polygon = ParsePolygon(wkt);
 				if (polygon != null)
 					multiPolygon.Add(polygon);
+				return multiPolygon;
 			}
+			
 			// Determine if the input WKT represents a multi-polygon.
-			else if (wkt.StartsWith(MultiPolygonKey))
+			if (wkt.StartsWith(MultiPolygonKey))
 			{
-				// Remove the 'MULTIPOLYGON' keyword and trim surrounding parentheses for easier splitting.
-				wkt = wkt.Substring(MultiPolygonKey.Length).Trim().TrimStart('(').TrimEnd(')');
-
-				// Split the input into individual polygons.
-				string[] polygons = wkt.Split(new[] { "), (" }, StringSplitOptions.RemoveEmptyEntries);
-
-				foreach (string polygon in polygons)
+				List<string> polygonsWkt = SplitMultiPolygonIntoPolygons(wkt);
+				foreach (string polygonWkt in polygonsWkt)
 				{
-					List<List<Vector2>> newPolygon = new();
-					string trimmedPolygon = polygon.TrimStart('(').TrimEnd(')');
-
-					// Split the polygon into rings.
-					string[] rings = trimmedPolygon.Split(new[] { "), (" }, StringSplitOptions.RemoveEmptyEntries);
-
-					foreach (string ring in rings)
+					List<List<Vector2>>? polygon = ParsePolygon(polygonWkt);
+					if (polygon != null)
 					{
-						List<Vector2> newRing = new();
-						string trimmedRing = ring.TrimStart('(').TrimEnd(')');
-
-						// Split the ring into points.
-						string[] points = trimmedRing.Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
-
-						foreach (string point in points)
-						{
-							string[] coords = point.Split(' ');
-							if (coords.Length == 2)
-							{
-								if (float.TryParse(coords[0], out float x) && float.TryParse(coords[1], out float y))
-								{
-									// Add the parsed point to the current ring.
-									newRing.Add(new Vector2(x, y));
-								}
-							}
-						}
-
-						// If the ring contains points, add it to the current polygon.
-						if (newRing.Count > 0)
-							newPolygon.Add(newRing);
+						multiPolygon.Add(polygon);
 					}
-
-					// If the polygon contains rings, add it to the multiPolygon structure.
-					if (newPolygon.Count > 0)
-						multiPolygon.Add(newPolygon);
 				}
+
+				return multiPolygon;
 			}
 
-			return multiPolygon;
+			// Unrecognized or not supported.
+			return new List<List<List<Vector2>>>();
 		}
 
 		/// <summary>
-		/// Split the multi-polygon WKT string into individual polygon strings.
+		/// Splits a multi-polygon string into polygon strings.
 		/// </summary>
-		/// <param name="wkt">Multi-polygon WKT string to be split.</param>
-		/// <returns>List of WKT strings, each representing a single polygon.</returns>
-		private static List<string> SplitMultiPolygon(string wkt)
+		public static List<string> SplitMultiPolygonIntoPolygons(string multiPolygonContent)
 		{
-			List<string> extractedPolygonStrings = new();
-			string pattern = $@"{MultiPolygonKey}\s*\(\(\(";
-			string[] multipolygons = Regex.Split(wkt, pattern)
-				.Where(s => !string.IsNullOrEmpty(s))
-				.ToArray();
+			List<string> polygons = new();
 
-			foreach (string multipolygon in multipolygons)
+			// Check if the input is a MULTIPOLYGON
+			if (multiPolygonContent.StartsWith(MultiPolygonKey))
 			{
-				string trimmedMultipolygon = multipolygon.Trim(' ', ')');
-				string[] polygons = trimmedMultipolygon.Split(new[] { ")), ((" }, StringSplitOptions.RemoveEmptyEntries);
-				foreach (string polygon in polygons)
+				// Correctly handling nested polygons in MULTIPOLYGON.
+				string trimmedContent = multiPolygonContent.Substring(MultiPolygonKey.Length).Trim();
+				string[] parts = trimmedContent.Replace("), (", "),(").Split(new[] { "),(" }, StringSplitOptions.RemoveEmptyEntries);
+				foreach (string part in parts)
 				{
-					extractedPolygonStrings.Add($"{PolygonKey} (({polygon}))");
+					string cleanedPart = part.Trim('(', ')');
+					string polygon = "POLYGON((" + cleanedPart + "))";
+					polygons.Add(polygon);
 				}
 			}
+			else if (multiPolygonContent.StartsWith(PolygonKey))
+			{
+				// Pattern to match each POLYGON within the POLYGON.
+				string pattern = @"(\(\([^)]+\)\))";
+				MatchCollection matches = Regex.Matches(multiPolygonContent, pattern);
 
-			return extractedPolygonStrings;
+				foreach (Match match in matches)
+					polygons.Add(($"{PolygonKey} " + match.Groups[1].Value).Replace("(((", "((".Replace(")))", "))")));
+			}
+
+			return polygons;
 		}
 
 		/// <summary>
@@ -148,14 +125,21 @@ namespace Elephant.UnityLibrary.GeoSystems
 		{
 			List<List<Vector2>> rings = new();
 
-			// Use a regular expression to match the exterior ring and any interior rings.
-			string pattern = @"\(\(([^()]*)\)\)";
-			MatchCollection matches = Regex.Matches(wkt, pattern);
+			// Remove the POLYGON keyword and trim the remaining string.
+			string polygonContent = wkt.Replace("POLYGON ", "").Trim();
 
-			foreach (Match match in matches)
+			// Trim the leading and trailing parentheses.
+			if (!string.IsNullOrEmpty(polygonContent) && polygonContent.Length > 2)
 			{
-				// Parse each ring and add it to the list.
-				List<Vector2>? ring = ParseRing(match.Groups[1].Value.Trim());
+				polygonContent = polygonContent.Substring(1, polygonContent.Length - 2);
+			}
+
+			// Split the content by "),(" to separate rings.
+			string[] ringContents = polygonContent.Split(new string[] { "),(" }, StringSplitOptions.RemoveEmptyEntries);
+
+			foreach (string ringContent in ringContents)
+			{
+				List<Vector2>? ring = ParseRing(ringContent.Trim());
 				if (ring != null)
 					rings.Add(ring);
 			}
@@ -166,7 +150,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// <summary>
 		/// Parses a ring (either exterior or interior) string into its vertices.
 		/// </summary>
-		/// <param name="ringStr">The ring string to be parsed.</param>
+		/// <param name="ringStr">The ring string to be parsed. Valid example value: "(30 20, 45 40, 10 40, 30 20)"</param>
 		/// <returns>List of <see cref="Vector2"/>, representing the vertices of the ring. Returns null if there are no rings.</returns>
 		/// <remarks>The first and the last coordinate should be the same for a polygon to be considered a valid WKT polygon.</remarks>
 		private static List<Vector2>? ParseRing(string ringStr)

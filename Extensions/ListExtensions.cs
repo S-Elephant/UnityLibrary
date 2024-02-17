@@ -9,6 +9,22 @@ namespace Elephant.UnityLibrary.Extensions
 	public static class ListExtensions
 	{
 		/// <summary>
+		/// Shuffle the <paramref name="list"/>. Modifies the <paramref name="list"/>
+		/// </summary>
+		public static void Shuffle<T>(this IList<T> list)
+		{
+			int cnt = list.Count;
+			while (cnt > 1)
+			{
+				cnt--;
+				int k = UnityEngine.Random.Range(0, cnt - 1);
+				T value = list[k];
+				list[k] = list[cnt];
+				list[cnt] = value;
+			}
+		}
+
+		/// <summary>
 		/// Add <paramref name="itemToAdd"/> only if it doesn't already exist in <paramref name="list"/>.
 		/// </summary>
 		public static void AddIfNotExists<T>(this List<T> list, T itemToAdd)

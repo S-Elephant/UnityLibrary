@@ -101,7 +101,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 		}
 
 		/// <summary>
-		/// Normalizes the degrees to be within 0 to 359.99999..
+		/// Normalizes the degrees to be within 0 to 359.99999.
 		/// </summary>
 		/// <param name="degrees">Degrees to be normalized.</param>
 		/// <returns>Degrees within the range of 0 - 359.99999..</returns>
@@ -215,14 +215,17 @@ namespace Elephant.UnityLibrary.GeoSystems
 		}
 
 		/// <summary>
-		/// Calculates the area of a polygonal ring using the shoelace formula.
+		/// Calculates the area of a polygonal ring using the Shoelace formula.
 		/// </summary>
 		/// <param name="ring">List of Vector2 points that define the polygonal ring. The ring should be closed,
 		/// meaning the first and last points should be the same.</param>
 		/// <returns>Calculated area of the ring. The sign of the area can indicate the orientation
 		/// of the ring (positive for counter-clockwise, negative for clockwise).
 		/// Returns 0f if the ring is empty.</returns>
-		/// <remarks>WARNING: accuracy may be off by about 10 square km when performing tests. Use this only for rough estimates.</remarks>
+		/// <remarks>
+		/// WARNING: accuracy may be off by about 10 square km when performing tests. Use this only for rough estimates.
+		/// Shoelace formula: https://en.wikipedia.org/wiki/Shoelace_formula
+		/// </remarks>
 		public static float CalculateRingArea(List<Vector2> ring)
 		{
 			float area = 0f;

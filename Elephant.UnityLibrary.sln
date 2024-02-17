@@ -11,8 +11,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReadmeResources", "ReadmeResources", "{C6DAEB29-FEE6-4FC4-9BD5-C4F486AB8B4B}"
+	ProjectSection(SolutionItems) = preProject
+		ReadmeResources\ComplexPolygonExample.jpg = ReadmeResources\ComplexPolygonExample.jpg
+		ReadmeResources\CoroutineStarter.jpg = ReadmeResources\CoroutineStarter.jpg
+		ReadmeResources\RenderNormalsExample.jpg = ReadmeResources\RenderNormalsExample.jpg
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityLibraryTests", "Tests\UnityLibraryTests\UnityLibraryTests.csproj", "{46726DED-A440-416E-81E3-1687DC48A910}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnityLibraryTests", "Tests\UnityLibraryTests\UnityLibraryTests.csproj", "{46726DED-A440-416E-81E3-1687DC48A910}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{380EE872-4CCC-491C-989D-07F03EA9F9DD}"
 EndProject

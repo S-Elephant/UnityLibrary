@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Elephant.UnityLibrary.Extensions
 {
@@ -10,30 +8,11 @@ namespace Elephant.UnityLibrary.Extensions
 	public static class Extensions
 	{
 		/// <summary>
-		/// Return random element.
+		/// Calculates the normalized direction from one vector to another.
 		/// </summary>
-		public static T GetRandom<T>(this IEnumerable<T> source)
-		{
-			return source.Shuffle().Take(1).Single();
-		}
-
-
-		/// <summary>
-		/// Shuffle the <paramref name="list"/>.
-		/// </summary>
-		public static void Shuffle<T>(this IList<T> list)
-		{
-			int cnt = list.Count;
-			while (cnt > 1)
-			{
-				cnt--;
-				int k = UnityEngine.Random.Range(0, cnt - 1);
-				T value = list[k];
-				list[k] = list[cnt];
-				list[cnt] = value;
-			}
-		}
-
+		/// <param name="from">Starting point of the direction vector.</param>
+		/// <param name="to">Endpoint of the direction vector.</param>
+		/// <returns>Normalized direction vector pointing from the 'from' vector to the 'to' vector.</returns>
 		public static Vector3 DirectionTo(this Vector3 from, Vector3 to)
 		{
 			return (to - from).normalized;
@@ -52,6 +31,16 @@ namespace Elephant.UnityLibrary.Extensions
 			return bounds;
 		}
 
+		/// <summary>
+		/// Searches recursively for a child transform with the specified name within the descendants of the given parent transform.
+		/// </summary>
+		/// <param name="parent">Parent transform from which to start the search.</param>
+		/// <param name="name">Name of the child transform to search for.</param>
+		/// <returns>First Transform found that matches the specified name. If no transform is found, returns null.</returns>
+		/// <remarks>
+		/// Performs a depth-first search to find the first child transform that matches the given name. 
+		/// If the child transform is not found directly under the given parent, the search continues recursively among all descendants.
+		/// </remarks>
 		public static Transform FindRecursively(this Transform parent, string name)
 		{
 			foreach (Transform child in parent)

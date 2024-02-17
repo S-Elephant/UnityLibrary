@@ -14,7 +14,7 @@ namespace Elephant.UnityLibrary.Core
 		// Check to see if we're about to be destroyed.
 		private static bool _shuttingDown = false;
 
-		private static readonly object Lock = new object();
+		private static readonly object Lock = new();
 
 		/// <summary>
 		/// Access singleton instance through this propriety.
@@ -45,7 +45,7 @@ namespace Elephant.UnityLibrary.Core
 						if (_instance == null)
 						{
 							// Need to create a new GameObject to attach the singleton to.
-							var singletonObject = new GameObject();
+							GameObject singletonObject = new GameObject();
 							_instance = singletonObject.AddComponent<T>();
 							singletonObject.name = typeof(T).ToString() + "_Singleton";
 

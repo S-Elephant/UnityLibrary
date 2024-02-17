@@ -110,5 +110,38 @@ namespace UnityLibraryTests.GeoSystems.WktPolygonParserTests
 			List<List<List<Vector2>>> expected = new();
 			Assert.Equal(expected, result);
 		}
+
+		/// <summary>
+		/// Polygon should be parsed, resulting in exactly 1 polygon with 2 rings.
+		/// </summary>
+		[Fact]
+		public void IsPolygonWithHoleParsedCorrectly()
+		{
+			// Arrange.
+			const string wktString = "POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10),(20 30, 35 35, 30 20, 20 30))";
+
+			// Act.
+			List<List<List<Vector2>>> result = WktPolygonParser.ParseWkt(wktString);
+
+			// Assert.
+			Assert.Equal(1, result.Count); // 1 polygon.
+			Assert.Equal(2, result[0].Count); // 2 rings.
+		}
+
+		/// <summary>
+		/// Multi-polygon should be parsed, resulting in exactly 2 polygons.
+		/// </summary>
+		[Fact]
+		public void IsMultiPolygonParsedCorrectly()
+		{
+			// Arrange.
+			const string wktString = "MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),((15 5, 40 10, 10 20, 5 10, 15 5)))";
+
+			// Act.
+			List<List<List<Vector2>>> result = WktPolygonParser.ParseWkt(wktString);
+
+			// Assert.
+			Assert.Equal(2, result.Count); // 2 polygons.
+		}
 	}
 }

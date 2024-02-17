@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
 using System.Reflection;
 using UnityEditor;
 
@@ -25,7 +26,7 @@ namespace Elephant.UnityLibrary.Editor
 		/// <summary>
 		/// Menu configuration: whether is is enabled by default.
 		/// </summary>
-		private const bool IsEnabledByDefault = true;
+		private const bool IsEnabledByDefault = false;
 
 		/// <summary>
 		/// Constructor.
@@ -80,3 +81,4 @@ namespace Elephant.UnityLibrary.Editor
 		}
 	}
 }
+#endif
