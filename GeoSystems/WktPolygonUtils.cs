@@ -265,7 +265,12 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// <returns>Total surface area of the multipolygon. Interior ring areas are subtracted from their
 		/// respective exterior ring area, and the total area is always returned as a positive value.
 		/// Returns 0f if the multipolygon is empty.</returns>
-		/// <remarks>WARNING: accuracy may be off by about 10 square km when performing tests. Use this only for rough estimates.</remarks>
+		/// <remarks>
+		/// For each polygon (the first list), the first item in the second list is the exterior ring of the polygon, which defines the outer boundary.
+		/// Any subsequent items in the second list are interior rings(holes) within that polygon.
+		/// 
+		/// WARNING: accuracy may be off by about 10 square km when performing tests and does not correctly calculate holes. Use this only for rough estimates.
+		/// </remarks>
 		public static float CalculateSurfaceArea(List<List<List<Vector2>>> multipolygon)
 		{
 			float totalArea = 0f;
@@ -307,6 +312,5 @@ namespace Elephant.UnityLibrary.GeoSystems
 			// This ensures the returned surface area is always positive, as area measurements should not be negative.
 			return Math.Abs(totalArea);
 		}
-
 	}
 }

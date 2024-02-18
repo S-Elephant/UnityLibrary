@@ -2,6 +2,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using Elephant.UnityLibrary.Extensions;
 using Elephant.UnityLibrary.GeoSystems.Interfaces;
@@ -12,8 +15,17 @@ namespace Elephant.UnityLibrary.GeoSystems
 	/// <summary>
 	/// Note that duplicate vertices are not allowed because they would create a self-intersecting boundary.
 	/// </summary>
-	public class Polygon : Surface, IPolygonal
+	[DebuggerDisplay("{DebuggerDisplay,nq}")]
+	public class Polygon : Surface, IPolygonal, IDisposable
 	{
+		/// <inheritdoc/>
+		public override GeometryType GeometryType => GeometryType.Polygon;
+
+		/// <summary>
+		/// Is used for the DebuggerDisplay only.
+		/// </summary>
+		public string DebuggerDisplay => $"ExteriorRing: {ExteriorRing.DebuggerDisplay}  InteriorRings: {string.Join(", ", InteriorRings.Select(InteriorRing => InteriorRing.DebuggerDisplay))}";
+
 		/// <summary>
 		/// Can be only 1 ring.
 		/// </summary>
@@ -22,13 +34,42 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// <summary>
 		/// A.k.a. holes. Can be 0 or more rings.
 		/// </summary>
-		public List<Ring> InteriorRings { get; set; } = new();
+		private readonly ObservableCollection<Ring> _interiorRings = new();
+
+		/// <summary>
+		/// A.k.a. holes. Can be 0 or more rings.
+		/// </summary>
+		public ObservableCollection<Ring> InteriorRings => _interiorRings;
 
 		/// <summary>
 		/// Returns true if this <see cref="Polygon"/> is empty.
 		/// It's considered empty if it has an empty exterior ring.
 		/// </summary>
 		public bool IsEmpty => ExteriorRing.IsEmpty;
+
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		public Polygon()
+		{
+			_interiorRings.CollectionChanged += InteriorRingsOnCollectionChanged;
+		}
+
+		/// <summary>
+		/// Constructor with initializers.
+		/// </summary>
+		public Polygon(Ring exteriorRing, List<Ring> interiorRings)
+		{
+			ExteriorRing = exteriorRing;
+
+			_interiorRings = new(interiorRings);
+			_interiorRings.CollectionChanged += InteriorRingsOnCollectionChanged;
+		}
+
+		private void InteriorRingsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			MarkAsDirty();
+		}
 
 		/// <summary>
 		/// Returns true if all rings are valid using <see cref="Ring.IsValid"/>.
@@ -69,7 +110,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// <inheritdoc/>
 		protected override Vector2 CalculateCentroid()
 		{
-			List<GeometryLine> allLines = ExteriorRing.Lines;
+			ObservableCollection<GeometryLine> allLines = ExteriorRing.Lines;
 			if (allLines.Count < 3)
 			{
 				return Vector2.zero;
@@ -97,6 +138,15 @@ namespace Elephant.UnityLibrary.GeoSystems
 			centerY /= (6.0f * accumulatedArea);
 
 			return new Vector2(centerX, centerY);
+		}
+
+		/// <summary>
+		/// Assign a new <see cref="ExteriorRing"/>.
+		/// </summary>
+		public void SetExteriorRing(Ring ring)
+		{
+			ExteriorRing = ring;
+			MarkAsDirty();
 		}
 
 		/// <inheritdoc/>
@@ -138,6 +188,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 				interiorRing.Recalculate();
 
 			base.Recalculate();
+			InvokeOnRecalculated();
 		}
 
 		/// <summary>
@@ -154,9 +205,20 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// Draw this polygon using gizmos.
 		/// </summary>
 		/// <param name="offset">Render offset to apply onto every vertex of this polygon.</param>
+		/// <param name="exteriorRingColor">Optional color to use for drawing the exterior ring of the polygon. If null, a default color is used.</param>
+		/// <param name="interiorRingColor">Optional color to use for drawing the interior rings (holes) of the polygon. If null, a default color is used.</param>
+		/// <param name="aabbColor">Optional color to use for drawing the axis-aligned bounding box of the polygon. If null, a default color is used.</param>
+		/// <param name="centerColor">Optional color to use for marking the center of the polygon. If null, a default color is used.</param>
+		/// <param name="centroidColor">Optional color to use for marking the centroid of the polygon. If null, a default color is used.</param>
+		/// <remarks>
+		/// This method uses Unity's Gizmos to visually debug the polygon by drawing its exterior and interior rings, 
+		/// axis-aligned bounding box, center, and centroid with the specified colors. This is useful for visual debugging in the Unity Editor.
+		/// </remarks>
 		public void DrawGizmos(Vector2 offset, Color? exteriorRingColor = null, Color? interiorRingColor = null,
 			Color? aabbColor = null, Color? centerColor = null, Color? centroidColor = null)
 		{
+			DrawAabbGizmo(offset, aabbColor);
+		
 			// Draw exterior ring.
 			Gizmos.color = exteriorRingColor ?? Color.blue;
 			for (int i = 0; i < ExteriorRing.Lines.Count; i++)
@@ -178,23 +240,12 @@ namespace Elephant.UnityLibrary.GeoSystems
 				}
 			}
 
-			// Draw AABB.
-			Gizmos.color = aabbColor ?? Color.green;
-			// Top line
-			Gizmos.DrawLine(new Vector2(Aabb.xMin, Aabb.yMin) + offset, new Vector2(Aabb.xMax, Aabb.yMin) + offset);
-			// Bottom line
-			Gizmos.DrawLine(new Vector2(Aabb.xMin, Aabb.yMax) + offset, new Vector2(Aabb.xMax, Aabb.yMax) + offset);
-			// Left line
-			Gizmos.DrawLine(new Vector2(Aabb.xMin, Aabb.yMin) + offset, new Vector2(Aabb.xMin, Aabb.yMax) + offset);
-			// Right line
-			Gizmos.DrawLine(new Vector2(Aabb.xMax, Aabb.yMin) + offset, new Vector2(Aabb.xMax, Aabb.yMax) + offset);
-
-			// Draw Center
+			// Draw center.
 			Gizmos.color = centerColor ?? Color.gray;
 			Vector3 centerPosition = new(Center.x + offset.x, Center.y + offset.y, 0);
 			Gizmos.DrawSphere(centerPosition, GizmosSphereSize);
 
-			// Draw Centroid
+			// Draw centroid.
 			Gizmos.color = centroidColor ?? Color.cyan;
 			Vector3 centroidPosition = new(Centroid.x + offset.x, Centroid.y + offset.y, 0);
 			Gizmos.DrawSphere(centroidPosition, GizmosSphereSize);
@@ -205,58 +256,104 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// </summary>
 		public static Polygon FromWktString(string wktString)
 		{
-			List<List<List<Vector2>>> geometryData = WktPolygonParser.ParseWkt(wktString);
+			Polygon polygon = new Polygon();
 
-			// Check if there's at least one polygon in the data.
-			if (geometryData.Count == 0 || geometryData[0].Count == 0)
+			// Assuming the input string is "POLYGON ((...))" or "POLYGON ((...),(...))"
+			// Remove the POLYGON keyword and trim leading/trailing spaces and parentheses.
+			string polygonData = WktPolygonParser.SanitizeWktString(wktString).Substring("POLYGON".Length).Trim('(', ')');
+
+			// Split the data into exterior and interior rings
+			string[] rings = polygonData.Split(new[] { "), (" }, StringSplitOptions.RemoveEmptyEntries);
+
+			for (int i = 0; i < rings.Length; i++)
 			{
-				throw new ArgumentException("Invalid WKT string: No polygons found.");
-			}
+				string ringString = rings[i];
+				Ring ring = new();
 
-			// Create a new Polygon instance.
-			Polygon polygon = new();
+				// Split the ring into coordinates.
+				string[] coords = ringString.Trim().Split(',');
 
-			// Only consider the first polygon (ignore potential multi-polygon structure).
-			List<List<Vector2>> polygonData = geometryData[0];
+				// Previous point to connect lines.
+				GeometryVertex? prevVertex = null;
 
-			// The first list of Vector2 points is the exterior ring.
-			List<Vector2> exteriorRingPoints = polygonData[0];
-			Ring exteriorRing = new();
-
-			// Convert the list of Vector2 points to GeometryLines for the exterior ring.
-			for (int i = 0; i < exteriorRingPoints.Count; i++)
-			{
-				Vector2 start = exteriorRingPoints[i];
-				Vector2 end = exteriorRingPoints[(i + 1) % exteriorRingPoints.Count]; // Ensure we loop back to the start for the last line.
-				GeometryLine line = new(start, end);
-				exteriorRing.Lines.Add(line);
-			}
-
-			polygon.ExteriorRing = exteriorRing;
-
-			// Process any interior rings (holes).
-			for (int i = 1; i < polygonData.Count; i++)
-			{
-				Ring interiorRing = new();
-				List<Vector2> interiorRingPoints = polygonData[i];
-
-				for (int j = 0; j < interiorRingPoints.Count; j++)
+				foreach (string coord in coords)
 				{
-					Vector2 start = interiorRingPoints[j];
-					Vector2 end = interiorRingPoints[(j + 1) % interiorRingPoints.Count]; // Loop back to start for the last line.
-					GeometryLine line = new(start, end);
-					interiorRing.Lines.Add(line);
+					string[] parts = coord.Trim().Split(' ');
+					if (parts.Length == 2 && float.TryParse(parts[0], out float x) && float.TryParse(parts[1], out float y))
+					{
+						GeometryVertex vertex = new() { Position = new Vector2(x, y) };
+
+						if (prevVertex != null)
+						{
+							// Create a line from the previous vertex to the current vertex.
+							GeometryLine line = new() { Start = prevVertex, End = vertex };
+							ring.Lines.Add(line);
+						}
+						prevVertex = vertex;
+					}
 				}
 
-				polygon.InteriorRings.Add(interiorRing);
-			}
+				// Close the ring by connecting the last vertex to the first one, if not already connected.
+				if (ring.Lines.Count > 0 && ring.Lines[0].Start != prevVertex)
+				{
+					GeometryLine closingLine = new() { Start = prevVertex, End = ring.Lines[0].Start };
+					ring.Lines.Add(closingLine);
+				}
 
-			// Since the polygon's data might have changed, mark it as needing recalculation of geometric properties.
-			polygon.IsDirty = true;
+				// Assign the ring to the polygon.
+				if (i == 0) // The first ring is the exterior ring.
+					polygon.ExteriorRing = ring;
+				else // Subsequent rings are interior rings (holes).
+					polygon.InteriorRings.Add(ring);
+			}
 
 			return polygon;
 		}
 
+		/// <summary>
+		/// Parses a string representing a series of points into a list of Vector2 objects.
+		/// </summary>
+		/// <param name="ringString">The input string containing point coordinates, separated by commas and spaces. 
+		/// Example format: "40 40, 20 45, 45 30, 40 40".</param>
+		/// <returns>List of Vector2 objects representing the points parsed from the input string.</returns>
+		/// <remarks>
+		/// This method expects the input string to be formatted as a sequence of x and y coordinates 
+		/// separated by spaces and commas. Each pair of x and y coordinates represents a point.
+		/// </remarks>
+		/// <example>
+		/// <![CDATA[
+		/// string input = "40 40, 20 45, 45 30, 40 40";
+		/// List<Vector2> points = ParsePoints(input);
+		/// foreach (Vector2 point in points)
+		/// {
+		///     Debug.Log(point);
+		/// }
+		/// ]]>
+		/// </example>
+		private static List<Vector2> ParsePoints(string ringString)
+		{
+			List<Vector2> points = new();
+
+			// Split the input string by commas and spaces to extract individual coordinate strings.
+			// StringSplitOptions.RemoveEmptyEntries removes any empty entries resulting from consecutive delimiters.
+			string[] coords = ringString.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+			// Loop through the array of coordinate strings.
+			// Increment by 2 each time since points are represented by pairs of coordinates (x and y).
+			for (int i = 0; i < coords.Length; i += 2)
+			{
+				// Parse the x and y coordinates from the string to float.
+				// Assumes the format is correct and every x has a corresponding y.
+				float x = float.Parse(coords[i]);
+				float y = float.Parse(coords[i + 1]);
+
+				// Create a new Vector2 object from the parsed x and y values and add it to the list of points.
+				points.Add(new Vector2(x, y));
+			}
+
+			// Return the list of parsed points.
+			return points;
+		}
 
 		/// <inheritdoc/>
 		protected override Rect CalculateAabb()
@@ -289,6 +386,12 @@ namespace Elephant.UnityLibrary.GeoSystems
 		public virtual Polygon DeepCloneTyped()
 		{
 			return (Polygon)Clone();
+		}
+
+		/// <inheritdoc/>
+		public void Dispose()
+		{
+			_interiorRings.CollectionChanged -= InteriorRingsOnCollectionChanged;
 		}
 	}
 }

@@ -37,6 +37,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 			Aabb = CalculateAabb();
 
 			base.Recalculate();
+			InvokeOnRecalculated();
 		}
 	}
 }

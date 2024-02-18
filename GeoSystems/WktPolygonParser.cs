@@ -62,18 +62,16 @@ namespace Elephant.UnityLibrary.GeoSystems
 					multiPolygon.Add(polygon);
 				return multiPolygon;
 			}
-			
+
 			// Determine if the input WKT represents a multi-polygon.
 			if (wkt.StartsWith(MultiPolygonKey))
 			{
 				List<string> polygonsWkt = SplitMultiPolygonIntoPolygons(wkt);
 				foreach (string polygonWkt in polygonsWkt)
 				{
-					List<List<Vector2>>? polygon = ParsePolygon(polygonWkt);
-					if (polygon != null)
-					{
-						multiPolygon.Add(polygon);
-					}
+					List<List<Vector2>>? polygons = ParsePolygon(polygonWkt);
+					if (polygons != null)
+						multiPolygon.Add(polygons);
 				}
 
 				return multiPolygon;
@@ -86,28 +84,36 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// <summary>
 		/// Splits a multi-polygon string into polygon strings.
 		/// </summary>
-		public static List<string> SplitMultiPolygonIntoPolygons(string multiPolygonContent)
+		/// <param name="wktString">Valid MULTIPOLYGON or POLYGON WKT string.</param>
+		public static List<string> SplitMultiPolygonIntoPolygons(string wktString)
 		{
 			List<string> polygons = new();
 
-			// Check if the input is a MULTIPOLYGON
-			if (multiPolygonContent.StartsWith(MultiPolygonKey))
+			// Check if the input is a multi-polygon.
+			if (wktString.StartsWith(MultiPolygonKey))
 			{
-				// Correctly handling nested polygons in MULTIPOLYGON.
-				string trimmedContent = multiPolygonContent.Substring(MultiPolygonKey.Length).Trim();
-				string[] parts = trimmedContent.Replace("), (", "),(").Split(new[] { "),(" }, StringSplitOptions.RemoveEmptyEntries);
+				// Remove 'MULTIPOLYGON' keyword and trim outer parentheses.
+				string trimmed = wktString.Substring(MultiPolygonKey.Length).Trim().Trim('(', ')');
+
+				// Split the trimmed content by ")), ((" which separates individual polygons
+				string[] parts = trimmed.Split(new[] { ")), ((" }, StringSplitOptions.RemoveEmptyEntries);
+
 				foreach (string part in parts)
 				{
-					string cleanedPart = part.Trim('(', ')');
-					string polygon = "POLYGON((" + cleanedPart + "))";
-					polygons.Add(polygon);
+					string formattedPart = part;
+					// Ensure correct formatting for polygons, especially handling inner rings correctly.
+					if (!formattedPart.StartsWith("("))
+						formattedPart = "(" + formattedPart;
+					if (!formattedPart.EndsWith(")"))
+						formattedPart = formattedPart + ")";
+					polygons.Add($"{PolygonKey} ({formattedPart})");
 				}
 			}
-			else if (multiPolygonContent.StartsWith(PolygonKey))
+			else if (wktString.StartsWith(PolygonKey))
 			{
-				// Pattern to match each POLYGON within the POLYGON.
-				string pattern = @"(\(\([^)]+\)\))";
-				MatchCollection matches = Regex.Matches(multiPolygonContent, pattern);
+				// Pattern to match each polygon within the polygon.
+				const string pattern = @"(\(\([^)]+\)\))";
+				MatchCollection matches = Regex.Matches(wktString, pattern);
 
 				foreach (Match match in matches)
 					polygons.Add(($"{PolygonKey} " + match.Groups[1].Value).Replace("(((", "((".Replace(")))", "))")));
@@ -126,19 +132,24 @@ namespace Elephant.UnityLibrary.GeoSystems
 			List<List<Vector2>> rings = new();
 
 			// Remove the POLYGON keyword and trim the remaining string.
-			string polygonContent = wkt.Replace("POLYGON ", "").Trim();
+			string polygonContent = SanitizeWktString(wkt).Replace($"{PolygonKey} ", "");
 
 			// Trim the leading and trailing parentheses.
 			if (!string.IsNullOrEmpty(polygonContent) && polygonContent.Length > 2)
-			{
 				polygonContent = polygonContent.Substring(1, polygonContent.Length - 2);
-			}
 
-			// Split the content by "),(" to separate rings.
-			string[] ringContents = polygonContent.Split(new string[] { "),(" }, StringSplitOptions.RemoveEmptyEntries);
+			// Split the content by "), (" to separate rings.
+			string[] ringContents = polygonContent.Split(new[] { "), (" }, StringSplitOptions.RemoveEmptyEntries);
 
-			foreach (string ringContent in ringContents)
+			//int ringCount = 0;
+			for (int index = 0; index < ringContents.Length; index++)
 			{
+				string ringContent = ringContents[index];
+				if (!ringContent.StartsWith("("))
+					ringContent = $"({ringContent}";
+				if (!ringContent.EndsWith(")"))
+					ringContent = $"{ringContent})";
+
 				List<Vector2>? ring = ParseRing(ringContent.Trim());
 				if (ring != null)
 					rings.Add(ring);
@@ -246,6 +257,14 @@ namespace Elephant.UnityLibrary.GeoSystems
 				sb.Remove(sb.Length - 1, 1);
 
 			return sb.ToString();
+		}
+
+		/// <summary>
+		/// Removes invalid characters and applies some other santiations to the <paramref name="wktString"/> and return it.
+		/// </summary>
+		public static string SanitizeWktString(string wktString)
+		{
+			return wktString.Replace("),(", "), (").Replace("\r", string.Empty).Replace("\n", string.Empty).Trim();
 		}
 	}
 }

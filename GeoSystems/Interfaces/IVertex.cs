@@ -11,6 +11,7 @@ namespace Elephant.UnityLibrary.GeoSystems.Interfaces
 		/// <summary>
 		/// Position.
 		/// </summary>
+		/// <remarks>Changing this to a different value will mark this <see cref="IVertex"/> as dirty.</remarks>
 		Vector2 Position { get; set; }
 	}
 }

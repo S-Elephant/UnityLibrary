@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using Elephant.UnityLibrary.Extensions;
 using UnityEngine;
@@ -9,15 +12,29 @@ namespace Elephant.UnityLibrary.GeoSystems
 	/// <summary>
 	/// Polygon ring.
 	/// </summary>
-	public class Ring : Lineal, ICloneable
+	[DebuggerDisplay("{DebuggerDisplay,nq}")]
+	public class Ring : Lineal, ICloneable, IDisposable
 	{
+		/// <inheritdoc/>
+		public override GeometryType GeometryType => GeometryType.Ring;
+
 		/// <summary>
 		/// All lines that make this ring.
 		/// </summary>
-		public List<GeometryLine> Lines { get; set; } = new();
+		private readonly ObservableCollection<GeometryLine> _lines = new();
 
 		/// <summary>
-		/// Returns true if this <see cref="Ring"/ > is empty.
+		/// All lines that make this ring.
+		/// </summary>
+		public ObservableCollection<GeometryLine> Lines => _lines;
+
+		/// <summary>
+		/// Is used for the DebuggerDisplay only.
+		/// </summary>
+		public string DebuggerDisplay => $"Lines: {string.Join(", ", _lines.Select(line => $"{line.Start.Position.x},{line.Start.Position.y} --> {line.End.Position.x},{line.End.Position.y}"))}";
+
+		/// <summary>
+		/// Returns true if this <see cref="Ring" /> is empty.
 		/// </summary>
 		public bool IsEmpty => !Lines.Any();
 
@@ -38,6 +55,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// </summary>
 		public Ring()
 		{
+			Lines.CollectionChanged += LinesOnCollectionChanged;
 		}
 
 		/// <summary>
@@ -45,7 +63,13 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// </summary>
 		public Ring(List<GeometryLine> lines)
 		{
-			Lines = lines;
+			_lines = new(lines);
+			Lines.CollectionChanged += LinesOnCollectionChanged;
+		}
+
+		private void LinesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			MarkAsDirty();
 		}
 
 		/// <inheritdoc/>
@@ -82,6 +106,12 @@ namespace Elephant.UnityLibrary.GeoSystems
 		public virtual Ring DeepCloneTyped()
 		{
 			return (Ring)Clone();
+		}
+
+		/// <inheritdoc/>
+		public void Dispose()
+		{
+			Lines.CollectionChanged -= LinesOnCollectionChanged;
 		}
 	}
 }

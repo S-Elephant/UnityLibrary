@@ -1,27 +1,68 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Diagnostics;
+using UnityEngine;
 
 namespace Elephant.UnityLibrary.GeoSystems
 {
 	/// <summary>
 	/// Represents a line in geometric space using 2D positions.
 	/// </summary>
-	public class GeometryLine : Lineal
+	[DebuggerDisplay("{Start} --> {end}")]
+	public class GeometryLine : Lineal, IDisposable
 	{
+		/// <inheritdoc/>
+		public override GeometryType GeometryType => GeometryType.Line;
+
 		/// <summary>
 		/// First or start or source point.
 		/// </summary>
-		public GeometryVertex Start { get; set; } = new();
+		public GeometryVertex _start;
+
+		/// <summary>
+		/// First or start or source point.
+		/// </summary>
+		public GeometryVertex Start
+		{
+			get => _start;
+			set
+			{
+				_start.RemoveParent(this);
+				_start = value;
+				_start.AddParent(this);
+				InvokeOnPropertyChanged();
+			}
+		}
 
 		/// <summary>
 		/// Second or end or destination point.
 		/// </summary>
-		public GeometryVertex End { get; set; } = new();
+		public GeometryVertex _end;
+
+		/// <summary>
+		/// Second or end or destination point.
+		/// </summary>
+		public GeometryVertex End
+		{
+			get => _end;
+			set
+			{
+				_end.RemoveParent(this);
+				_end = value;
+				_end.AddParent(this);
+				InvokeOnPropertyChanged();
+			}
+		}
 
 		/// <summary>
 		/// Constructor.
 		/// </summary>
 		public GeometryLine()
 		{
+			_start = new();
+			_start.AddParent(this);
+
+			_end = new();
+			_end.AddParent(this);
 		}
 
 		/// <summary>
@@ -29,8 +70,11 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// </summary>
 		public GeometryLine(Vector2 start, Vector2 end)
 		{
-			Start.Position = start;
-			End.Position = end;
+			_start = new(start);
+			_start.AddParent(this);
+			
+			_end = new(end);
+			_end.AddParent(this);
 		}
 
 		/// <summary>
@@ -38,8 +82,11 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// </summary>
 		public GeometryLine(GeometryVertex start, GeometryVertex end)
 		{
-			Start = start;
-			End = end;
+			_start = start;
+			_start.AddParent(this);
+
+			_end = end;
+			_end.AddParent(this);
 		}
 
 		/// <summary>
@@ -120,6 +167,28 @@ namespace Elephant.UnityLibrary.GeoSystems
 		public virtual GeometryLine DeepCloneTyped()
 		{
 			return (GeometryLine)Clone();
+		}
+
+		/// <inheritdoc/>
+		public void Dispose()
+		{
+			try
+			{
+				_start.RemoveParent(this);
+			}
+			catch
+			{
+				// Do nothing.
+			}
+
+			try
+			{
+				_end.RemoveParent(this);
+			}
+			catch
+			{
+				// Do nothing.
+			}
 		}
 	}
 }

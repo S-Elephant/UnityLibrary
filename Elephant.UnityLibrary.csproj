@@ -73,6 +73,7 @@
     <Compile Include="Extensions\WrapExtensions.cs" />
     <Compile Include="GeoSystems\Geometry.cs" />
     <Compile Include="GeoSystems\GeometryLine.cs" />
+    <Compile Include="GeoSystems\GeometryType.cs" />
     <Compile Include="GeoSystems\GeometryVertex.cs" />
     <Compile Include="GeoSystems\Interfaces\ILineal.cs" />
     <Compile Include="GeoSystems\Interfaces\IMultiPolygonal.cs" />

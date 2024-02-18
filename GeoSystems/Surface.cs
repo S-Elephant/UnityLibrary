@@ -93,5 +93,21 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// Calculate the surface area.
 		/// </summary>
 		protected abstract float CalculateSurfaceArea();
+
+		/// <summary>
+		/// Render AABB gizmo.
+		/// </summary>
+		public void DrawAabbGizmo(Vector2 offset, Color? aabbColor = null)
+		{
+			Gizmos.color = aabbColor ?? Color.green;
+			// Top line
+			Gizmos.DrawLine(new Vector2(Aabb.xMin, Aabb.yMin) + offset, new Vector2(Aabb.xMax, Aabb.yMin) + offset);
+			// Bottom line
+			Gizmos.DrawLine(new Vector2(Aabb.xMin, Aabb.yMax) + offset, new Vector2(Aabb.xMax, Aabb.yMax) + offset);
+			// Left line
+			Gizmos.DrawLine(new Vector2(Aabb.xMin, Aabb.yMin) + offset, new Vector2(Aabb.xMin, Aabb.yMax) + offset);
+			// Right line
+			Gizmos.DrawLine(new Vector2(Aabb.xMax, Aabb.yMin) + offset, new Vector2(Aabb.xMax, Aabb.yMax) + offset);
+		}
 	}
 }
