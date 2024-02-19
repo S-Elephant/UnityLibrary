@@ -1,4 +1,5 @@
 using Elephant.UnityLibrary.GeoSystems;
+using Elephant.UnityLibrary.GeoSystems.Wkts;
 using UnityEngine;
 
 namespace UnityLibraryTests.GeoSystems.WktPolygonParserTests

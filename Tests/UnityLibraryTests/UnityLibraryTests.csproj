@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Elephant.UnityLibrary.csproj" />
+    <ProjectReference Include="..\..\Elephant.UnityLibrary\Elephant.UnityLibrary.csproj" />
   </ItemGroup>
 
   <ItemGroup>
