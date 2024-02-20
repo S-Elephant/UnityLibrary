@@ -1,4 +1,3 @@
-using Elephant.UnityLibrary.GeoSystems;
 using Elephant.UnityLibrary.GeoSystems.Wkts;
 using UnityEngine;
 
@@ -13,8 +12,8 @@ namespace UnityLibraryTests.GeoSystems.WktPolygonParserTests
 		{
 			new()
 			{
-				new List<Vector2> { new(30, 10), new(40, 40), new(20, 40), new(10, 20), new(30, 10) }
-			}
+				new List<Vector2> { new(30, 10), new(40, 40), new(20, 40), new(10, 20), new(30, 10) },
+			},
 		};
 
 		private static List<List<List<Vector2>>> CreateMultiPolygon1Geometry() => new()
@@ -22,8 +21,8 @@ namespace UnityLibraryTests.GeoSystems.WktPolygonParserTests
 			new()
 			{
 				new List<Vector2> { new(30, 20), new(45, 40), new(10, 40), new(30, 20) },
-				new List<Vector2> { new(15, 5), new(40, 10), new(10, 20), new(5, 10), new(15, 5) }
-			}
+				new List<Vector2> { new(15, 5), new(40, 10), new(10, 20), new(5, 10), new(15, 5) },
+			},
 		};
 
 		private static List<List<List<Vector2>>> CreateMultiPolygon2Geometry() => new()
@@ -31,8 +30,8 @@ namespace UnityLibraryTests.GeoSystems.WktPolygonParserTests
 			new()
 			{
 				new List<Vector2> { new(3, 1), new(50, 100), new(3, 1) },
-				new List<Vector2> { new(1, 500), new(10, 10), new(50, 75) }
-			}
+				new List<Vector2> { new(1, 500), new(10, 10), new(50, 75) },
+			},
 		};
 
 		/// <summary>

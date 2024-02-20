@@ -268,7 +268,7 @@ namespace Elephant.UnityLibrary.GeoSystems.Wkts
 		/// <remarks>
 		/// For each polygon (the first list), the first item in the second list is the exterior ring of the polygon, which defines the outer boundary.
 		/// Any subsequent items in the second list are interior rings(holes) within that polygon.
-		/// 
+		///
 		/// WARNING: accuracy may be off by about 10 square km when performing tests and does not correctly calculate holes. Use this only for rough estimates.
 		/// </remarks>
 		public static float CalculateSurfaceArea(List<List<List<Vector2>>> multipolygon)

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Elephant.UnityLibrary.Extensions;
+using UnityEngine;
 
 namespace Elephant.UnityLibrary.GeoSystems
 {
@@ -14,17 +15,20 @@ namespace Elephant.UnityLibrary.GeoSystems
 	[Serializable]
 	public abstract class Geometry : ICloneable, INotifyPropertyChanged
 	{
-		public event PropertyChangedEventHandler PropertyChanged;
+		/// <summary>
+		/// Is called after a property is changed.
+		/// </summary>
+		public event PropertyChangedEventHandler? PropertyChanged = null;
 
 		/// <summary>
 		/// Contains all <see cref="Geometry"/>s that use this <see cref="Geometry"/> instance.
 		/// For example a vertex may have a line as its parent.
 		/// These parents are also used as observers.
 		/// </summary>
-		protected List<Geometry> Parents = new();
+		protected List<Geometry> _parents = new();
 
-		/// <inheritdoc cref="Parents"/>
-		public IReadOnlyList<Geometry> ParentsAsReadonly() => Parents.AsReadOnly();
+		/// <inheritdoc cref="_parents"/>
+		public IReadOnlyList<Geometry> ParentsAsReadonly() => _parents.AsReadOnly();
 
 		/// <summary>
 		/// Delegate for handling the Recalculated event.
@@ -35,7 +39,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// <summary>
 		/// Occurs after the geometry is recalculated.
 		/// </summary>
-		public event RecalculatedEventHandler OnRecalculated;
+		public event RecalculatedEventHandler? OnRecalculated = null;
 
 		/// <inheritdoc cref="GeoSystems.GeometryType"/>
 		public abstract GeometryType GeometryType { get; }
@@ -57,7 +61,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 				_isDirty = value;
 				if (_isDirty)
 				{
-					foreach (Geometry parent in Parents)
+					foreach (Geometry parent in _parents)
 						parent.MarkAsDirty();
 				}
 			}
@@ -98,7 +102,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// <summary>
 		/// Marks this and its parents as dirty and invokes <see cref="PropertyChanged"/>.
 		/// </summary>
-		protected virtual void InvokeOnPropertyChanged([CallerMemberName] string propertyName = null)
+		protected virtual void InvokeOnPropertyChanged([CallerMemberName] string? propertyName = null)
 		{
 			MarkAsDirty();
 
@@ -114,7 +118,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 		public virtual void AddParent(Geometry? parent)
 		{
 			if (parent != null)
-				Parents.AddIfNotExists(parent);
+				_parents.AddIfNotExists(parent);
 		}
 
 		/// <summary>
@@ -123,7 +127,23 @@ namespace Elephant.UnityLibrary.GeoSystems
 		public virtual void RemoveParent(Geometry? parent)
 		{
 			if (parent != null)
-				Parents.Remove(parent);
+				_parents.Remove(parent);
 		}
+
+		/// <summary>
+		/// Retrieve a new list of all vertices in this geometry.
+		/// </summary>
+		public abstract List<GeometryVertex> AllVertices();
+
+		/// <summary>
+		/// Translate/Move this geometry.
+		/// </summary>
+		/// <param name="translation">Translation amount.</param>
+		/// <param name="space">
+		/// Space.World: Applies the <paramref name="translation"/> in world space, taking into account the global coordinate system.
+		/// Space.Self: Applies the <paramref name="translation"/> in local space, relative to the geometry its own coordinate system
+		/// and will do nothing if <paramref name="translation"/> is 0,0.
+		/// </param>
+		public abstract void Translate(Vector2 translation, Space space = Space.Self);
 	}
 }

@@ -32,7 +32,7 @@ namespace Elephant.UnityLibrary.Extensions
 		/// </summary>
 		public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source)
 		{
-			return source.OrderBy(x => Guid.NewGuid());
+			return source.OrderBy(_ => Guid.NewGuid());
 		}
 
 		/// <summary>
@@ -59,10 +59,13 @@ namespace Elephant.UnityLibrary.Extensions
 		/// </summary>
 		public static bool ContainsNone<TSource>(this IEnumerable<TSource> source, IEnumerable<TSource> values)
 		{
-			if (!source.Any() || !values.Any())
+			TSource[] sourceAsArray = source.ToArray();
+			TSource[] valuesAsArray = values.ToArray();
+			
+			if (!sourceAsArray.Any() || !valuesAsArray.Any())
 				return true;
 
-			return !source.Intersect(values).Any(); // Note: LINQ Intersect returns the common elements from both collections.
+			return !sourceAsArray.Intersect(valuesAsArray).Any(); // Note: LINQ Intersect returns the common elements from both collections.
 		}
 
 		/// <summary>
@@ -122,7 +125,9 @@ namespace Elephant.UnityLibrary.Extensions
 			if (source == null)
 				return true;
 
-			return source.Distinct().Count() == source.Count();
+			TSource[] sourceAsArray = source.ToArray();
+			
+			return sourceAsArray.Distinct().Count() == sourceAsArray.Length;
 		}
 	}
 }

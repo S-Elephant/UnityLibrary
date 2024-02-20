@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Elephant.UnityLibrary.GeoSystems
 {
 	/// <summary>
 	/// Represents a line in geometric space using 2D positions.
 	/// </summary>
-	[DebuggerDisplay("{Start} --> {end}")]
+	[DebuggerDisplay("{Start} --> {End}")]
 	[Serializable]
 	public class GeometryLine : Lineal, IDisposable
 	{
@@ -75,7 +77,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 		{
 			_start = new(start);
 			_start.AddParent(this);
-			
+
 			_end = new(end);
 			_end.AddParent(this);
 		}
@@ -120,8 +122,8 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// <inheritdoc/>
 		public override int GetHashCode()
 		{
-			// Combine the hash codes of the start and end points
-			unchecked // Overflow is fine, just wrap
+			// Combine the hash codes of the start and end points.
+			unchecked //// Overflow is fine, just wrap.
 			{
 				int hash = 17;
 				hash = hash * 23 + Start.Position.GetHashCode();
@@ -156,9 +158,59 @@ namespace Elephant.UnityLibrary.GeoSystems
 		}
 
 		/// <inheritdoc/>
+		protected override Vector2 CalculateCenter()
+		{
+			return (End.Position + Start.Position) / 2;
+		}
+
+		/// <inheritdoc/>
+		protected override Vector2 CalculateCentroid()
+		{
+			return CalculateCenter(); // For a line the center and centroid are the same.
+		}
+
+		/// <inheritdoc/>
+		public override void RotateAroundPivotUsingRad(float clockwiseAngleInRadians, Vector2 pivot)
+		{
+			Start.Position = GeometryVertex.RotateAroundPivot(Start.Position, clockwiseAngleInRadians, pivot);
+			End.Position = GeometryVertex.RotateAroundPivot(End.Position, clockwiseAngleInRadians, pivot);
+		}
+
+		/// <inheritdoc/>
+		public override void Translate(Vector2 translation, Space space = Space.Self)
+		{
+			switch (space)
+			{
+				case Space.World:
+					Vector2 currentCenter = CalculateCenter();
+
+					// Determine the offset needed to move the current center to the new center (translation vector) minus offset.
+					Vector2 effectiveTranslation = translation - currentCenter;
+
+					// Apply the offset to start and end points to move the line.
+					Start.Position += effectiveTranslation;
+					End.Position += effectiveTranslation;
+					break;
+				case Space.Self:
+					Start.Translate(translation, space);
+					End.Translate(translation, space);
+					break;
+				default:
+					Debug.LogError($"$Missing case-statement. Got {space}. No translation applied.");
+					return;
+			}
+		}
+
+		/// <inheritdoc/>
+		public override List<GeometryVertex> AllVertices()
+		{
+			return new List<GeometryVertex> { Start, End };
+		}
+
+		/// <inheritdoc/>
 		public override object Clone()
 		{
-			GeometryLine result = new((GeometryVertex)Start.DeepCloneTyped(), (GeometryVertex)End.DeepCloneTyped());
+			GeometryLine result = new(Start.DeepCloneTyped(), End.DeepCloneTyped());
 			result.Aabb = Aabb;
 
 			return result;

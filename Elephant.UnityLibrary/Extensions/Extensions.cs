@@ -38,7 +38,7 @@ namespace Elephant.UnityLibrary.Extensions
 		/// <param name="name">Name of the child transform to search for.</param>
 		/// <returns>First Transform found that matches the specified name. If no transform is found, returns null.</returns>
 		/// <remarks>
-		/// Performs a depth-first search to find the first child transform that matches the given name. 
+		/// Performs a depth-first search to find the first child transform that matches the given name.
 		/// If the child transform is not found directly under the given parent, the search continues recursively among all descendants.
 		/// </remarks>
 		public static Transform FindRecursively(this Transform parent, string name)

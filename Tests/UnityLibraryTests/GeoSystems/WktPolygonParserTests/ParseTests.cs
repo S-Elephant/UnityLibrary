@@ -1,13 +1,12 @@
-using Elephant.UnityLibrary.GeoSystems;
 using Elephant.UnityLibrary.GeoSystems.Wkts;
 using UnityEngine;
 
 namespace UnityLibraryTests.GeoSystems.WktPolygonParserTests
 {
 	/// <summary>
-	/// <see cref="WktPolygonParser.ParsePolygon"/> tests.
+	/// <see cref="WktPolygonParser.ParseWkt"/> tests.
 	/// </summary>
-	public class TranslateTests
+	public class ParseTests
 	{
 		private const string Polygon1 = "POLYGON((30 10, 40 40, 20 40, 10 20, 30 10))";
 		private const string MultiPolygon1 = "MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))";
@@ -17,8 +16,8 @@ namespace UnityLibraryTests.GeoSystems.WktPolygonParserTests
 		{
 			new()
 			{
-				new List<Vector2> { new(30, 10), new(40, 40), new(20, 40), new(10, 20), new(30, 10) }
-			}
+				new List<Vector2> { new(30, 10), new(40, 40), new(20, 40), new(10, 20), new(30, 10) },
+			},
 		};
 
 		private static List<List<List<Vector2>>> CreateMultiPolygon1Geometry() => new()
@@ -26,13 +25,13 @@ namespace UnityLibraryTests.GeoSystems.WktPolygonParserTests
 			// First polygon.
 			new()
 			{
-				new List<Vector2> { new(30, 20), new(45, 40), new(10, 40), new(30, 20) }
+				new List<Vector2> { new(30, 20), new(45, 40), new(10, 40), new(30, 20) },
 			},
 			// Second polygon.
 			new()
 			{
-				new List<Vector2> { new(15, 5), new(40, 10), new(10, 20), new(5, 10), new(15, 5) }
-			}
+				new List<Vector2> { new(15, 5), new(40, 10), new(10, 20), new(5, 10), new(15, 5) },
+			},
 		};
 
 		private static List<List<List<Vector2>>> CreateMultiPolygon2Geometry() => new()
@@ -40,13 +39,13 @@ namespace UnityLibraryTests.GeoSystems.WktPolygonParserTests
 			// First polygon.
 			new()
 			{
-				new List<Vector2> { new(3, 1), new(50, 100), new(3, 1) }
+				new List<Vector2> { new(3, 1), new(50, 100), new(3, 1) },
 			},
 			// Second polygon.
 			new()
 			{
-				new List<Vector2> { new(1, 500), new(10, 10), new(50, 75) }
-			}
+				new List<Vector2> { new(1, 500), new(10, 10), new(50, 75) },
+			},
 		};
 
 		/// <summary>
@@ -90,7 +89,7 @@ namespace UnityLibraryTests.GeoSystems.WktPolygonParserTests
 			List<List<List<Vector2>>> expected = CreateMultiPolygon2Geometry();
 			Assert.Equal(expected, result);
 		}
-		
+
 		/// <summary>
 		/// 'Empty' WKT strings must result in empty geometry.
 		/// </summary>
@@ -141,7 +140,7 @@ namespace UnityLibraryTests.GeoSystems.WktPolygonParserTests
 			List<List<List<Vector2>>> result = WktPolygonParser.ParseWkt(wktString);
 
 			// Assert.
-			Assert.Equal(1, result.Count); // 1 polygon.
+			Assert.Single(result); // 1 polygon.
 			Assert.Equal(2, result[0].Count); // 2 rings.
 		}
 	}

@@ -10,6 +10,7 @@ using Elephant.UnityLibrary.Extensions;
 using Elephant.UnityLibrary.GeoSystems.Interfaces;
 using Elephant.UnityLibrary.GeoSystems.Wkts;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Elephant.UnityLibrary.GeoSystems
 {
@@ -104,10 +105,34 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// <inheritdoc/>
 		protected override Vector2 CalculateCenter()
 		{
-			List<Vector2> allPoints = ExteriorRing.Lines.SelectMany(line => new[] { line.Start.Position, line.End.Position }).ToList();
-			float x = allPoints.Average(point => point.x);
-			float y = allPoints.Average(point => point.y);
-			return new Vector2(x, y);
+			List<GeometryVertex> allVertices = AllVertices();
+
+			if (allVertices.None())
+				return Vector2.zero;
+
+			float minX = float.MaxValue, maxX = float.MinValue, minY = float.MaxValue, maxY = float.MinValue;
+
+			foreach (GeometryVertex vertex in allVertices)
+			{
+				if (vertex.Position.x < minX)
+					minX = vertex.Position.x;
+				if (vertex.Position.x > maxX)
+					maxX = vertex.Position.x;
+				if (vertex.Position.y < minY)
+					minY = vertex.Position.y;
+				if (vertex.Position.y > maxY)
+					maxY = vertex.Position.y;
+			}
+
+			return new Vector2((maxX + minX) / 2f, (maxY + minY) / 2f);
+		}
+
+		/// <inheritdoc/>
+		public override void RotateAroundPivotUsingRad(float clockwiseAngleInRadians, Vector2 pivot)
+		{
+			ExteriorRing.RotateAroundPivotUsingRad(clockwiseAngleInRadians, pivot);
+			foreach (Ring interiorRing in InteriorRings)
+				interiorRing.RotateAroundPivotUsingRad(clockwiseAngleInRadians, pivot);
 		}
 
 		/// <inheritdoc/>
@@ -214,14 +239,14 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// <param name="centerColor">Optional color to use for marking the center of the polygon. If null, a default color is used.</param>
 		/// <param name="centroidColor">Optional color to use for marking the centroid of the polygon. If null, a default color is used.</param>
 		/// <remarks>
-		/// This method uses Unity's Gizmos to visually debug the polygon by drawing its exterior and interior rings, 
+		/// This method uses Unity's Gizmos to visually debug the polygon by drawing its exterior and interior rings,
 		/// axis-aligned bounding box, center, and centroid with the specified colors. This is useful for visual debugging in the Unity Editor.
 		/// </remarks>
 		public void DrawGizmos(Vector2 offset, Color? exteriorRingColor = null, Color? interiorRingColor = null,
 			Color? aabbColor = null, Color? centerColor = null, Color? centroidColor = null)
 		{
 			DrawAabbGizmo(offset, aabbColor);
-		
+
 			// Draw exterior ring.
 			Gizmos.color = exteriorRingColor ?? Color.blue;
 			for (int i = 0; i < ExteriorRing.Lines.Count; i++)
@@ -316,11 +341,11 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// <summary>
 		/// Parses a string representing a series of points into a list of Vector2 objects.
 		/// </summary>
-		/// <param name="ringString">The input string containing point coordinates, separated by commas and spaces. 
+		/// <param name="ringString">The input string containing point coordinates, separated by commas and spaces.
 		/// Example format: "40 40, 20 45, 45 30, 40 40".</param>
 		/// <returns>List of Vector2 objects representing the points parsed from the input string.</returns>
 		/// <remarks>
-		/// This method expects the input string to be formatted as a sequence of x and y coordinates 
+		/// This method expects the input string to be formatted as a sequence of x and y coordinates
 		/// separated by spaces and commas. Each pair of x and y coordinates represents a point.
 		/// </remarks>
 		/// <example>
@@ -365,6 +390,59 @@ namespace Elephant.UnityLibrary.GeoSystems
 			ringAabbs.Add(ExteriorRing.Aabb);
 
 			return ringAabbs.Combine();
+		}
+
+		/// <inheritdoc/>
+		public override void Translate(Vector2 translation, Space space = Space.Self)
+		{
+			switch (space)
+			{
+				case Space.World:
+					// Determine the offset needed to move the current center to the new center (translation vector) minus offset.
+					Vector2 effectiveTranslation = translation - CalculateCenter();
+
+					// Apply this translation to each ring in the polygon.
+					ApplyTranslationToRing(ExteriorRing, effectiveTranslation);
+					foreach (Ring interiorRing in InteriorRings)
+						ApplyTranslationToRing(interiorRing, effectiveTranslation);
+					break;
+				case Space.Self:
+					ExteriorRing.Translate(translation, space);
+					foreach (Ring ring in InteriorRings)
+						ring.Translate(translation, space);
+					break;
+				default:
+					Debug.LogError($"$Missing case-statement. Got {space}. No translation applied.");
+					return;
+			}
+		}
+
+		private void ApplyTranslationToRing(Ring ring, Vector2 translation)
+		{
+			int lastIndex = ring.Lines.Count - 1;
+			for (int index = 0; index < ring.Lines.Count; index++)
+			{
+				GeometryLine line = ring.Lines[index];
+				
+				if (index == 0)
+					line.Start.Position += translation;
+
+				if (ring.IsOpen() || index != lastIndex)
+					line.End.Position += translation;
+			}
+		}
+
+		/// <inheritdoc/>
+		public override List<GeometryVertex> AllVertices()
+		{
+			List<GeometryVertex> allVertices = ExteriorRing.AllVertices();
+			foreach (Ring ring in InteriorRings)
+			{
+				List<GeometryVertex> ringVertices = ring.AllVertices();
+				allVertices.AddRange(ringVertices);
+			}
+
+			return allVertices;
 		}
 
 		/// <inheritdoc/>

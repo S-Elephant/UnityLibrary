@@ -17,7 +17,7 @@ namespace Elephant.UnityLibrary.EditorOnly
 		/// from becoming sluggish when working with complex meshes that have a large number of normals.
 		/// Adding a value of say 1000 means that 1000 face- and 1000 vertex normals may be rendered simultaneously.
 		/// </summary>
-		[Min(1)] [SerializeField] private int _maxNormalsToRender = 5000;
+		[Min(1)][SerializeField] private int _maxNormalsToRender = 5000;
 
 		/// <summary>
 		/// Configuration for drawing face normals. This includes settings such as the color of the normals
@@ -40,18 +40,18 @@ namespace Elephant.UnityLibrary.EditorOnly
 		/// normals if applicable.
 		/// </summary>
 		private void OnDrawGizmosSelected()
-        {
-            RenderAll(true);
-        }
+		{
+			RenderAll(true);
+		}
 
-        /// <summary>
-        /// Called when the object is NOT selected in the editor. Renders normals if applicable.
-        /// </summary>
-        private void OnDrawGizmos()
-        {
-            if (!Selection.Contains(gameObject))
-                RenderAll(false);
-        }
+		/// <summary>
+		/// Called when the object is NOT selected in the editor. Renders normals if applicable.
+		/// </summary>
+		private void OnDrawGizmos()
+		{
+			if (!Selection.Contains(gameObject))
+				RenderAll(false);
+		}
 
 		#endregion
 

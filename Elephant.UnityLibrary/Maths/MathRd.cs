@@ -337,6 +337,7 @@ namespace Elephant.UnityLibrary.Maths
 		/// </summary>
 		/// <param name="x">RD x coordinate.</param>
 		/// <param name="y">RD y coordinate.</param>
+		/// <param name="allowInvalidCoordinate">If true, invalid coordinates will not show an error.</param>
 		public static (float Latitude, float Longitude) ConvertToLatitudeLongitude(float x, float y, bool allowInvalidCoordinate = false)
 		{
 			double deltaX = (x - AmersfoortRdCoordinateX) * Math.Pow(10, -5);

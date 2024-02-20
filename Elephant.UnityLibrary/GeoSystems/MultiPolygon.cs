@@ -10,6 +10,7 @@ using Elephant.UnityLibrary.Extensions;
 using Elephant.UnityLibrary.GeoSystems.Interfaces;
 using Elephant.UnityLibrary.GeoSystems.Wkts;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Elephant.UnityLibrary.GeoSystems
 {
@@ -85,7 +86,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// <param name="centerColor">Optional color to use for marking the center of the polygon. If null, a default color is used.</param>
 		/// <param name="centroidColor">Optional color to use for marking the centroid of the polygon. If null, a default color is used.</param>
 		/// <remarks>
-		/// This method uses Unity's Gizmos to visually debug the polygon by drawing its exterior and interior rings, 
+		/// This method uses Unity's Gizmos to visually debug the polygon by drawing its exterior and interior rings,
 		/// axis-aligned bounding box, center, and centroid with the specified colors. This is useful for visual debugging in the Unity Editor.
 		/// </remarks>
 		public virtual void DrawGizmos(Vector2 offset, Color? exteriorRingColor = null, Color? interiorRingColor = null,
@@ -160,6 +161,13 @@ namespace Elephant.UnityLibrary.GeoSystems
 		}
 
 		/// <inheritdoc/>
+		public override void RotateAroundPivotUsingRad(float clockwiseAngleInRadians, Vector2 pivot)
+		{
+			foreach (Polygon polygon in Polygons)
+				polygon.RotateAroundPivotUsingRad(clockwiseAngleInRadians, pivot);
+		}
+
+		/// <inheritdoc/>
 		protected override Vector2 CalculateCentroid()
 		{
 			float totalArea = 0;
@@ -178,7 +186,8 @@ namespace Elephant.UnityLibrary.GeoSystems
 
 			if (totalArea == 0)
 			{
-				throw new InvalidOperationException("Total area of polygons is zero. Cannot calculate centroid.");
+				// Total area of polygons is zero (or there are no polygons). Cannot calculate centroid. Centroid will be set to 0,0.
+				return Vector2.zero;
 			}
 
 			return weightedCentroidSum / totalArea;
@@ -192,6 +201,55 @@ namespace Elephant.UnityLibrary.GeoSystems
 				surfaceArea += polygon.SurfaceArea;
 
 			return surfaceArea;
+		}
+
+		/// <inheritdoc/>
+		public override void Translate(Vector2 translation, Space space = Space.Self)
+		{
+			switch (space)
+			{
+				case Space.World:
+					Vector2 multiPolygonCenter = CalculateCenter();
+
+					// Determine the offset needed to move the current center to the new center (translation vector) minus offset.
+					Vector2 effectiveTranslation = translation - multiPolygonCenter;
+
+					// Apply this translation to each polygon in the MultiPolygon.
+					foreach (Polygon polygon in Polygons)
+					{
+						foreach (GeometryLine line in polygon.ExteriorRing.Lines)
+						{
+							line.Start.Position += effectiveTranslation;
+							line.End.Position += effectiveTranslation;
+						}
+						foreach (Ring ring in polygon.InteriorRings)
+						{
+							foreach (GeometryLine line in ring.Lines)
+							{
+								line.Start.Position += effectiveTranslation;
+								line.End.Position += effectiveTranslation;
+							}
+						}
+					}
+					break;
+				case Space.Self:
+					foreach (Polygon polygon in Polygons)
+						polygon.Translate(translation, space);
+					break;
+				default:
+					Debug.LogError($"$Missing case-statement. Got {space}. No translation applied.");
+					return;
+			}
+		}
+
+		/// <inheritdoc/>
+		public override List<GeometryVertex> AllVertices()
+		{
+			List<GeometryVertex> allVertices = new();
+			foreach (Polygon polygon in Polygons)
+				allVertices.AddRange(polygon.AllVertices());
+
+			return allVertices;
 		}
 
 		/// <inheritdoc/>

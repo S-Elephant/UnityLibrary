@@ -4,7 +4,7 @@ namespace Elephant.UnityLibrary.Core
 {
 	/// <summary>
 	/// Inherit from this base class to create a singleton.
-	/// Example: public class MyClassName : Singleton<MyClassName> {}
+	/// Example: public class MyClassName : <![CDATA[Singleton<MyClassName> {}]]>
 	/// This script will not prevent non singleton constructors from being used in your derived classes. To prevent this, add a protected constructor to each derived class.
 	/// When Unity quits it destroys objects in a random order and this can create issues for singletons. So we prevent access to the singleton instance when the application quits to prevent problems.
 	/// </summary>

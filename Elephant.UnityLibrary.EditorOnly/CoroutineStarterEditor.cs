@@ -1,8 +1,9 @@
 ﻿using System.Linq;
+using Elephant.UnityLibrary.Other;
 using UnityEditor;
 using UnityEngine;
 
-namespace Elephant.UnityLibrary.Other.Editor
+namespace Elephant.UnityLibrary.EditorOnly
 {
 	/// <summary>
 	/// Custom <see cref="CoroutineStarter"/> editor for Unity's inspector.

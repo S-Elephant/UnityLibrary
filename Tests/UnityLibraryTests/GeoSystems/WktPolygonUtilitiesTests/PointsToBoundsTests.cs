@@ -1,16 +1,15 @@
-using Elephant.UnityLibrary.GeoSystems;
 using Elephant.UnityLibrary.GeoSystems.Wkts;
 using UnityEngine;
 
 namespace UnityLibraryTests.GeoSystems.WktPolygonUtilitiesTests
 {
 	/// <summary>
-	/// <see cref="WktPolygonUtils.CalculateRelativeBounds"/> tests.
+	/// <see cref="WktPolygonUtils.PointsToBounds"/> tests.
 	/// </summary>
-	public class PointsToBounds
+	public class PointsToBoundsTests
 	{
 		/// <summary>
-		/// Simple <see cref="WktPolygonUtils.CalculateRelativeBounds"/> test.
+		/// Simple <see cref="WktPolygonUtils.PointsToBounds"/> test.
 		/// </summary>
 		[Fact]
 		public void Returns0And10()
@@ -35,7 +34,7 @@ namespace UnityLibraryTests.GeoSystems.WktPolygonUtilitiesTests
 		}
 
 		/// <summary>
-		/// Simple <see cref="WktPolygonUtils.CalculateRelativeBounds"/> test.
+		/// Simple <see cref="WktPolygonUtils.PointsToBounds"/> test.
 		/// </summary>
 		[Fact]
 		public void Returns0And200300()

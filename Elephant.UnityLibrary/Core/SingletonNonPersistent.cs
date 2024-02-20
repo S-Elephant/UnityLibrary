@@ -8,7 +8,8 @@ namespace Elephant.UnityLibrary.Core
 	/// This script will not prevent non singleton constructors from being used in your derived classes. To prevent this, add a protected constructor to each derived class.
 	/// When Unity quits it destroys objects in a random order and this can create issues for singletons. So we prevent access to the singleton instance when the application quits to prevent problems.
 	/// </summary>
-	public class SingletonNonPersistent<T> : MonoBehaviour where T : MonoBehaviour
+	public class SingletonNonPersistent<T> : MonoBehaviour
+		where T : MonoBehaviour
 	{
 		// Check to see if we're about to be destroyed.
 		private static bool _shuttingDown = false;
@@ -18,7 +19,7 @@ namespace Elephant.UnityLibrary.Core
 		/// <summary>
 		/// Access singleton instance through this propriety.
 		/// </summary>
-		private static T _Instance;
+		private static T _instance;
 
 		/// <summary>
 		/// Access singleton instance through this propriety.
@@ -35,22 +36,22 @@ namespace Elephant.UnityLibrary.Core
 
 				lock (Lock)
 				{
-					if (_Instance == null)
+					if (_instance == null)
 					{
 						// Search for existing instance.
-						_Instance = (T)FindObjectOfType(typeof(T));
+						_instance = (T)FindObjectOfType(typeof(T));
 
 						// Create new instance if one doesn't already exist.
-						if (_Instance == null)
+						if (_instance == null)
 						{
 							// Need to create a new GameObject to attach the singleton to.
 							GameObject singletonObject = new();
-							_Instance = singletonObject.AddComponent<T>();
+							_instance = singletonObject.AddComponent<T>();
 							singletonObject.name = typeof(T).ToString() + "_Singleton";
 						}
 					}
 
-					return _Instance;
+					return _instance;
 				}
 			}
 		}

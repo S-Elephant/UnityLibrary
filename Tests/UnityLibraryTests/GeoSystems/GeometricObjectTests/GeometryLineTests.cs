@@ -15,8 +15,8 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		public void RecalculateMarksAsNonDirty()
 		{
 			// Arrange.
-			GeometryLine line = new (new Vector2(10, 10), new Vector2(50, 50));
-		
+			GeometryLine line = new(new Vector2(10, 10), new Vector2(50, 50));
+
 			// Act.
 			line.Recalculate();
 
@@ -93,6 +93,77 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 			// Assert.
 			Assert.Empty(start.ParentsAsReadonly());
 			Assert.Empty(end.ParentsAsReadonly());
+		}
+
+		/// <summary>
+		/// Test <see cref="GeometryLine.CalculateCenter"/> tests.
+		/// </summary>
+		[Theory]
+		[InlineData(-10, 0, 10, 0, 0, 0)]
+		[InlineData(-10, 0, 0, 0, -5, 0)]
+		[InlineData(100, 100, 0, -50, 50, 25)]
+		public void CenterIsCalculatedCorrectly(float startX, float startY, float endX, float endY, float expectedCenterX, float expectedCenterY)
+		{
+			// Arrange.
+			GeometryLine line = new(new Vector2(startX, startY), new Vector2(endX, endY));
+
+			// Act.
+			Vector2 center = line.Center;
+
+			// Assert.
+			Assert.Equal(expectedCenterX, center.x, 0.001f);
+			Assert.Equal(expectedCenterY, center.y, 0.001f);
+		}
+
+		/// <summary>
+		/// Translate test using <see cref="Space.Self"/>.
+		/// </summary>
+		[Fact]
+		public void SimpleTranslationSelf()
+		{
+			// Arrange.
+			GeometryLine line = new(new Vector2(10f, 10f), new Vector2(100f, 10f));
+			Vector2 translation = new(0f, 10f);
+
+			// Act.
+			line.Translate(translation);
+
+			// Assert.
+			Assert.Equal(new GeometryLine(new Vector2(10f, 20f), new Vector2(100f, 20f)), line);
+		}
+
+		/// <summary>
+		/// Translate test using <see cref="Space.World"/>.
+		/// </summary>
+		[Fact]
+		public void SimpleTranslationWorld()
+		{
+			// Arrange.
+			GeometryLine line = new(new Vector2(0f, 10f), new Vector2(100f, 10f));
+			Vector2 translation = new(0f, 10f);
+
+			// Act.
+			line.Translate(translation, Space.World);
+
+			// Assert.
+			Assert.Equal(new GeometryLine(new Vector2(-50f, 10f), new Vector2(50f, 10f)), line);
+		}
+
+		/// <summary>
+		/// Translate test using <see cref="Space.World"/>.
+		/// </summary>
+		[Fact]
+		public void SimpleTranslationWorld2()
+		{
+			// Arrange.
+			GeometryLine line = new(new Vector2(0f, 100f), new Vector2(100f, 10f));
+			Vector2 translation = new(0f, 10f);
+
+			// Act.
+			line.Translate(translation, Space.World);
+
+			// Assert.
+			Assert.Equal(new GeometryLine(new Vector2(-50f, 55f), new Vector2(50f, -35f)), line);
 		}
 	}
 }

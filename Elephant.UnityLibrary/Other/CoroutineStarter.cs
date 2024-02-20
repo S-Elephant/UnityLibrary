@@ -221,7 +221,7 @@ namespace Elephant.UnityLibrary.Other
 		/// <param name="onComplete">Optional action to execute when this tracked <see cref="Coroutine"/> completes.</param>
 		/// <param name="tags">Is used for tracking and stopping <see cref="Coroutine"/>s.</param>
 		/// <returns>Started <see cref="Coroutine"/>.</returns>
-		/// <remarks>Func<> is required to prevent reusing the same <see cref="IEnumerator"/>. This creates a new <see cref="IEnumerator"/> instead.</remarks>
+		/// <remarks><![CDATA[Func<>]]> is required to prevent reusing the same <see cref="IEnumerator"/>. This creates a new <see cref="IEnumerator"/> instead.</remarks>
 #pragma warning disable S3343
 		public virtual Coroutine StartCoroutineNamedTracked(Func<IEnumerator> routine, string? coroutineName = null, string mainCategory = UncategorizedValue, string subCategory = UncategorizedValue, bool stopExisting = true, [CallerMemberName] string callerName = "", Action? onComplete = null, params string[] tags)
 #pragma warning restore S3343
@@ -388,7 +388,7 @@ namespace Elephant.UnityLibrary.Other
 			HashSet<string> coroutineKeysToStop = new();
 			foreach (var kvp in CoroutineData)
 			{
-				string name = kvp.Key;
+				string coroutineName = kvp.Key;
 				CoroutineValue coroutineValue = kvp.Value;
 
 				// Process filtering by categories.
@@ -398,7 +398,7 @@ namespace Elephant.UnityLibrary.Other
 					{
 						// Main-category is not specified but the sub-category is. Therefore add if it matches any sub-category, regardless of its main-category.
 						if (coroutineValue.SubCategory == subCategory)
-							coroutineKeysToStop.Add(name);
+							coroutineKeysToStop.Add(coroutineName);
 					}
 					else
 					{
@@ -408,13 +408,13 @@ namespace Elephant.UnityLibrary.Other
 							if (subCategory == null)
 							{
 								// Main-category filters exists but no sub-category, therefore, add the coroutine if it matches the main-category, regardless of the sub-category.
-								coroutineKeysToStop.Add(name);
+								coroutineKeysToStop.Add(coroutineName);
 							}
 							else
 							{
 								// Main-category and sub-category exists, therefore, add the coroutine if it matches both the main-category and sub-category.
 								if (coroutineValue.SubCategory == subCategory)
-									coroutineKeysToStop.Add(name);
+									coroutineKeysToStop.Add(coroutineName);
 							}
 						}
 					}
@@ -422,7 +422,7 @@ namespace Elephant.UnityLibrary.Other
 
 				// Process filtering by tags. Adds if any tags match.
 				if (tags != null && coroutineValue.Tags.Intersect(tags).Any())
-					coroutineKeysToStop.Add(name);
+					coroutineKeysToStop.Add(coroutineName);
 			}
 
 			// Stop and untrack all matched.

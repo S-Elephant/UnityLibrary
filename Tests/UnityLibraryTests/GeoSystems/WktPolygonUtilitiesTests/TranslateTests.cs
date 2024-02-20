@@ -1,4 +1,3 @@
-using Elephant.UnityLibrary.GeoSystems;
 using Elephant.UnityLibrary.GeoSystems.Wkts;
 using UnityEngine;
 
@@ -37,7 +36,6 @@ namespace UnityLibraryTests.GeoSystems.WktPolygonUtilitiesTests
 		{
 			// Act.
 			string result = WktPolygonUtils.Translate(wktString, new Vector2(translationX, translationY));
-			List<List<List<Vector2>>> result2 = WktPolygonUtils.Translate(WktPolygonParser.ParseWkt(wktString), new Vector2(translationX, translationY));
 
 			// Assert.
 			Assert.Equal(expected, result);

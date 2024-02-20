@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using Elephant.UnityLibrary.Extensions;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Elephant.UnityLibrary.GeoSystems
 {
@@ -43,7 +44,13 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// <summary>
 		/// Returns true if this ring is closed (meaning that the start and endpoint are the same).
 		/// </summary>
+		// ReSharper disable once PossibleUnintendedReferenceComparison
 		public bool IsClosed() => Lines.Count > 2 && Lines[0].Start == Lines.Last().End;
+
+		/// <summary>
+		/// Returns true if this ring is open (meaning that the start and endpoint are not the same).
+		/// </summary>
+		public bool IsOpen() => !IsClosed();
 
 		/// <summary>
 		/// Check if the ring is valid which checks if the ring is not empty,
@@ -89,6 +96,114 @@ namespace Elephant.UnityLibrary.GeoSystems
 				line.Recalculate();
 
 			base.Recalculate();
+		}
+
+		/// <inheritdoc/>
+		protected override Vector2 CalculateCenter()
+		{
+			if (_lines.Count == 0)
+				return Vector2.zero;
+
+			float sumX = 0, sumY = 0;
+			int count = 0;
+
+			foreach (GeometryLine line in _lines)
+			{
+				sumX += line.Start.Position.x + line.End.Position.x;
+				sumY += line.Start.Position.y + line.End.Position.y;
+				count += 2; // Adding two points per line.
+			}
+
+			return new Vector2(sumX / count, sumY / count);
+		}
+
+		/// <inheritdoc/>
+		protected override Vector2 CalculateCentroid()
+		{
+			if (_lines.Count == 0)
+				return Vector2.zero;
+
+			double sumX = 0, sumY = 0, totalLength = 0;
+			foreach (GeometryLine line in _lines)
+			{
+				// Calculate midpoint of the line.
+				float midX = (line.Start.Position.x + line.End.Position.x) / 2;
+				float midY = (line.Start.Position.y + line.End.Position.y) / 2;
+
+				// Calculate length of the line.
+				double length = Math.Sqrt(Math.Pow(line.End.Position.x - line.Start.Position.x, 2) + Math.Pow(line.End.Position.y - line.Start.Position.y, 2));
+
+				// Add weighted midpoints.
+				sumX += midX * length;
+				sumY += midY * length;
+				totalLength += length;
+			}
+
+			// Divide by total length to get the weighted average.
+			return new Vector2((float)sumX / (float)totalLength, (float)sumY / (float)totalLength);
+		}
+
+		/// <inheritdoc/>
+		public override void RotateAroundPivotUsingRad(float clockwiseAngleInRadians, Vector2 pivot)
+		{
+			List<GeometryVertex> vertices = AllVertices();
+
+			foreach (GeometryVertex vertex in vertices)
+				vertex.RotateAroundPivot(clockwiseAngleInRadians, pivot);
+		}
+
+		/// <inheritdoc/>
+		public override void Translate(Vector2 translation, Space space = Space.Self)
+		{
+			switch (space)
+			{
+				case Space.World:
+					// Determine the offset needed to move the current center to the new center (translation vector) minus offset.
+					Vector2 effectiveTranslation = translation - CalculateCenter();
+
+					// Apply this translation to each line in the ring.
+					foreach (GeometryLine line in Lines)
+					{
+						// Translate each line by the calculated translation vector.
+						line.Start.Position += effectiveTranslation;
+						line.End.Position += effectiveTranslation;
+					}
+					break;
+				case Space.Self:
+					foreach (GeometryLine line in Lines)
+						line.Translate(translation, space);
+					break;
+				default:
+					Debug.LogError($"$Missing case-statement. Got {space}. No translation applied.");
+					return;
+			}
+		}
+
+		/// <inheritdoc/>
+		public override List<GeometryVertex> AllVertices()
+		{
+			List<GeometryVertex> allVertices = new();
+
+			int lastLineIndex = Lines.Count - 1;
+			for (int index = 0; index < Lines.Count; index++)
+			{
+				GeometryLine line = Lines[index];
+
+				if (index == 0)
+				{
+					allVertices.AddRange(line.AllVertices());
+				}
+				else
+				{
+					// Only add the last line end point if it's not the last line because the
+					// endpoint of the last line is the start point of the first line.
+					// This only applies if the ring is closed.
+					if (IsOpen() || index != lastLineIndex)
+						allVertices.Add(line.End);
+				}
+			}
+
+			return allVertices;
 		}
 
 		/// <inheritdoc/>

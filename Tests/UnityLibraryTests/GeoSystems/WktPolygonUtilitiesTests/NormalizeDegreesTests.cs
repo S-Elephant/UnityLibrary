@@ -1,4 +1,3 @@
-using Elephant.UnityLibrary.GeoSystems;
 using Elephant.UnityLibrary.GeoSystems.Wkts;
 
 namespace UnityLibraryTests.GeoSystems.WktPolygonUtilitiesTests

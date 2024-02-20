@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Elephant.UnityLibrary.GeoSystems.Interfaces;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Elephant.UnityLibrary.GeoSystems
 {
@@ -84,6 +86,69 @@ namespace Elephant.UnityLibrary.GeoSystems
 		{
 			base.Recalculate();
 			InvokeOnRecalculated();
+		}
+
+		/// <summary>
+		/// Rotates this <see cref="GeometryVertex"/> around a given pivot.
+		/// </summary>
+		/// <param name="angleInRadians">Angle of rotation in radians. Positive values for clockwise rotation, negative values for counter-clockwise.</param>
+		/// <param name="pivot">Pivot point around which to rotate.</param>
+		/// <returns>Rotated point as a new Vector2 instance.</returns>
+		public void RotateAroundPivot(float angleInRadians, Vector2 pivot)
+		{
+			Position = RotateAroundPivot(Position, angleInRadians, pivot);
+		}
+
+		/// <summary>
+		/// Rotates a point around a given pivot.
+		/// </summary>
+		/// <param name="point">Point to rotate.</param>
+		/// <param name="angleInRadians">Angle of rotation in radians. Positive values for counter-clockwise rotation, negative values for clockwise rotation.</param>
+		/// <param name="pivot">Pivot point around which to rotate.</param>
+		/// <returns>Rotated point as a new Vector2 instance.</returns>
+		public static Vector2 RotateAroundPivot(Vector2 point, float angleInRadians, Vector2 pivot)
+		{
+			// Rotation by 0 radians/degrees should do nothing.
+			if (angleInRadians == 0)
+				return point;
+
+			// Translate point back to origin: pivot becomes (0,0).
+			float translatedX = point.x - pivot.x;
+			float translatedY = point.y - pivot.y;
+
+			// Apply rotation.
+			float rotatedX = translatedX * Mathf.Cos(angleInRadians) - translatedY * Mathf.Sin(angleInRadians);
+			float rotatedY = translatedX * Mathf.Sin(angleInRadians) + translatedY * Mathf.Cos(angleInRadians);
+
+			// Translate point back.
+			Vector2 rotatedPoint = new(rotatedX + pivot.x, rotatedY + pivot.y);
+
+			return rotatedPoint;
+		}
+
+		/// <inheritdoc/>
+		public override void Translate(Vector2 translation, Space space = Space.Self)
+		{
+			switch (space)
+			{
+				case Space.Self when translation == Vector2.zero:
+					return;
+				case Space.Self:
+					Position += translation;
+					break;
+				case Space.World:
+					Position = translation;
+					break;
+				default:
+					Debug.LogError($"$Missing case-statement. Got {space}. No translation applied.");
+					return;
+			}
+		}
+
+		/// <inheritdoc/>
+		public override List<GeometryVertex> AllVertices()
+		{
+			return new List<GeometryVertex> { this };
 		}
 
 		/// <inheritdoc/>

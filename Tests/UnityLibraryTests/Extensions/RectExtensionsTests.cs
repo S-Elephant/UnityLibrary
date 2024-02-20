@@ -33,5 +33,4 @@ namespace UnityLibraryTests.Extensions
 			Assert.Equal(expectedHeight, combinedRect.height, float.Epsilon);
 		}
 	}
-
 }
