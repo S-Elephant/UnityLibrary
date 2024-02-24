@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="AutoOpenAndFocusConsole.cs" />
     <Compile Include="CoroutineStarterEditor.cs" />
+    <Compile Include="GeoSystems\DynamicMeshLinesRendererEditor.cs" />
     <Compile Include="RenderNormals.cs" />
     <Compile Include="RenderNormalsData.cs" />
   </ItemGroup>
@@ -67,5 +68,6 @@
       <Name>Elephant.UnityLibrary</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

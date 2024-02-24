@@ -81,6 +81,9 @@
     <Compile Include="GeoSystems\Lineal.cs" />
     <Compile Include="GeoSystems\MultiPolygon.cs" />
     <Compile Include="GeoSystems\Polygon.cs" />
+    <Compile Include="GeoSystems\Renderers\DynamicMeshLinesRenderer.cs" />
+    <Compile Include="GeoSystems\Renderers\GeometryFillRenderer.cs" />
+    <Compile Include="GeoSystems\Renderers\MultiPolygonRenderer.cs" />
     <Compile Include="GeoSystems\Ring.cs" />
     <Compile Include="GeoSystems\Surface.cs" />
     <Compile Include="GeoSystems\Validators\GpsValidator.cs" />

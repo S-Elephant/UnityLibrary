@@ -283,6 +283,11 @@ Is able to render complex (Multi)-Polygons.
 
 ![Complex polygon example](ReadmeResources/ComplexPolygonExample.jpg)
 
+<p float="left">
+  <img src="ReadmeResources/ComplexPolygonExample2.jpg" width="48%" />
+  <img src="ReadmeResources/ComplexPolygonExampleInspector.jpg" width="48%" />
+</p>
+
 ## Geometry object Classes
 
 - **GeometryVertex**
@@ -295,6 +300,13 @@ Is able to render complex (Multi)-Polygons.
   - Contains 0 or 1 exterior ring and 0 or more interior rings.
 - **MultiPolygon**
   - Contains zero or more polygons.
+
+## Geometry renderers
+
+- **DynamicMeshLinesRenderer**
+  - **DynamicMeshLinesRendererEditor** (editor only)
+- **GeometryFillRenderer**
+- **MultiPolygonRenderer**
 
 ## Helpers
 
