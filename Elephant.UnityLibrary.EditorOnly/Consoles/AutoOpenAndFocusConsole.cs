@@ -2,7 +2,7 @@
 using System.Reflection;
 using UnityEditor;
 
-namespace Elephant.UnityLibrary.EditorOnly
+namespace Elephant.UnityLibrary.EditorOnly.Consoles
 {
 	/// <summary>
 	/// <para>Automatically show the console window when pressing play in the Editor.</para>
@@ -15,7 +15,7 @@ namespace Elephant.UnityLibrary.EditorOnly
 		/// <summary>
 		/// Menu configuration menu path.
 		/// </summary>
-		private const string MenuName = "Elephant/Auto focus console on play";
+		private const string MenuName = SettingsEditor.MenuPrefix + "Console/Auto focus console on play";
 
 		/// <summary>
 		/// Menu configuration editor preference key.

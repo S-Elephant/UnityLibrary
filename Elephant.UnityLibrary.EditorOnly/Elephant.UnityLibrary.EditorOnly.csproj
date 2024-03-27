@@ -31,6 +31,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>1591</NoWarn>
+    <DocumentationFile>bin\Debug\Elephant.UnityLibrary.EditorOnly.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -41,6 +42,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>bin\Release\Elephant.UnityLibrary.EditorOnly.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -56,11 +58,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutoOpenAndFocusConsole.cs" />
+    <Compile Include="Consoles\AutoOpenAndFocusConsole.cs" />
     <Compile Include="CoroutineStarterEditor.cs" />
     <Compile Include="GeoSystems\DynamicMeshLinesRendererEditor.cs" />
+    <Compile Include="PersistentData\PersistentDataPathEditor.cs" />
     <Compile Include="RenderNormals.cs" />
     <Compile Include="RenderNormalsData.cs" />
+    <Compile Include="SettingsEditor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Elephant.UnityLibrary\Elephant.UnityLibrary.csproj">
