@@ -30,7 +30,7 @@ namespace Elephant.UnityLibrary.EditorOnly.PersistentData
 		{
 			try
 			{
-				// Open the folder cross-platform. 
+				// Open the folder cross-platform.
 				Application.OpenURL("file://" + PersistentDataPath);
 			}
 			catch (System.Exception e)
