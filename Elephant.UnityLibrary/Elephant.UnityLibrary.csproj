@@ -67,6 +67,7 @@
     <Compile Include="Cameras\FlyCam.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Extensions\RectExtensions.cs" />
+    <Compile Include="Extensions\Vectors.cs" />
     <Compile Include="Extensions\WrapExtensions.cs" />
     <Compile Include="GeoSystems\Converters\ConverterConstants.cs" />
     <Compile Include="GeoSystems\Converters\ConverterUtils.cs" />

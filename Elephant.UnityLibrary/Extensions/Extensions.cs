@@ -3,21 +3,10 @@
 namespace Elephant.UnityLibrary.Extensions
 {
 	/// <summary>
-	/// Version 1.00
+	/// Miscellaneous extensions.
 	/// </summary>
 	public static class Extensions
 	{
-		/// <summary>
-		/// Calculates the normalized direction from one vector to another.
-		/// </summary>
-		/// <param name="from">Starting point of the direction vector.</param>
-		/// <param name="to">Endpoint of the direction vector.</param>
-		/// <returns>Normalized direction vector pointing from the 'from' vector to the 'to' vector.</returns>
-		public static Vector3 DirectionTo(this Vector3 from, Vector3 to)
-		{
-			return (to - from).normalized;
-		}
-
 		/// <summary>
 		/// Returns the orthographic camera bounds in world space.
 		/// </summary>
