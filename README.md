@@ -72,6 +72,13 @@ public new void StopAllCoroutines();
 public virtual List<string> StopTrackedCoroutines(string? mainCategory = null, string? subCategory = null, List<string>? tags = null);
 ```
 
+# Menus
+
+They are located under "Tools > Elephant".
+
+![Render normals example](ReadmeResources/Menu.jpg)
+
+
 # Loggers
 
 ## Example implementation of the non-static variant
