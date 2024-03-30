@@ -39,7 +39,7 @@ namespace Elephant.UnityLibrary.Extensions
 		}
 
 		/// <summary>
-		/// Convert <paramref name="vector3"/> into a <see cref="Vector2"/>.
+		/// Convert <paramref name="vector4"/> into a <see cref="Vector2"/>.
 		/// The <see cref="Vector4.z"/> and <see cref="Vector4.w"/> values are discarded.
 		/// </summary>
 		public static Vector2 ToVector2(this Vector4 vector4)
@@ -56,7 +56,7 @@ namespace Elephant.UnityLibrary.Extensions
 		}
 
 		/// <summary>
-		/// Convert <paramref name="vector3"/> into a <see cref="Vector2"/>.
+		/// Convert <paramref name="vector4"/> into a <see cref="Vector2"/>.
 		/// The <see cref="Vector4.w"/> value is discarded.
 		/// </summary>
 		public static Vector3 ToVector3(this Vector4 vector4)
@@ -66,7 +66,7 @@ namespace Elephant.UnityLibrary.Extensions
 
 		/// <summary>
 		/// Convert <paramref name="vector2"/> into a <see cref="Vector4"/> with optional
-		/// <see cref="Vector3.z"/> and <see cref="Vector3.w"/> parameters.
+		/// <see cref="Vector4.z"/> and <see cref="Vector4.w"/> parameters.
 		/// </summary>
 		public static Vector4 ToVector4(this Vector2 vector2, float z = 0f, float w = 0f)
 		{
@@ -74,7 +74,7 @@ namespace Elephant.UnityLibrary.Extensions
 		}
 
 		/// <summary>
-		/// Convert <paramref name="vector3"/> into a <see cref="Vector4"/> with optional <see cref="Vector3.w"/> parameter.
+		/// Convert <paramref name="vector3"/> into a <see cref="Vector4"/> with optional <see cref="Vector4.w"/> parameter.
 		/// </summary>
 		public static Vector4 ToVector4(this Vector3 vector3, float w = 0f)
 		{

@@ -337,14 +337,14 @@ namespace Elephant.GeoSystems.Converters
 				throw new ArgumentException($"Invalid GPS coordinate. Got ({latitudeWgs84}, {longitudeWgs84}).");
 
 			/*
-             * For the inverse transformation of ellipsoidal WGS84 coordinates WGS84 coordinates (Φ, λ) to RD-coordinates(X, Y) applies:
-             * dΦ = 0,36(Φ - Φ0)
-             * dλ = 0,36(λ - λ0)
-             * X = X0 + Σp Σq Rpq dΦ^p dλ dλq
-             * Y = Y0 + Σp Σq Spq dΦ^p dλ dλq
-             * where X0, Y0, Φ0, λ0 are also the coordinates of the base point Amersfoort. The coefficients R and S
-             * from the above formula are equal to the rpq arrays below:
-             */
+			 * For the inverse transformation of ellipsoidal WGS84 coordinates WGS84 coordinates (Φ, λ) to RD-coordinates(X, Y) applies:
+			 * dΦ = 0,36(Φ - Φ0)
+			 * dλ = 0,36(λ - λ0)
+			 * X = X0 + Σp Σq Rpq dΦ^p dλ dλq
+			 * Y = Y0 + Σp Σq Spq dΦ^p dλ dλq
+			 * where X0, Y0, Φ0, λ0 are also the coordinates of the base point Amersfoort. The coefficients R and S
+			 * from the above formula are equal to the rpq arrays below:
+			 */
 
 			// Coefficients for the transformation from ellipsoidal WGS84 coordinates to RD coordinates.
 			double[,] rpq = CreateRpq();

@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Elephant.UnityLibrary.GeoSystems.Renderers
 {
+	/// <summary>
+	/// Geometry fill renderer.
+	/// </summary>
 	[RequireComponent(typeof(MeshFilter))]
 	[RequireComponent(typeof(MeshRenderer))]
 	public class GeometryFillRenderer : MonoBehaviour
@@ -161,8 +164,8 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 			// For a triangle, you need to specify three indices.
 			int[] triangles =
 			{
-				0, 1, 2 // This will draw one triangle
-            };
+				0, 1, 2, // This will draw one triangle.
+			};
 			FillMesh.triangles = triangles;
 
 			// Optionally, update the normals of the mesh.

@@ -61,7 +61,7 @@ namespace Elephant.UnityLibrary.Extensions
 		{
 			TSource[] sourceAsArray = source.ToArray();
 			TSource[] valuesAsArray = values.ToArray();
-			
+
 			if (!sourceAsArray.Any() || !valuesAsArray.Any())
 				return true;
 
@@ -126,7 +126,7 @@ namespace Elephant.UnityLibrary.Extensions
 				return true;
 
 			TSource[] sourceAsArray = source.ToArray();
-			
+
 			return sourceAsArray.Distinct().Count() == sourceAsArray.Length;
 		}
 	}

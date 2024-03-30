@@ -20,6 +20,8 @@ namespace Elephant.UnityLibrary.GeoSystems.Wkts
 		private const string PolygonKey = "POLYGON";
 		private const string MultiPolygonKey = "MULTIPOLYGON";
 
+#pragma warning disable SA1600 // Elements should be documented.
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member.
 		public const string EmptyPoint = "POINT EMPTY";
 		public const string EmptyLineString = "LINESTRING EMPTY";
 		public const string EmptyMultiPoint = "MULTIPOINT EMPTY";
@@ -27,6 +29,8 @@ namespace Elephant.UnityLibrary.GeoSystems.Wkts
 		public const string EmptyMultiLineString = "MULTILINESTRING EMPTY";
 		public const string EmptyMultiPolygon = "MULTIPOLYGON EMPTY";
 		public const string EmptyGeometryCollection = "GEOMETRYCOLLECTION EMPTY";
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member.
+#pragma warning restore SA1600 // Elements should be documented.
 
 		/// <summary>
 		/// Parse a WKT string representing either a POLYGON or a MULTIPOLYGON.

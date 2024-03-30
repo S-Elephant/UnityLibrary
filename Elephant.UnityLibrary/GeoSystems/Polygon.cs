@@ -423,7 +423,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 			for (int index = 0; index < ring.Lines.Count; index++)
 			{
 				GeometryLine line = ring.Lines[index];
-				
+
 				if (index == 0)
 					line.Start.Position += translation;
 

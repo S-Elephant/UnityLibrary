@@ -93,7 +93,6 @@ namespace Elephant.UnityLibrary.GeoSystems
 		/// </summary>
 		/// <param name="angleInRadians">Angle of rotation in radians. Positive values for clockwise rotation, negative values for counter-clockwise.</param>
 		/// <param name="pivot">Pivot point around which to rotate.</param>
-		/// <returns>Rotated point as a new Vector2 instance.</returns>
 		public void RotateAroundPivot(float angleInRadians, Vector2 pivot)
 		{
 			Position = RotateAroundPivot(Position, angleInRadians, pivot);

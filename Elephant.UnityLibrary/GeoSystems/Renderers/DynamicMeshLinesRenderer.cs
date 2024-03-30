@@ -11,10 +11,13 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 	/// <summary>
 	/// Triggered after one or more lines are clicked.
 	/// DynamicMeshLines is this and the first list are the clicked vertices, the second list are
-	/// the clicked lines. 
+	/// the clicked lines.
 	/// </summary>
 	[Serializable]
+#pragma warning disable SA1402 // File may only contain a single type
+#pragma warning disable SA1649 // File name should match first type name
 	public class OnGeometryClicked : UnityEvent<DynamicMeshLinesRenderer, List<GameObject>, List<GameObject>>
+#pragma warning restore SA1649 // File name should match first type name
 	{
 	}
 
@@ -35,6 +38,7 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 	public class OnVertexClicked : UnityEvent<DynamicMeshLinesRenderer, List<GameObject>>
 	{
 	}
+#pragma warning restore SA1402 // File may only contain a single type
 
 	/// <summary>
 	/// Renders dynamic mesh lines.
@@ -65,7 +69,7 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 		public List<Vector3> Vertices = new();
 
 		/// <summary>
-		/// Geometry lines thickness. 
+		/// Geometry lines thickness.
 		/// </summary>
 		public float lineThickness = 0.4f;
 
@@ -86,7 +90,7 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 
 		/// <summary>
 		/// If true and if the start and end vertices are not the same, a line between the first
-		/// and last vertices is rendered. 
+		/// and last vertices is rendered.
 		/// </summary>
 		public bool CloseGeometries = true;
 
@@ -173,7 +177,7 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 		/// <summary>
 		/// Returns if awake was called.
 		/// </summary>
-		private bool IsAwakeCalled = false;
+		private bool _IsAwakeCalled = false;
 
 		#endregion
 
@@ -184,7 +188,7 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 		/// </summary>
 		private void Awake()
 		{
-			IsAwakeCalled = true;
+			_IsAwakeCalled = true;
 		}
 
 		/// <summary>
@@ -421,7 +425,7 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 		/// </summary>
 		private void OnValidate()
 		{
-			if (IsAwakeCalled && Application.isPlaying)
+			if (_IsAwakeCalled && Application.isPlaying)
 				Refresh();
 		}
 
@@ -574,6 +578,9 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 		/// </summary>
 		protected virtual string VertexObjectName(Vector3 position) => $"{VertexObjectNamePrefix} {position:F2}";
 
+		/// <summary>
+		/// Create vertices (with optional collider) if <see cref="CreateVertexColliders"/> is <c>true</c>.
+		/// </summary>
 		protected virtual void CreateVertices(Vector3 position)
 		{
 			GameObject vertexObject = new(VertexObjectName(position));
@@ -597,6 +604,9 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 				CreateVertexCollider(vertexObject);
 		}
 
+		/// <summary>
+		/// Create and add vertice collider.
+		/// </summary>
 		protected virtual void CreateVertexCollider(GameObject parent)
 		{
 			CircleCollider2D vertexCollider = parent.AddComponent<CircleCollider2D>();

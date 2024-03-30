@@ -127,7 +127,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 		}
 
 		/// <summary>
-		/// Rotate around <see cref="pivot"/>.
+		/// Rotate around <paramref name="pivot"/>.
 		/// </summary>
 		/// <param name="clockwiseAngleInDegrees">By how many degrees (clockwise) to rotate. Use a negative value to rotate counter-clockwise.</param>
 		/// <param name="pivot">Vertex or point to rotate around.</param>
@@ -138,7 +138,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 		}
 
 		/// <summary>
-		/// Rotate around <see cref="pivot"/>.
+		/// Rotate around <paramref name="pivot"/>.
 		/// </summary>
 		/// <param name="clockwiseAngleInRadians">By how many radians (clockwise) to rotate. Use a negative value to rotate counter-clockwise.</param>
 		/// <param name="pivot">Vertex or point to rotate around.</param>

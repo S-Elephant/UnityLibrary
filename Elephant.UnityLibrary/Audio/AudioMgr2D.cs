@@ -1,204 +1,196 @@
-﻿// TODO: Refactor this into something more generic. This was quite quickly taken from one of my old projects.
+﻿using System.Collections.Generic;
+using UnityEngine;
 
-////using System;
-////using System.Collections.Generic;
-////using Elephant.UnityLibrary.Core;
-////using UnityEngine;
+namespace Elephant.UnityLibrary.Audio
+{
+	/// <summary>
+	/// <para>Manages audio playback for sound effects and music within a 2D game.
+	/// This includes playing, stopping,and toggling sound effects and music tracks.
+	/// Uses the singleton pattern.</para>
+	///
+	/// <para>Usage:
+	/// Create a new GameObject in your first scene, attach this script to it and
+	/// drag and drop your SFX and music clips into this. Assign the AudioSources and
+	/// configure them as needed.
+	/// Then later to play something: AudioManager2D.Instance.PlaySfx("Jump")</para>
+	/// </summary>
+	public class AudioMgr2D : MonoBehaviour
+	{
+		/// <summary>
+		/// Singleton instance of AudioManager2D to ensure only one instance is active.
+		/// </summary>
+		public static AudioMgr2D Instance { get; private set; }
 
-////namespace Elephant.UnityLibrary.Audio
-////{
-////	/// <summary>
-////	/// Version 1.00
-////	/// Unity can't show Dictionaries in the inspector so that's why I use an array and a privately hidden dictionary.
-////	/// This manager only supports 2D audio.
-////	///
-////	/// Instructions:
-////	/// Create an empty game object and add this script along with 2x AudioSource to it.
-////	/// Remove the PlayOnAwake from those AudioSources and set the SpatialBlend to 0 (2D), if not already.
-////	/// Populate the EditorSFX and EditorMusic settings in the Inspector for this script.
-////	/// </summary>
-////	[RequireComponent(typeof(AudioSource))]
-////	[RequireComponent(typeof(AudioSource))]
-////	public class AudioMgr2D : Singleton<AudioMgr2D>
-////	{
-////		private const string MasterVolumePrefs = "MasterVolume";
-////		private const string SFXVolumePrefs = "SFXVolume";
-////		private const string MusicVolumePrefs = "MusicVolume";
-////		private const float DefaultMasterVolume = 0.5f;
-////		private const float DefaultSFXVolume = 0.5f;
-////		private const float DefaultMusicVolume = 0.5f;
+		/// <summary>
+		/// Component for playing sound effects.
+		/// </summary>
+		[SerializeField] protected AudioSource _sfxSource;
 
-////		[SerializeField] private SFXPair[] _editorSFX = Array.Empty<SFXPair>();
-////		private readonly Dictionary<ESFX, AudioClip> _allSFX = new Dictionary<ESFX, AudioClip>();
+		/// <summary>
+		/// Component for playing music.
+		/// </summary>
+		[SerializeField] protected AudioSource _musicSource;
 
-////		[SerializeField] private MusicPair[] _editorMusic = Array.Empty<MusicPair>();
-////		private readonly Dictionary<EMusic, AudioClip> _allMusic = new Dictionary<EMusic, AudioClip>();
+		/// <summary>
+		/// List of sound effect AudioClips available to play.
+		/// </summary>
+		[SerializeField] protected List<AudioClip> _sfxClips;
 
-////		/// <summary>
-////		/// Used for playing all 2D effects.
-////		/// </summary>
-////		private AudioSource _sfxSource;
+		/// <summary>
+		/// List of music AudioClips available to play.
+		/// </summary>
+		[SerializeField] protected List<AudioClip> _musicClips;
 
-////		/// <summary>
-////		/// Used for playing all Music.
-////		/// </summary>
-////		private AudioSource _musicSource;
+		/// <summary>
+		/// Library mapping sound effect names to their respective AudioClip.
+		/// </summary>
+		protected Dictionary<string, AudioClip> _sfxLibrary = new Dictionary<string, AudioClip>();
 
-////		/// <summary>
-////		/// Master volume.
-////		/// </summary>
-////		public float MasterVolume
-////		{
-////			get => AudioListener.volume;
+		/// <summary>
+		/// Library mapping music track names to their respective AudioClip.
+		/// </summary>
+		protected Dictionary<string, AudioClip> _musicLibrary = new Dictionary<string, AudioClip>();
 
-////			set
-////			{
-////				if (AudioListener.volume == value)
-////					return;
+		/// <summary>
+		/// Flag to enable or disable sound effects.
+		/// </summary>
+		public bool IsSfxEnabled { get; protected set; } = true;
 
-////				AudioListener.volume = value;
-////				PlayerPrefs.SetFloat(MasterVolumePrefs, value);
-////				PlayerPrefs.Save();
-////			}
-////		}
+		/// <summary>
+		/// Flag to enable or disable music playback.
+		/// </summary>
+		public bool IsMusicEnabled { get; protected set; } = true;
 
-////		/// <summary>
-////		/// Value must be between 0f and 1f.
-////		/// </summary>
-////		public float SFXVolume
-////		{
-////			get => _sfxSource.volume;
+		/// <summary>
+		/// Sfx volume, between 0.0f and 1.0f.
+		/// </summary>
+		public float SfxVolume
+		{
+			get => _sfxSource.volume;
+			set => _sfxSource.volume = value;
+		}
 
-////			set
-////			{
-////				if (_sfxSource.volume == value)
-////					return;
+		/// <summary>
+		/// Music volume, between 0.0f and 1.0f.
+		/// </summary>
+		public float MusicVolume
+		{
+			get => _musicSource.volume;
+			set => _musicSource.volume = value;
+		}
 
-////				_sfxSource.volume = value;
-////				PlayerPrefs.SetFloat(SFXVolumePrefs, value);
-////				PlayerPrefs.Save();
-////			}
-////		}
+		/// <summary>
+		/// Initializes this AudioManager2D instance and prepares the sound effect and music libraries.
+		/// Ensures that this object persists between scene loads.
+		/// </summary>
+		private void Awake()
+		{
+			if (Instance == null)
+			{
+				Instance = this;
+				DontDestroyOnLoad(gameObject);
+				InitializeSelf();
+			}
+			else
+			{
+				// Allow no more than 1 instance.
+				Destroy(gameObject);
+			}
+		}
 
-////		/// <summary>
-////		/// Value must be between 0f and 1f.
-////		/// </summary>
-////		public float MusicVolume
-////		{
-////			get => _musicSource.volume;
+		/// <summary>
+		/// Initializes this AudioManager2D instance and prepares the sound effect and music libraries.
+		/// </summary>
+		private void InitializeSelf()
+		{
+			// Initialize the sound effects library.
+			foreach (var clip in _sfxClips)
+				_sfxLibrary[clip.name] = clip;
 
-////			set
-////			{
-////				if (_musicSource.volume == value) { return; }
-////				_musicSource.volume = value;
-////				PlayerPrefs.SetFloat(MusicVolumePrefs, value);
-////				PlayerPrefs.Save();
-////			}
-////		}
+			// Initialize the music library.
+			foreach (var clip in _musicClips)
+				_musicLibrary[clip.name] = clip;
+		}
 
-////		/// <summary>
-////		/// Awake.
-////		/// </summary>
-////		protected void Awake()
-////		{
-////			// Copy the SFX configuration into a lookup table and perform a safety check.
-////			for (int i = 0; i < _editorSFX.Length; i++)
-////			{
-////				if (_editorSFX[i].Clip == null)
-////					throw new NullReferenceException(string.Format("The Clip for SFX {0} is null. Please assign it in the editor.", _editorSFX[i].SFX));
-////				_allSFX.Add(_editorSFX[i].SFX, _editorSFX[i].Clip);
-////			}
-////			// Copy the Music configuration into a lookup table and perform a safety check.
-////			for (int i = 0; i < _editorMusic.Length; i++)
-////			{
-////				if (_editorMusic[i].Clip == null)
-////					throw new NullReferenceException(string.Format("The Clip for Music {0} is null. Please assign it in the editor.", _editorMusic[i].Music));
-////				_allMusic.Add(_editorMusic[i].Music, _editorMusic[i].Clip);
-////			}
+		/// <summary>
+		/// Optional initialization helper.
+		/// </summary>
+		public void InitializeSettings(bool isSfxEnabled, float sfxVolume, bool isMusicEnabled, float musicVolume)
+		{
+			IsSfxEnabled = isSfxEnabled;
+			SfxVolume = sfxVolume;
+			IsMusicEnabled = isMusicEnabled;
+			SfxVolume = sfxVolume;
+		}
 
-////			AudioSource[] audioSources = GetComponents<AudioSource>();
-////			if (audioSources.Length < 2)
-////				throw new Exception("This class needs AudioSource x2.");
+		/// <summary>
+		/// Plays a sound effect identified by name if sound effects are enabled.
+		/// </summary>
+		/// <param name="sfxKey">Name of the sound effect to play.</param>
+		public void PlaySfx(string sfxKey)
+		{
+			// Note: PlayOneShotallows us to play a clip once, and it can overlap with other
+			// clips played by PlayOneShot on the same AudioSource.
+			if (IsSfxEnabled)
+			{
+				if (_sfxLibrary.TryGetValue(sfxKey, out AudioClip clip))
+				{
+					_sfxSource.PlayOneShot(clip);
+				}
+				else
+				{
+					Debug.LogWarning($"Attempted to play an unknown SFX clip, key: {sfxKey}. Aborting.");
+				}
+			}
+		}
 
-////			_sfxSource = audioSources[0];
-////			_musicSource = audioSources[1];
+		/// <summary>
+		/// Plays a music track identified by name if music is enabled. If the music track is already playing, it will not restart.
+		/// </summary>
+		/// <param name="musicKey">Name of the music track to play.</param>
+		public void PlayMusic(string musicKey)
+		{
+			if (IsMusicEnabled)
+			{
+				if (_musicLibrary.TryGetValue(musicKey, out AudioClip clip))
+				{
+					if (_musicSource.clip != clip)
+					{
+						_musicSource.clip = clip;
+						_musicSource.Play();
+					}
+				}
+				else
+				{
+					Debug.LogWarning($"Attempted to play an unknown music clip, key: {musicKey}. Aborting");
+				}
+			}
+		}
 
-////			LoadVolumes();
-////		}
+		/// <summary>
+		/// Enable or disable SFX. Optionally also stop all running SFX if it's being disabled.
+		/// </summary>
+		/// <param name="isSfxEnabled">True to enable sound effects, false to disable them.</param>
+		/// <param name="stopRunning">True to stop any running SFX if <paramref name="isSfxEnabled"/> is false.</param>
+		public void SetSfxEnabled(bool isSfxEnabled, bool stopRunning = true)
+		{
+			IsSfxEnabled = isSfxEnabled;
 
-////		private void LoadVolumes()
-////		{
-////			AudioListener.volume = PlayerPrefs.GetFloat(MasterVolumePrefs, DefaultMasterVolume);
-////			_sfxSource.volume = PlayerPrefs.GetFloat(SFXVolumePrefs, DefaultSFXVolume);
-////			_musicSource.volume = PlayerPrefs.GetFloat(MusicVolumePrefs, DefaultMusicVolume);
-////		}
+			if (isSfxEnabled && stopRunning)
+				_sfxSource.Stop();
+		}
 
-////		/// <summary>
-////		/// Play specified SFX.
-////		/// </summary>
-////		public void PlaySfx(ESFX sfx)
-////		{
-////			_sfxSource.PlayOneShot(_allSFX[sfx]);
-////		}
+		/// <summary>
+		/// Enable or disable music. Optionally also stop any running music if it's being disabled.
+		/// </summary>
+		/// <param name="isMusicEnabled">True to music sound effects, false to disable it.</param>
+		/// <param name="stopRunning">True to stop the music if <paramref name="isMusicEnabled"/> is false.</param>
+		public void SetMusicEnabled(bool isMusicEnabled, bool stopRunning = true)
+		{
+			IsMusicEnabled = isMusicEnabled;
 
-////		/// <summary>
-////		/// Stop all SFX.
-////		/// </summary>
-////		public void StopAllSfx()
-////		{
-////			_sfxSource.Stop();
-////		}
-
-////		/// <summary>
-////		/// Stop all SFX and all music.
-////		/// </summary>
-////		public void StopEverything()
-////		{
-////			StopMusic();
-////			StopAllSfx();
-////		}
-
-////		/// <summary>
-////		/// Play specified music.
-////		/// </summary>
-////		public void PlayMusic(EMusic music)
-////		{
-////			_musicSource.clip = _allMusic[music];
-////			_musicSource.Play();
-////		}
-
-////		/// <summary>
-////		/// Stop all music.
-////		/// </summary>
-////		public void StopMusic()
-////		{
-////			_musicSource.Stop();
-////		}
-////	}
-
-////	// Expand/change below 2 enums as you need.
-////	public enum ESFX
-////	{
-////		None = 0,
-////		ButtonClick,
-////	}
-
-////	public enum EMusic
-////	{
-////		None = 0,
-////	}
-
-////	[System.Serializable]
-////	public struct SFXPair
-////	{
-////		public ESFX SFX;
-////		public AudioClip Clip;
-////	}
-
-////	[System.Serializable]
-////	public struct MusicPair
-////	{
-////		public EMusic Music;
-////		public AudioClip Clip;
-////	}
-////}
+			if (isMusicEnabled && stopRunning)
+				_musicSource.Stop();
+		}
+	}
+}
