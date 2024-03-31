@@ -369,6 +369,77 @@ public static float CalculateRingArea(List<Vector2> ring);
 public static float CalculateSurfaceArea(List<List<List<Vector2>>> multipolygon);
 ```
 
+# Localization
+
+- Use namespace **Elephant.UnityLibrary.Localizations**. Add the **LocalizationManager** to a **GameObject** in your startup scene.
+- The LocalizationManager will load the localizations before the scene even loads. Feel free to use it in your **Awake()** methods.
+- Your localization CSV files should be put in the **Resources** folder. Example: **Assets/Resources/Localizations/Localization_en.csv**
+
+## Example usage
+
+```c#
+// Set language to English. By default the languageKey must match the suffix of your CSV file.
+// The example below by default matches file: "Assets/Resources/Localizations/Localization_en.csv".
+LocalizationManager.Instance.SetLanguage("en");
+
+// Log the current language key.
+Debug.Log(LocalizationManager.Instance.CurrentLanguageKey);
+
+// Translate the "music" keyword.
+string musicText = LocalizationManager.Instance.Localize("music");
+
+// Optionally subscribe to OnLanguageChanged.
+LocalizationManager.Instance.OnLanguageChanged += RefreshLocalization;
+private void RefreshLocalization()
+{
+	// Put your localization refresh work here.
+}
+```
+
+## CSV content example
+
+Note that the CSV header row is required.
+
+```
+Key,Translation
+musicVolume,Musiklautstärke
+soundVolume,Soundlautstärke
+```
+
+## Use different directories and/or filenames
+
+You may inherit from **LocalizationManager** and override **BuildDirectoriesAndFilename()**.
+
+```c#
+protected override string BuildDirectoriesAndFilename(string languageKey)
+{
+	// return $"Localizations/Localization_{languageKey}"; // Default implementation.
+	// Your implementation here.
+	// The return value must NOT include the "Resources/" folder nor anything before that.
+	// The return value must NOT include the file extension.
+}
+
+// You may also override the default language key (defaults to "en" by default).
+protected override string DefaultLanguageKey() => "your_language_key_here";
+```
+
+# String Operations
+
+```c#
+StringOperations.CapitalizeFirstChar(string stringToCapitalize)
+StringOperations.CapitalizeFirstCharNullable(string? stringToCapitalize)
+StringOperations.EncloseByIfNotAlready(string value, char encloser)
+StringOperations.Join(char separatorChar, params string?[] stringsToCombine)
+StringOperations.JoinWithLeading(char separatorChar, params string?[] stringsToCombine)
+StringOperations.JoinWithTrailing(char separatorChar, params string?[] stringsToCombine)
+StringOperations.JoinWithLeadingAndTrailing(char separatorChar, params string?[] stringsToCombine)
+StringOperations.RemoveSubstringFromString(string source, string substringToRemove)
+StringOperations.RemoveSubstringsFromString(string source, IEnumerable<string> substringsToRemove)
+StringOperations.SplitByNewLine(string value, StringSplitOptions stringSplitOptions = StringSplitOptions.None)
+StringOperations.ToTitleCase(string stringToTitleCase)
+StringOperations.ToTitleCaseNullable(string? stringToTitleCase)
+```
+
 # FAQ
 
 ### Q: I don't see any logs in the console.
