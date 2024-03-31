@@ -96,6 +96,7 @@
     <Compile Include="GeoSystems\Wkts\WktPolygonUtils.cs" />
     <Compile Include="GeoSystems\Wkts\WktPolygonParser.cs" />
     <Compile Include="Inputs\LockMouseCursor.cs" />
+    <Compile Include="Localizations\LocalizationManager.cs" />
     <Compile Include="Logging\ConsoleLoggerUtils.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\Interfaces\IConsoleLogger.cs" />
