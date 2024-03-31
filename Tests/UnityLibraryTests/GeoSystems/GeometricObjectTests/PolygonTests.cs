@@ -12,6 +12,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Test <see cref="Polygon.AllVertices"/>.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void AllVerticesReturnsCorrectly()
 		{
 			// Arrange.
@@ -31,6 +32,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Test calculate center.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void CalculateCenterWorks()
 		{
 			// Arrange.
@@ -47,6 +49,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Test calculate center.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void TranslateWorldToZero()
 		{
 			// Arrange.
@@ -64,6 +67,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Test calculate center.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void TranslateWorldToZeroTwice()
 		{
 			// Arrange.
@@ -82,6 +86,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Test calculate center.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void TranslateWorldToTen()
 		{
 			// Arrange.
@@ -99,6 +104,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Test calculate center.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void TranslateWorldToTenTwice()
 		{
 			// Arrange.
@@ -117,6 +123,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Test calculate center.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void TranslateWorldThreeTimes()
 		{
 			// Arrange.

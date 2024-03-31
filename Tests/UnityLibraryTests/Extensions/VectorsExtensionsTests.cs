@@ -12,6 +12,7 @@ namespace UnityLibraryTests.Extensions
 		/// <see cref="Vectors.ToVector3(Vector2, float)"/> tests.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0f, 0f, 0f, 0f, 0f, 0f)]
 		[InlineData(0f, -10f, 0f, 0f, -10f, 0f)]
 		[InlineData(0f, -10f, 1000f, 0f, -10f, 1000f)]
@@ -30,6 +31,7 @@ namespace UnityLibraryTests.Extensions
 		/// <see cref="Vectors.ToVector4(Vector2, float, float)"/> tests.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)]
 		[InlineData(0f, -10f, 0f, 0f, 0f, -10f, 0f, 0f)]
 		[InlineData(0f, -10f, 1000f, 0f, 0f, -10f, 1000f, 0f)]
@@ -49,6 +51,7 @@ namespace UnityLibraryTests.Extensions
 		/// <see cref="Vectors.ToVector2(Vector3)"/> tests.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0f, 0f, 0f, 0f, 0f)]
 		[InlineData(0f, -10f, 0f, 0f, -10f)]
 		[InlineData(0f, -10f, 1000f, 0f, -10f)]
@@ -67,6 +70,7 @@ namespace UnityLibraryTests.Extensions
 		/// <see cref="Vectors.ToVector4(Vector3, float)"/> tests.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)]
 		[InlineData(0f, -10f, 0f, 0f, 0f, -10f, 0f, 0f)]
 		[InlineData(0f, -10f, 1000f, 0f, 0f, -10f, 1000f, 0f)]
@@ -86,6 +90,7 @@ namespace UnityLibraryTests.Extensions
 		/// <see cref="Vectors.ToVector2(Vector4)"/> tests.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0f, 0f, 0f, 0f, 0f, 0f)]
 		[InlineData(0f, -10f, 0f, 0f, -0f, -10f)]
 		[InlineData(0f, -10f, 1000f, 0f, 0f, -10f)]
@@ -104,6 +109,7 @@ namespace UnityLibraryTests.Extensions
 		/// <see cref="Vectors.ToVector3(Vector4)"/> tests.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0f, 0f, 0f, 0f, 0f, 0f, 0f)]
 		[InlineData(0f, -10f, 0f, 0f, 0f, -10f, 0f)]
 		[InlineData(0f, -10f, 1000f, 0f, 0f, -10f, 1000f)]

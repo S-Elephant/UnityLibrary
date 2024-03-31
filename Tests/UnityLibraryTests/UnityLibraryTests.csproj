@@ -14,9 +14,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Elephant.Testing.Xunit" Version="1.0.6" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
-    <PackageReference Include="xunit" Version="2.4.2" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+    <PackageReference Include="xunit" Version="2.7.0" />
+    <PackageReference Include="xunit.categories" Version="2.0.8" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.7">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

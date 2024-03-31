@@ -64,7 +64,7 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 		/// <summary>
 		/// Returns if awake was called.
 		/// </summary>
-		private bool IsAwakeCalled = false;
+		private bool _isAwakeCalled = false;
 
 		/// <summary>
 		/// Awake.
@@ -72,7 +72,7 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 		private void Awake()
 		{
 			FillMesh = new();
-			IsAwakeCalled = true;
+			_isAwakeCalled = true;
 		}
 
 		/// <summary>
@@ -177,7 +177,7 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 		/// </summary>
 		private void OnValidate()
 		{
-			if (IsAwakeCalled && FillMesh && Application.isPlaying)
+			if (_isAwakeCalled && FillMesh && Application.isPlaying)
 				DrawMesh(VerticesInWorldSpace());
 		}
 	}

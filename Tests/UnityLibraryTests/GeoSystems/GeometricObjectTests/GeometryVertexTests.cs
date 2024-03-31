@@ -12,6 +12,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// RotateAroundPivot tests.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0, 0, 0, 0, 90, 0, 0)] // Rotating a point around itself should do nothing.
 		[InlineData(0, 1, 10, 50, 0, 0, 1)] // Rotating by 0 should do nothing.
 		[InlineData(0, 1, 50, 10, 360, 0, 1)] // Rotating by 360 should do nothing.
@@ -38,6 +39,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Translate tests using <see cref="Space.Self"/>.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0, 0, 0, 0, 0, 0)]
 		[InlineData(0, 0, 1, 1, 1, 1)]
 		[InlineData(0, 0, float.MinValue, float.MaxValue, float.MinValue, float.MaxValue)]
@@ -61,6 +63,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Translate tests using <see cref="Space.World"/>.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0, 0, 0, 0, 0, 0)]
 		[InlineData(1, 1, 0, 0, 0, 0)]
 		[InlineData(0, 0, 1, 1, 1, 1)]

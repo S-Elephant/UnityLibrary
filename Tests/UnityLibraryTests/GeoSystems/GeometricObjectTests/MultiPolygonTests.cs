@@ -25,6 +25,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// <see cref="MultiPolygon.Recalculate"/> should mark it as non-dirty.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void RecalculateMarksAsNonDirty()
 		{
 			// Arrange.
@@ -44,6 +45,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Assigning a new polygon should mark it as dirty.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void AddNewPolygonMarksAsDirty()
 		{
 			// Arrange.
@@ -61,6 +63,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Assigning a new ring should mark it as dirty.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void AddNewRingMarksAsDirty()
 		{
 			// Arrange.
@@ -79,6 +82,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Update exterior ring vertex should mark it as dirty.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void UpdateExteriorRingVertexMarksAsDirty()
 		{
 			// Arrange.
@@ -100,6 +104,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Update interior ring vertex should mark it as dirty.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void UpdateInteriorRingVertexMarksAsDirty()
 		{
 			// Arrange.

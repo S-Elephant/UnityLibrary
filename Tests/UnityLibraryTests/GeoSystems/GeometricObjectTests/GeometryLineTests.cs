@@ -12,6 +12,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// <see cref="GeometryLine.Recalculate"/> should mark it as non-dirty.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void RecalculateMarksAsNonDirty()
 		{
 			// Arrange.
@@ -28,6 +29,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Assigning a new point should mark it as dirty.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void AssigningNewPointMarksAsDirty()
 		{
 			// Arrange.
@@ -45,6 +47,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Changing an existing point should mark it as dirty.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void UpdatingExistingPointMarksAsDirty()
 		{
 			// Arrange.
@@ -62,6 +65,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Changing an existing point to the same value should not mark it as dirty.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void UpdatingExistingPointWithSameValueMarksAsDirty()
 		{
 			// Arrange.
@@ -79,6 +83,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Changing an existing point to the same value should not mark it as dirty.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void ParentIsRemovedAfterParentDispose()
 		{
 			// Arrange.
@@ -99,6 +104,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Test <see cref="GeometryLine.CalculateCenter"/> tests.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(-10, 0, 10, 0, 0, 0)]
 		[InlineData(-10, 0, 0, 0, -5, 0)]
 		[InlineData(100, 100, 0, -50, 50, 25)]
@@ -119,6 +125,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Translate test using <see cref="Space.Self"/>.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void SimpleTranslationSelf()
 		{
 			// Arrange.
@@ -136,6 +143,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Translate test using <see cref="Space.World"/>.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void SimpleTranslationWorld()
 		{
 			// Arrange.
@@ -153,6 +161,7 @@ namespace UnityLibraryTests.GeoSystems.GeometricObjectTests
 		/// Translate test using <see cref="Space.World"/>.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void SimpleTranslationWorld2()
 		{
 			// Arrange.
