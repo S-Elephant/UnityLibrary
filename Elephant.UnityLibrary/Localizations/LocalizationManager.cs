@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using System.Collections.Generic;
-using Elephant.Common;
+using Elephant.UnityLibrary.Common;
 using UnityEngine;
 
 namespace Elephant.UnityLibrary.Localizations

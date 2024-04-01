@@ -1,4 +1,4 @@
-﻿using Elephant.Common;
+﻿using Elephant.UnityLibrary.Common;
 
 namespace UnityLibraryTests.StringOperationsTests
 {

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace Elephant.Common
+namespace Elephant.UnityLibrary.Common
 {
 	/// <summary>
 	/// String operations.
