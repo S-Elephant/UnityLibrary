@@ -189,8 +189,11 @@ namespace Elephant.UnityLibrary.Audio
 		{
 			IsMusicEnabled = isMusicEnabled;
 
-			if (isMusicEnabled && stopRunning)
+			if (!isMusicEnabled && stopRunning)
+			{
 				_musicSource.Stop();
+				_musicSource.clip = null;
+			}
 		}
 	}
 }

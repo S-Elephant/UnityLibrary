@@ -118,7 +118,8 @@ namespace Elephant.UnityLibrary.Localizations
 			string[] lines = csvFile.text.Split('\n'); // Split the content into lines
 			char separator = SeparatorChar();
 
-			for (int i = 1; i < lines.Length; i++) // Start at 1 to skip the header line.
+			// Start at 1 to skip the header line.
+			for (int i = 1; i < lines.Length; i++)
 			{
 				// Ignore empty lines and lines that contain only spaces.
 				if (lines[i].Trim() == string.Empty)

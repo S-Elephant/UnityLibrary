@@ -71,7 +71,7 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 		/// <summary>
 		/// Geometry lines thickness.
 		/// </summary>
-		public float lineThickness = 0.4f;
+		public float LineThickness = 0.4f;
 
 		/// <summary>
 		/// Child objects that contain rendered line items.
@@ -474,7 +474,7 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 
 			Vector3 direction = (end - start).normalized;
 			// Calculate a perpendicular vector to the direction. This will help to set the line thickness.
-			Vector3 cross = Vector3.Cross(direction, Vector3.forward) * (lineThickness / 2f);
+			Vector3 cross = Vector3.Cross(direction, Vector3.forward) * (LineThickness / 2f);
 
 			// Define vertices positions to form a rectangle (=thick line).
 			vertices[0] = start + cross;
@@ -517,7 +517,7 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 
 			// Calculate line length and collider size.
 			float lineLength = Vector3.Distance(start, end);
-			lineCollider.size = new Vector2(lineLength + lineThickness, lineThickness);
+			lineCollider.size = new Vector2(lineLength + LineThickness, LineThickness);
 
 			// Calculate midpoint in parent's local space.
 			Vector3 midpoint = (start + end) * 0.5f;
@@ -598,7 +598,7 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 
 
 			MeshFilter meshFilter = vertexObject.AddComponent<MeshFilter>();
-			meshFilter.mesh = CreateVertexMesh(lineThickness / 2f); // Circle radius must be half the line thickness.
+			meshFilter.mesh = CreateVertexMesh(LineThickness / 2f); // Circle radius must be half the line thickness.
 
 			if (CreateVertexColliders)
 				CreateVertexCollider(vertexObject);
@@ -610,7 +610,7 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 		protected virtual void CreateVertexCollider(GameObject parent)
 		{
 			CircleCollider2D vertexCollider = parent.AddComponent<CircleCollider2D>();
-			vertexCollider.radius = lineThickness / 2f;
+			vertexCollider.radius = LineThickness / 2f;
 		}
 
 		#endregion
