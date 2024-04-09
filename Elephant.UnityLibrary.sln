@@ -26,6 +26,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{380EE872
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elephant.UnityLibrary.EditorOnly", "Elephant.UnityLibrary.EditorOnly\Elephant.UnityLibrary.EditorOnly.csproj", "{499E466E-BD66-4CB3-9627-969EA3D6A9EA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elephant.UnityLibrary.Localizations", "Elephant.UnityLibrary.Localizations\Elephant.UnityLibrary.Localizations.csproj", "{D0F2EDAC-05F2-445F-AB8E-A06D1E97D8C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{499E466E-BD66-4CB3-9627-969EA3D6A9EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{499E466E-BD66-4CB3-9627-969EA3D6A9EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{499E466E-BD66-4CB3-9627-969EA3D6A9EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0F2EDAC-05F2-445F-AB8E-A06D1E97D8C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0F2EDAC-05F2-445F-AB8E-A06D1E97D8C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0F2EDAC-05F2-445F-AB8E-A06D1E97D8C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0F2EDAC-05F2-445F-AB8E-A06D1E97D8C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

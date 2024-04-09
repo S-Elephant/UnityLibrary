@@ -8,6 +8,8 @@ Copy all Folders into your project. <u>Don't</u> put it in special Unity folders
 
 If you use the DLL version instead then ensure that the DLL file is placed in the "Plugins" folder, which is a special Unity folder. If this folder does not exist then first create a new folder in your project root called "Plugins" and then add the DLL file into that folder.
 
+The DLL "Elephant.UnityLibrary.Localizations.dll" is contains optional localization code, you don't need this DLL if you don't use my localization code.
+
 
 # CoroutineStarter
 

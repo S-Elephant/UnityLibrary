@@ -1,6 +1,8 @@
 ﻿#nullable enable
 
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Elephant.UnityLibrary.Common;
 using UnityEngine;
 
@@ -90,7 +92,7 @@ namespace Elephant.UnityLibrary.Localizations
 		/// <summary>
 		/// CSV separator char.
 		/// </summary>
-		public char SeparatorChar() => ',';
+		public virtual char SeparatorChar() => ',';
 
 		/// <summary>
 		/// Method that returns the localization filename (excluding extension), likely based on the input parameter.
@@ -103,29 +105,77 @@ namespace Elephant.UnityLibrary.Localizations
 		}
 
 		/// <summary>
+		/// Retrieve the CSV lines, excluding the CSV header line,
+		/// removing empty lines and lines that contain only spaces.
+		/// </summary>
+		protected virtual List<string> LinesFromTextAsset(TextAsset csvFile)
+		{
+			string[] lines = csvFile.text.Split('\n');
+
+			if (!lines.Any())
+				return new List<string>();
+
+			// Optimistically allocate space for all lines.
+			List<string> resultList = new List<string>(lines.Length - 1);
+
+			// Start from index 1 to skip the first line (which would be the CSV header line).
+			for (int i = 1; i < lines.Length; i++)
+			{
+				string trimmedLine = lines[i].Trim();
+				if (trimmedLine != string.Empty)
+				{
+					// Add only non-empty, trimmed lines.
+					resultList.Add(trimmedLine);
+				}
+			}
+
+			return resultList;
+		}
+
+		/// <summary>
+		/// Return the columns from a CSV line.
+		/// Supports CSV rows escaped with double quotes.
+		/// </summary>
+		protected virtual string[] ColumnsFromCsvLine(string csvLine)
+		{
+			// Split on commas that are not inside double quotes.
+			Regex csvSplit = new(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+			string[] columns = csvSplit.Split(csvLine);
+
+			// Further process each element to remove leading/trailing quotes if necessary.
+			for (int i = 0; i < columns.Length; i++)
+			{
+				columns[i] = columns[i].Trim(); // Trim whitespace.
+
+				if (columns[i].StartsWith("\"") && columns[i].EndsWith("\""))
+				{
+					// Remove leading and trailing quotes.
+					columns[i] = columns[i].Substring(1, columns[i].Length - 2);
+				}
+
+				// Replace any double double-quotes with a single double-quote.
+				columns[i] = columns[i].Replace("\"\"", "\"");
+			}
+
+			return columns;
+		}
+
+		/// <summary>
 		/// Loads localization data from a CSV file.
 		/// </summary>
 		public virtual void LoadLocalizationFile()
 		{
 			// Get the CSV lines.
 			string filename = BuildDirectoriesAndFilename(CurrentLanguageKey); // CSV file example: "Assets/Resources/Localizations/Example_en.csv".
-			TextAsset? csvFile = Resources.Load<TextAsset>(filename);
-			if (csvFile == null)
-			{
-				Debug.LogError($"Failed to load CSV file: [{filename}]. Aborting.");
-				return;
-			}
-			string[] lines = csvFile.text.Split('\n'); // Split the content into lines
+			TextAsset? csvTextAsset = Resources.Load<TextAsset>(filename);
+			if (csvTextAsset == null)
+				return; // Failed to load CSV file. Aborting.
+			List<string> lines = LinesFromTextAsset(csvTextAsset);
 			char separator = SeparatorChar();
 
-			// Start at 1 to skip the header line.
-			for (int i = 1; i < lines.Length; i++)
+			for (int i = 0; i < lines.Count; i++)
 			{
-				// Ignore empty lines and lines that contain only spaces.
-				if (lines[i].Trim() == string.Empty)
-					continue;
-
-				string[] cells = lines[i].Split(separator);
+				string[] cells = ColumnsFromCsvLine(lines[i]);
 				string key = cells[0].ToLowerInvariant();
 				for (int j = 1; j < cells.Length; j++)
 				{
@@ -169,9 +219,9 @@ namespace Elephant.UnityLibrary.Localizations
 			}
 
 			if (_localizationData.ContainsKey(key))
-				Debug.LogError($"Missing localization key for language [{CurrentLanguageKey}] and key: {key}");
-			else
 				Debug.LogError($"Missing localization language language [{CurrentLanguageKey}]");
+			else
+				Debug.LogError($"Missing localization key for language [{CurrentLanguageKey}] and key: {key}");
 
 			return capitalizeFirstChar ? StringOperations.CapitalizeFirstChar(key) : key;
 		}
