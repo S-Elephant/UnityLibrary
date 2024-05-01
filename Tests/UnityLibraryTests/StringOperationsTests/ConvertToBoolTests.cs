@@ -25,12 +25,10 @@ namespace UnityLibraryTests.StringOperationsTests
 		[InlineData("&%#", false)]
 		public void ConvertToBoolReturnsExpected(string? value, bool expectedResult)
 		{
-			// Arrange
-
-			// Act
+			// Act.
 			bool result = StringOperations.ConvertToBool(value);
 
-			// Assert
+			// Assert.
 			Assert.Equal(expectedResult, result);
 		}
 	}
