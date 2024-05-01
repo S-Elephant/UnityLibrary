@@ -39,6 +39,36 @@ namespace Elephant.UnityLibrary.Common
 		}
 
 		/// <summary>
+		/// Converts the given string value to a boolean representation.
+		/// </summary>
+		/// <param name="value">The string value to convert.</param>
+		/// <returns>
+		/// Returns <c>true</c> if the string value represents true ("true", "1"), <c>false</c> if the string value represents false ("false", "0" or an empty string), otherwise <c>false</c>.
+		/// Null values are considered to be false.
+		/// </returns>
+		public static bool ConvertToBool(string? value)
+		{
+			// Null is considered to be false.
+			if (value == null)
+				return false;
+
+			// Try to parse "true" and "false" strings.
+			if (bool.TryParse(value, out bool result))
+				return result;
+
+			// Try to parse "1" and "0" strings.
+			if (value == "1" || value == "0")
+				return value == "1";
+
+			// Empty string.
+			if (string.IsNullOrEmpty(value))
+				return false;
+
+			// If none of the above, return false.
+			return false;
+		}
+
+		/// <summary>
 		/// Encloses <paramref name="value"/> with <paramref name="encloser"/>. Will do nothing if its already encased in <paramref name="encloser"/>.
 		/// </summary>
 		public static string EncloseByIfNotAlready(string value, char encloser)

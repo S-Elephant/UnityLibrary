@@ -430,6 +430,7 @@ protected override string DefaultLanguageKey() => "your_language_key_here";
 ```c#
 StringOperations.CapitalizeFirstChar(string stringToCapitalize)
 StringOperations.CapitalizeFirstCharNullable(string? stringToCapitalize)
+StringOperations.ConvertToBool(string? value) // Accepts: "true", "True", "false", "False", 1, 0, "", <null>
 StringOperations.EncloseByIfNotAlready(string value, char encloser)
 StringOperations.Join(char separatorChar, params string?[] stringsToCombine)
 StringOperations.JoinWithLeading(char separatorChar, params string?[] stringsToCombine)
