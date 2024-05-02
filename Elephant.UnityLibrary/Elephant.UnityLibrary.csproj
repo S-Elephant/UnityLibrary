@@ -61,6 +61,8 @@
     <Compile Include="Audio\AudioMgr2D.cs" />
     <Compile Include="Cameras\ResolutionIndependentCamera.cs" />
     <Compile Include="Cameras\ScaleCameraWithScreenResolution.cs" />
+    <Compile Include="Clockworks\SeasonType.cs" />
+    <Compile Include="Clockworks\VirtualTimeManager.cs" />
     <Compile Include="Common\StringOperations.cs" />
     <Compile Include="Core\Singleton.cs" />
     <Compile Include="Core\SingletonNonPersistent.cs" />
