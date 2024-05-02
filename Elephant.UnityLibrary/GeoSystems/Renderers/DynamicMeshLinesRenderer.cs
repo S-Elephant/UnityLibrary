@@ -177,7 +177,7 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 		/// <summary>
 		/// Returns if awake was called.
 		/// </summary>
-		private bool _IsAwakeCalled = false;
+		private bool _isAwakeCalled = false;
 
 		#endregion
 
@@ -188,7 +188,7 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 		/// </summary>
 		private void Awake()
 		{
-			_IsAwakeCalled = true;
+			_isAwakeCalled = true;
 		}
 
 		/// <summary>
@@ -425,7 +425,7 @@ namespace Elephant.UnityLibrary.GeoSystems.Renderers
 		/// </summary>
 		private void OnValidate()
 		{
-			if (_IsAwakeCalled && Application.isPlaying)
+			if (_isAwakeCalled && Application.isPlaying)
 				Refresh();
 		}
 

@@ -101,6 +101,7 @@
     <Compile Include="Logging\Interfaces\IConsoleLogger.cs" />
     <Compile Include="Maths\MathRd.cs" />
     <Compile Include="Other\CoroutineStarter.cs" />
+    <Compile Include="Other\DeveloperNotes.cs" />
     <Compile Include="Other\PrefabInstantiator.cs" />
     <Compile Include="Other\PrefabReference.cs" />
     <Compile Include="Other\UndoRedo.cs" />
