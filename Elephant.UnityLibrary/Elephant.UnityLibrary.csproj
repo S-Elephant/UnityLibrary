@@ -66,6 +66,7 @@
     <Compile Include="Common\StringOperations.cs" />
     <Compile Include="Core\Singleton.cs" />
     <Compile Include="Core\SingletonNonPersistent.cs" />
+    <Compile Include="Diagnostics\FpsCounter.cs" />
     <Compile Include="Extensions\BetweenExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\Extensions.cs" />
