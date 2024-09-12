@@ -71,6 +71,7 @@
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Cameras\FlyCam.cs" />
+    <Compile Include="Extensions\GameObjectExtensions.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Extensions\RectExtensions.cs" />
     <Compile Include="Extensions\Texture2DExtensions.cs" />

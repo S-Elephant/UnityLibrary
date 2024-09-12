@@ -215,6 +215,13 @@ public static bool IsLast<TSource>(this IEnumerable<TSource> source, TSource ite
 public static bool AreAllItemsUnique<TSource>(this IEnumerable<TSource>? source);
 ```
 
+## GameObject
+
+```c#
+// Sets gameObject to inactive and then destroys it.
+public static void DeactivateAndDestroy(this GameObject gameObject, float t = 0f)
+```
+
 ## List
 
 ```c#
@@ -222,7 +229,10 @@ public static bool AreAllItemsUnique<TSource>(this IEnumerable<TSource>? source)
 public static void Shuffle<T>(this IList<T> list);
 
 // Add itemToAdd only if it doesn't already exist in list.
-public static void AddIfNotExists<T>(this List<T> list, T itemToAdd);
+public static void AddUnique<T>(this List<T> list, T itemToAdd);
+
+// Add items but only those that don't already exist in list.
+public static void AddRangeUnique<T>(this List<T> list, IEnumerable<T> items);
 
 // Add the item to the source list unless it already exists in that list in which case it will remove it instead. Modifies the source list.
 public static IList<TSource> AddOrRemoveIfExists<TSource>(this IList<TSource> list, TSource item);
@@ -231,8 +241,6 @@ public static IList<TSource> AddOrRemoveIfExists<TSource>(this IList<TSource> li
 // If <paramref name="list"/> is null then nothing happens. Modifies the source list.
 public static IList<TSource>? AddOrRemoveIfExistsNullable<TSource>(this IList<TSource>? list, TSource item);
 ```
-
-
 
 ## General
 

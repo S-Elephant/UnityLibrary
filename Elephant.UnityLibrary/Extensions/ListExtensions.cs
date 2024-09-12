@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System;
 using System.Collections.Generic;
 
 namespace Elephant.UnityLibrary.Extensions
@@ -27,10 +28,37 @@ namespace Elephant.UnityLibrary.Extensions
 		/// <summary>
 		/// Add <paramref name="itemToAdd"/> only if it doesn't already exist in <paramref name="list"/>.
 		/// </summary>
+		[Obsolete("Use AddUnique() instead.")]
 		public static void AddIfNotExists<T>(this List<T> list, T itemToAdd)
 		{
 			if (!list.Contains(itemToAdd))
 				list.Add(itemToAdd);
+		}
+
+		/// <summary>
+		/// Add <paramref name="itemToAdd"/> only if it doesn't already exist in <paramref name="list"/>.
+		/// </summary>
+		public static void AddUnique<T>(this List<T> list, T itemToAdd)
+		{
+			if (!list.Contains(itemToAdd))
+				list.Add(itemToAdd);
+		}
+
+		/// <summary>
+		/// Add a range of elements to the list if they don't already exist, using a <see cref="HashSet{T}"/> for efficiency.
+		/// </summary>
+		/// <typeparam name="T">Type of elements in the list.</typeparam>
+		/// <param name="list">List to which elements are added.</param>
+		/// <param name="items">Collection of items to be added.</param>
+		public static void AddRangeUnique<T>(this List<T> list, IEnumerable<T> items)
+		{
+			HashSet<T> existingItems = new(list); // Use HashSet for O(1) lookup.
+
+			foreach (T item in items)
+			{
+				if (existingItems.Add(item))
+					list.Add(item);
+			}
 		}
 
 		/// <summary>
