@@ -18,7 +18,7 @@ namespace Elephant.UnityLibrary.EditorOnly
 		/// <summary>
 		/// Prefix menu item path for all menu items of this script.
 		/// </summary>
-		private const string PlayFromStartSceneMenuItemPrefix = "Tools/Elephant/Play from start scene/";
+		private const string PlayFromStartSceneMenuItemPrefix = SettingsEditor.MenuPrefix + "Play from start scene/";
 
 		/// <summary>
 		/// Toggle menu item path.

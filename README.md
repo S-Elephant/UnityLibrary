@@ -1,4 +1,23 @@
-# Unity library
+
+
+# Table of Contents
+
+1. [About](#about)
+2. [Installation](#installation)
+3. [Coroutine Starter](#coroutinestarter)
+4. [Menus and Windows](#menus-and-windows)
+5. [Loggers](#loggers)
+6. [Extensions](#extensions)
+7. [Unity Objects](#unity-objects)
+8. [Geo Systems](#geo-systems)
+9. [String Operations](#string-operations)
+10. [Pathfinding](#pathfinding)
+11. [UGUI](#ugui)
+12. [FAQ](#faq)
+13. [For Developers](#for-developers)
+14. [Version History](#version-history)
+
+# About
 
 Written for Unity Editor version **2022.3.7f1 (LTS)**. Note that most, if not all, earlier versions also seem to work but it's not recommend using this library in Unity Editor versions that are really old.
 
@@ -74,12 +93,13 @@ public new void StopAllCoroutines();
 public virtual List<string> StopTrackedCoroutines(string? mainCategory = null, string? subCategory = null, List<string>? tags = null);
 ```
 
-# Menus
+# Menus and Windows
 
 They are located under "Tools > Elephant".
 
 ![Render normals example](ReadmeResources/Menu.jpg)
 
+![Render normals example](ReadmeResources/BulkObjectTransformer.jpg)
 
 # Loggers
 
@@ -256,7 +276,7 @@ public static int? WrapOne(this int? value, int max);
 
 
 
-# Unity objects
+# Unity Objects
 
 ## Camera
 
@@ -286,7 +306,7 @@ public static int? WrapOne(this int? value, int max);
 And various others but I'm too lazy to document those right now.
 
 
-# GeoSystems
+# Geo Systems
 
 Is able to render complex (Multi)-Polygons.
 
@@ -443,6 +463,40 @@ StringOperations.ToTitleCase(string stringToTitleCase)
 StringOperations.ToTitleCaseNullable(string? stringToTitleCase)
 ```
 
+# Pathfinding
+
+## A-star (A*) 2D
+
+```c#
+private List<List<GridCell>> _grid = new(); // Your GridCell class must implement IGridCell2D and the _grid must be filled.
+private const int GridWidth = 50;
+private const int GridHeight = 50;
+private Vector2Int _playerIndex = new Vector2Int(1, 1);
+
+private void TryToMovePlayer(Vector2Int destinationIndex)
+{
+	IAStar2D pathfinder = new AStar2D();
+	List<Vector2Int> path = pathfinder.FindPath(_grid, GridWidth, GridHeight, _playerIndex, destinationIndex);
+	if (path.Any())
+	{
+	    // Do something with the path. Example:
+	    MovePlayerAlongPath(path);
+	}
+    else
+    {
+        Debug.Log($"No path from {_currentPlayIndex} to {destinationIndex} found.");
+    }
+}
+```
+
+# UGUI
+
+Unity's uGUI is the built-in system for creating and managing user interfaces in Unity games and is the older alternative to the UI Toolkit and is able to use prefabs and custom scripts.
+
+## Size Limiter
+
+![Size Limiter](ReadmeResources/SizeLimiter.jpg)
+
 # FAQ
 
 ### Q: I don't see any logs in the console.
@@ -463,7 +517,7 @@ FilterLogType = LogType.Log;
 LogEnabled = true;
 ```
 
-# For developers whom want to edit this project directly
+# For Developers
 
 If you need updated versions of the **UnityEditor.dll** and **UnityEngine.dll** files for when editing this project directly, they can be found in the following locations:
 
@@ -472,6 +526,6 @@ If you need updated versions of the **UnityEditor.dll** and **UnityEngine.dll** 
 
 - MacOS: /Applications/Unity/Unity.app/Contents/Managed/
 
-# Version history
+# Version History
 
-There isn't any. I don't keep a version history for this project.
+There isn't any. I currently don't keep a version history for this project.
