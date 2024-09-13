@@ -218,8 +218,27 @@ public static bool AreAllItemsUnique<TSource>(this IEnumerable<TSource>? source)
 ## GameObject
 
 ```c#
-// Sets gameObject to inactive and then destroys it.
-public static void DeactivateAndDestroy(this GameObject gameObject, float t = 0f)
+// Sets GameObject to inactive and then destroys it.
+public static void DeactivateAndDestroy(this GameObject gameObject, float t = 0f);
+
+// Sets only the children of the GameObject to inactive and then destroys them.
+public static void DeactivateAndDestroyAllChildren(this GameObject parent, float t = 0f);
+
+// Destroys only the children of the GameObject.
+public static void DestroyAllChildren(this GameObject parent, float t = 0f);
+```
+
+## General
+
+```c#
+// Calculates the normalized direction from one vector to another.
+public static Vector3 DirectionTo(this Vector3 from, Vector3 to);
+
+// Returns the orthographic camera bounds in world space.
+public static Bounds OrthographicBounds(this Camera camera);
+
+// Searches recursively for a child transform with the specified name within the descendants of the given parent transform.
+public static Transform FindRecursively(this Transform parent, string name);
 ```
 
 ## List
@@ -242,19 +261,6 @@ public static IList<TSource> AddOrRemoveIfExists<TSource>(this IList<TSource> li
 public static IList<TSource>? AddOrRemoveIfExistsNullable<TSource>(this IList<TSource>? list, TSource item);
 ```
 
-## General
-
-```c#
-// Calculates the normalized direction from one vector to another.
-public static Vector3 DirectionTo(this Vector3 from, Vector3 to);
-
-// Returns the orthographic camera bounds in world space.
-public static Bounds OrthographicBounds(this Camera camera);
-
-// Searches recursively for a child transform with the specified name within the descendants of the given parent transform.
-public static Transform FindRecursively(this Transform parent, string name);
-```
-
 ## Rect
 
 ```c#
@@ -264,6 +270,19 @@ public static Transform FindRecursively(this Transform parent, string name);
 // it. If the collection is null or empty, a Rect with zero position and size is
 // returned.
 public static Rect Combine(this IEnumerable<Rect>? rects);
+```
+
+## Transform
+
+```c#
+// Sets GameObject of this Transform to inactive and then destroys it.
+public static void DeactivateAndDestroy(this Transform transform, float t = 0f);
+
+// Sets only the children of the GameObject to inactive and then destroys them.
+public static void DeactivateAndDestroyAllChildren(this Transform parent, float t = 0f);
+
+// Destroys only the children of the GameObject.
+public static void DestroyAllChildren(this Transform parent, float t = 0f);
 ```
 
 ## Wrapping

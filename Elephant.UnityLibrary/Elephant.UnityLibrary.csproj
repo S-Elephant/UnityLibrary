@@ -75,6 +75,7 @@
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Extensions\RectExtensions.cs" />
     <Compile Include="Extensions\Texture2DExtensions.cs" />
+    <Compile Include="Extensions\TransformExtensions.cs" />
     <Compile Include="Extensions\Vectors.cs" />
     <Compile Include="Extensions\WrapExtensions.cs" />
     <Compile Include="GeoSystems\Converters\ConverterConstants.cs" />
