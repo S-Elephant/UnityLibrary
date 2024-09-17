@@ -14,8 +14,9 @@
 10. [Pathfinding](#pathfinding)
 11. [UGUI](#ugui)
 12. [FAQ](#faq)
-13. [For Developers](#for-developers)
-14. [Version History](#version-history)
+13. [Other](#other)
+14. [For Developers](#for-developers)
+15. [Version History](#version-history)
 
 # About
 
@@ -543,6 +544,15 @@ FilterLogType = LogType.Log;
 // Allows logging.
 LogEnabled = true;
 ```
+
+# Other
+
+- **DeveloperNotes**: A MonoBehaviour that you can add that contains developer notes. Will self-destroy outside of Unity Editor.
+- **FloatRangeValue**: A serializable float with a min, max, value and percentage.
+- **IntRangeValue**: A serializable int with a min, max, value and percentage.
+- **PrefabInstantiator**: Contains alternative ways to instantiate prefabs.
+- **PrefabReference**: A simple MonoBehaviour with a prefab reference.
+- **UndoRedo**: A complete generic undo and redo manager.
 
 # For Developers
 

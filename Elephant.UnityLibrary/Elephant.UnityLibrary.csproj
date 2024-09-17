@@ -107,8 +107,10 @@
     <Compile Include="Maths\MathRd.cs" />
     <Compile Include="Other\CoroutineStarter.cs" />
     <Compile Include="Other\DeveloperNotes.cs" />
+    <Compile Include="Other\IntRangeValue.cs" />
     <Compile Include="Other\PrefabInstantiator.cs" />
     <Compile Include="Other\PrefabReference.cs" />
+    <Compile Include="Other\FloatRangeValue.cs" />
     <Compile Include="Other\UndoRedo.cs" />
     <Compile Include="Other\Utils.cs" />
     <Compile Include="Other\WorldTexts.cs" />
