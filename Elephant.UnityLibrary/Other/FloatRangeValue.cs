@@ -10,6 +10,11 @@ namespace Elephant.UnityLibrary.Other
 	[Serializable]
 	public class FloatRangeValue
 	{
+		/// <summary>
+		/// Floating point tolerance for all <see cref="FloatRangeValue"/>s. Defaults to <see cref="float.Epsilon"/>.
+		/// </summary>
+		public static float Tolerance = float.Epsilon;
+
 		/// <inheritdoc cref="Min"/>
 		[SerializeField] private float _min;
 
@@ -86,6 +91,18 @@ namespace Elephant.UnityLibrary.Other
 		}
 
 		/// <summary>
+		/// Returns true if <see cref="Value"/> equals <see cref="Min"/>.
+		/// <see cref="Tolerance"/> is taken into account.
+		/// </summary>
+		public bool IsMinValue => Value <= Min + Tolerance;
+
+		/// <summary>
+		/// Returns true if <see cref="Value"/> equals <see cref="Max"/>.
+		/// <see cref="Tolerance"/> is taken into account.
+		/// </summary>
+		public bool IsMaxValue => Value >= Max - Tolerance;
+
+		/// <summary>
 		/// Constructor.
 		/// </summary>
 		public FloatRangeValue()
@@ -119,6 +136,24 @@ namespace Elephant.UnityLibrary.Other
 		public bool IsEmpty()
 		{
 			return Mathf.Abs(_value) < Mathf.Epsilon && Mathf.Abs(Min) < Mathf.Epsilon && Mathf.Abs(Max) < Mathf.Epsilon;
+		}
+
+		/// <summary>
+		/// Assigns <paramref name="newMinAndValue"/> to <see cref="Min"/> and then to <see cref="Value"/>.
+		/// </summary>
+		public void SetMinAndMatchValue(float newMinAndValue)
+		{
+			Min = newMinAndValue;
+			Value = Min;
+		}
+
+		/// <summary>
+		/// Assigns <paramref name="newMaxAndValue"/> to <see cref="Max"/> and then to <see cref="Value"/>.
+		/// </summary>
+		public void SetMaxAndMatchValue(float newMaxAndValue)
+		{
+			Max = newMaxAndValue;
+			Value = Max;
 		}
 
 		#region Operators
@@ -356,9 +391,9 @@ namespace Elephant.UnityLibrary.Other
 		{
 			if (obj is FloatRangeValue other)
 			{
-				return Math.Abs(_value - other._value) < float.Epsilon &&
-					   Math.Abs(_min - other._min) < float.Epsilon &&
-					   Math.Abs(_max - other._max) < float.Epsilon;
+				return Math.Abs(_value - other._value) < Tolerance &&
+					   Math.Abs(_min - other._min) < Tolerance &&
+					   Math.Abs(_max - other._max) < Tolerance;
 			}
 
 			return false;

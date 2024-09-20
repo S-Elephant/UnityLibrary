@@ -86,6 +86,16 @@ namespace Elephant.UnityLibrary.Other
 		}
 
 		/// <summary>
+		/// Returns true if <see cref="Value"/> equals <see cref="Min"/>.
+		/// </summary>
+		public bool IsMinValue => Value == Min;
+
+		/// <summary>
+		/// Returns true if <see cref="Value"/> equals <see cref="Max"/>.
+		/// </summary>
+		public bool IsMaxValue => Value == Max;
+
+		/// <summary>
 		/// Constructor.
 		/// </summary>
 		public IntRangeValue()
@@ -119,6 +129,24 @@ namespace Elephant.UnityLibrary.Other
 		public bool IsEmpty()
 		{
 			return _value == 0 && _min == 0 && _max == 0;
+		}
+
+		/// <summary>
+		/// Assigns <paramref name="newMinAndValue"/> to <see cref="Min"/> and then to <see cref="Value"/>.
+		/// </summary>
+		public void SetMinAndMatchValue(int newMinAndValue)
+		{
+			Min = newMinAndValue;
+			Value = Min;
+		}
+
+		/// <summary>
+		/// Assigns <paramref name="newMaxAndValue"/> to <see cref="Max"/> and then to <see cref="Value"/>.
+		/// </summary>
+		public void SetMaxAndMatchValue(int newMaxAndValue)
+		{
+			Max = newMaxAndValue;
+			Value = Max;
 		}
 
 		#region Operators
