@@ -9,6 +9,7 @@ namespace Elephant.UnityLibrary.Clockworks
 	/// <p>Tracks and manages virtual time.</p>
 	/// <p>Call <see cref="UpdateTime"/> to progress time and adjust the speed using <see cref="TimeScale"/>.</p>
 	/// </summary>
+	[Serializable]
 	public class VirtualTimeManager
 	{
 		/// <summary>
@@ -17,35 +18,77 @@ namespace Elephant.UnityLibrary.Clockworks
 		/// </summary>
 		public float TimeScale;
 
+		/// <inheritdoc cref="Second"/>
+		[SerializeField] [Range(0f, 60f)] private float _second;
+
 		/// <summary>
 		/// Current second. Starts at 0.
 		/// </summary>
-		public float Second { get; private set; }
+		public float Second
+		{
+			get => _second;
+			private set => _second = value;
+		}
+
+		/// <inheritdoc cref="Minute"/>
+		[SerializeField] [Range(0, 59)] private int _minute;
 
 		/// <summary>
 		/// Current minute. Starts at 0.
 		/// </summary>
-		public int Minute { get; private set; }
+		public int Minute
+		{
+			get => _minute;
+			private set => _minute = value;
+		}
+
+		/// <inheritdoc cref="Hour"/>
+		[SerializeField] [Range(0, 23)] private int _hour;
 
 		/// <summary>
 		/// Current hour. Starts at 0.
 		/// </summary>
-		public int Hour { get; private set; }
+		public int Hour
+		{
+			get => _hour;
+			private set => _hour = value;
+		}
+
+		/// <inheritdoc cref="Day"/>
+		[SerializeField] [Min(0)] private int _day;
 
 		/// <summary>
 		/// Current day. Starts at 0.
 		/// </summary>
-		public int Day { get; private set; }
+		public int Day
+		{
+			get => _day;
+			private set => _day = value;
+		}
+
+		/// <inheritdoc cref="Month"/>
+		[SerializeField] [Range(1, 12)] private int _month;
 
 		/// <summary>
 		/// Current month. Starts at 1.
 		/// </summary>
-		public int Month { get; private set; }
+		public int Month
+		{
+			get => _month;
+			private set => _month = value;
+		}
+
+		/// <inheritdoc cref="Year"/>
+		[SerializeField] private int _year;
 
 		/// <summary>
 		/// Current year.
 		/// </summary>
-		public int Year { get; private set; }
+		public int Year
+		{
+			get => _year;
+			private set => _year = value;
+		}
 
 		/// <inheritdoc cref="DaysInMonth"/>>
 		private int[] _daysInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
@@ -58,12 +101,12 @@ namespace Elephant.UnityLibrary.Clockworks
 		/// <summary>
 		/// Maximum intensity of the light at noon.
 		/// </summary>
-		public float IntensityMax = 1.0f;
+		[Min(0)] public float IntensityMax = 1.0f;
 
 		/// <summary>
 		/// Minimum light intensity of the light at midnight.
 		/// </summary>
-		public float IntensityMin = 0f;
+		[Min(0)] public float IntensityMin = 0f;
 
 		/// <summary>
 		/// Is invoked if the season is changed.
