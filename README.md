@@ -11,12 +11,13 @@
 7. [Unity Objects](#unity-objects)
 8. [Geo Systems](#geo-systems)
 9. [String Operations](#string-operations)
-10. [Pathfinding](#pathfinding)
-11. [UGUI](#ugui)
-12. [FAQ](#faq)
-13. [Other](#other)
-14. [For Developers](#for-developers)
-15. [Version History](#version-history)
+10. [Spatial Algorithms](#spatial-algorithms)
+11. [Pathfinding](#pathfinding)
+12. [UGUI](#ugui)
+13. [FAQ](#faq)
+14. [Other](#other)
+15. [For Developers](#for-developers)
+16. [Version History](#version-history)
 
 # About
 
@@ -188,6 +189,9 @@ public static T GetRandom<T>(this IEnumerable<T> source);
 
 // Shuffle the elements. Modifies the source.
 public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source);
+
+// Shuffle the elements using a seed. Modifies the source.
+public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source, int seed)
 
 // Determines if the source is empty.
 public static bool IsEmpty<TSource>(this IEnumerable<TSource> source);
@@ -490,6 +494,75 @@ StringOperations.SplitByNewLine(string value, StringSplitOptions stringSplitOpti
 StringOperations.ToTitleCase(string stringToTitleCase)
 StringOperations.ToTitleCaseNullable(string? stringToTitleCase)
 ```
+
+# Spatial Algorithms
+
+There are five well-known spatial 2D algorithms: Bounding Volume Hierarchies (BVH), Delaunay Triangulation, Quadtree, Spatial Hashing, and Sweep and Prune.
+
+| Algorithm                             | Use Case                                          | How It Works                                                 | Benefits                                                     | Drawbacks                                                  |
+| ------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---------------------------------------------------------- |
+| **Bounding Volume Hierarchies (BVH)** | Managing hierarchical bounds of objects.          | Objects are grouped into bounding boxes, forming a tree structure. Spatial queries are answered by testing for intersections with bounding boxes. | Good for optimizing collision detection. Fewer object checks due to hierarchy. | Tree may need to be rebalanced as objects move.            |
+| **Delaunay Triangulation**            | Optimizing networks or graphs in 2D.              | Creates a mesh of triangles between points in a 2D plane, ensuring no point is inside the circumcircle of any triangle. | Useful for pathfinding, terrain generation, and minimizing overlap in connections. | More complex to implement and maintain than other methods. |
+| **Quadtree**                          | Organizing objects into hierarchical grids in 2D. | The 2D space is recursively subdivided into four quadrants. Each node can have up to four children. If a region has too many objects, it's subdivided. | Efficient for collision detection, range queries, and nearest-neighbor searches. Reduces need to check every object. | Performance can degrade if objects are clustered.          |
+| **Spatial Hashing**                   | Managing many objects in a 2D space.              | A 2D grid is created, hashing each object into a specific cell based on its spatial location. Objects in the same or neighboring cells are checked for interactions. | Fast lookup for nearby objects. More memory efficient than a quadtree in certain scenarios. | Requires tuning of the grid size based on distribution.    |
+| **Sweep and Prune**                   | Dynamic environments for collision detection.     | Objects are sorted along a single axis, overlaps between objects are computed, then checked on a second axis. | Efficient for detecting collisions between moving objects.   | Less efficient in highly clustered environments.           |
+
+
+
+## Spatial Hashing
+
+```c#
+using System.Collections.Generic;
+using UnityEngine;
+
+public class StarSpatialObject : SpatialObject2d
+{
+	public Star Star; // Your Star class or whatever you need here.
+
+	public StarSpatialObject(Vector2 position, float radius, Star star)
+		: base(position, radius)
+	{
+		Star = star;
+	}
+}
+
+public class StarManager
+{
+    public void Foo()
+    {
+        // Create an instance of the spatial hash with a specified cell size.
+        SpatialHash2D spatialHash2D = new SpatialHash2D(100f);
+
+        // Create some stars.
+        Star starA = new Star(/* initialize parameters. */);
+        Star starB = new Star(/* initialize parameters. */);
+        Star starC = new Star(/* initialize parameters. */);
+
+        // Create spatial objects for each star.
+        StarSpatialObject starSpatialObjectA = new StarSpatialObject(starA.Position, Star.StarSize / 2f, starA);
+        StarSpatialObject starSpatialObjectB = new StarSpatialObject(starB.Position, Star.StarSize / 2f, starB);
+        StarSpatialObject starSpatialObjectC = new StarSpatialObject(starC.Position, Star.StarSize / 2f, starC);
+
+        // Add stars to the spatial hash.
+        spatialHash2D.AddObject(starSpatialObjectA);
+        spatialHash2D.AddObject(starSpatialObjectB);
+        spatialHash2D.AddObject(starSpatialObjectC);
+
+        // Example: Find nearby stars for starA.
+        List<StarSpatialObject> nearbyStars = spatialHash2D.FindObjectsInNeighbors(starSpatialObjectA.GridPos, true);
+        
+		// Example: Check if the line between starA and starC overlaps with any other spatial objects.
+		if (spatialHash2D.LineOverlapsObjects(starA.Position, starC.Position, Star.StarSize / 2f, new List<ISpatialObject2d> { starSpatialLookup[starA], starSpatialLookup[starC] }))
+		{
+		    // Do something.
+		}
+    }
+}
+```
+### Example result
+A quickly put together example of a star map generated (it generates very fast) entirely with this spatial hashing, featuring randomly placed stars, connections, and checks to ensure that neither stars nor their connections overlap (though overlapping connections are acceptable in this example):
+
+![StarSystem](ReadmeResources/StarSystem.jpg)
 
 # Pathfinding
 

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace Elephant.UnityLibrary.Extensions
 {
@@ -11,6 +12,12 @@ namespace Elephant.UnityLibrary.Extensions
 	/// </summary>
 	public static class EnumerableExtensions
 	{
+		/// <summary>
+		/// Thread-local random number generator.
+		/// Each thread gets its own instance to avoid contention and improve performance.
+		/// </summary>
+		private static readonly ThreadLocal<Random> _threadRandom = new(() => new Random());
+
 		/// <summary>
 		/// Return random element(s).
 		/// </summary>
@@ -32,7 +39,16 @@ namespace Elephant.UnityLibrary.Extensions
 		/// </summary>
 		public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source)
 		{
-			return source.OrderBy(_ => Guid.NewGuid());
+			return source.OrderBy(_ => _threadRandom.Value.Next());
+		}
+
+		/// <summary>
+		/// Shuffle the elements using a seed. Modifies the <paramref name="source"/>.
+		/// </summary>
+		public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source, int seed)
+		{
+			Random random = new(seed);
+			return source.OrderBy(_ => random.Next());
 		}
 
 		/// <summary>
