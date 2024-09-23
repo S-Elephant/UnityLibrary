@@ -236,9 +236,6 @@ public static void DestroyAllChildren(this GameObject parent, float t = 0f);
 ## General
 
 ```c#
-// Calculates the normalized direction from one vector to another.
-public static Vector3 DirectionTo(this Vector3 from, Vector3 to);
-
 // Returns the orthographic camera bounds in world space.
 public static Bounds OrthographicBounds(this Camera camera);
 
@@ -289,6 +286,34 @@ public static void DeactivateAndDestroyAllChildren(this Transform parent, float 
 // Destroys only the children of the GameObject.
 public static void DestroyAllChildren(this Transform parent, float t = 0f);
 ```
+
+## Vector
+
+```c#
+// Convert 3D vector3 into the correct 2D Vector2. The Vector3.y value is discarded.
+public static Vector2 To2d(this Vector3 vector3);
+
+// Convert 2D vector2 into the correct 3D Vector3.
+// The Vector3.y value is set to 0f and the vector2.y value is set to the Vector3.z value.
+public static Vector3 To3d(this Vector2 vector2);
+
+// Returns the normalized direction from one vector to another.
+public static Vector2 DirectionTo(this Vector2 from, Vector2 to);
+
+// Returns the normalized direction from one vector to another.
+public static Vector3 DirectionTo(this Vector3 from, Vector3 to);
+
+// Conversions below map each component directly: x to x, y to y, z to z, and w to w, using 0f for any components that do not exist.
+public static Vector2 ToVector2(this Vector3 vector3);
+public static Vector2 ToVector2(this Vector4 vector4);
+public static Vector3 ToVector3(this Vector2 vector2, float z = 0f);
+public static Vector3 ToVector3(this Vector4 vector4);
+public static Vector4 ToVector4(this Vector2 vector2, float z = 0f, float w = 0f);
+public static Vector4 ToVector4(this Vector3 vector3, float w = 0f);
+```
+
+
+
 
 ## Wrapping
 

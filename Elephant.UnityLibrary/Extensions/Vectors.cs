@@ -8,7 +8,25 @@ namespace Elephant.UnityLibrary.Extensions
 	public static class Vectors
 	{
 		/// <summary>
-		/// Calculates the normalized direction from one vector to another.
+		/// Convert <paramref name="vector3"/> 3D into the correct 2D <see cref="Vector2"/>.
+		/// The <see cref="Vector3"/> y value is discarded.
+		/// </summary>
+		public static Vector2 To2d(this Vector3 vector3)
+		{
+			return new Vector2(vector3.x, vector3.z);
+		}
+
+		/// <summary>
+		/// Convert <paramref name="vector2"/> 2D into the correct 3D <see cref="Vector3"/>.
+		/// The <see cref="Vector3"/> y value is set to 0f and the <paramref name="vector2"/> y value is set to the <see cref="Vector3"/> z value.
+		/// </summary>
+		public static Vector3 To3d(this Vector2 vector2)
+		{
+			return new Vector3(vector2.x, 0f, vector2.y);
+		}
+
+		/// <summary>
+		/// Returns the normalized direction from one vector to another.
 		/// </summary>
 		/// <param name="from">Starting point of the direction vector.</param>
 		/// <param name="to">Endpoint of the direction vector.</param>
@@ -19,7 +37,7 @@ namespace Elephant.UnityLibrary.Extensions
 		}
 
 		/// <summary>
-		/// Calculates the normalized direction from one vector to another.
+		/// Returns the normalized direction from one vector to another.
 		/// </summary>
 		/// <param name="from">Starting point of the direction vector.</param>
 		/// <param name="to">Endpoint of the direction vector.</param>
