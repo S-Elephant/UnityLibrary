@@ -231,6 +231,9 @@ public static void DeactivateAndDestroyAllChildren(this GameObject parent, float
 
 // Destroys only the children of the GameObject.
 public static void DestroyAllChildren(this GameObject parent, float t = 0f);
+
+// Finds the first child GameObject by name.
+public static GameObject? FirstChildByName(this GameObject parent, string childName, bool findRecursive = false, bool isCaseSensitive = true, bool includeInactive = true);
 ```
 
 ## General
@@ -285,6 +288,9 @@ public static void DeactivateAndDestroyAllChildren(this Transform parent, float 
 
 // Destroys only the children of the GameObject.
 public static void DestroyAllChildren(this Transform parent, float t = 0f);
+
+// Finds the first child Transform by name.
+public static Transform? FirstChildByName(this Transform parent, string childName, bool findRecursive = false, bool isCaseSensitive = true, bool includeInactive = true);
 ```
 
 ## Vector
