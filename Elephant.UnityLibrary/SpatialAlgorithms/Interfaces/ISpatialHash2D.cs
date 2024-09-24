@@ -51,6 +51,14 @@ namespace Elephant.UnityLibrary.SpatialAlgorithms.Interfaces
 		bool LineOverlapsObjects(Vector2 start, Vector2 end, float thickness, List<ISpatialObject2d> excludeObjects = null);
 
 		/// <summary>
+		/// Returns true if there are any objects within the specified <paramref name="radius"/> of the given <paramref name="position"/>.
+		/// </summary>
+		/// <param name="position">Center position to check for overlapping objects.</param>
+		/// <param name="radius">Radius around the position to check for overlaps.</param>
+		/// <returns>True if any object overlaps within the specified radius.</returns>
+		bool OverlapsAnyObject(Vector2 position, float radius);
+
+		/// <summary>
 		/// Removes a <see cref="ISpatialObject2d"/> from this grid, adjusting the relevant grid cells based on its position and radius.
 		/// </summary>
 		/// <param name="obj"><see cref="ISpatialObject2d"/> to remove from this grid.</param>

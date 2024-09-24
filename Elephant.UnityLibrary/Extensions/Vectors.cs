@@ -17,12 +17,38 @@ namespace Elephant.UnityLibrary.Extensions
 		}
 
 		/// <summary>
+		/// Convert <paramref name="vector3"/> 3D into the correct 2D <see cref="Vector2"/>.
+		/// The <see cref="Vector3"/> y value is discarded.
+		/// Returns null if input is null.
+		/// </summary>
+		public static Vector2? To2d(this Vector3? vector3)
+		{
+			if (vector3 == null)
+				return null;
+
+			return new Vector2(vector3.Value.x, vector3.Value.z);
+		}
+
+		/// <summary>
 		/// Convert <paramref name="vector2"/> 2D into the correct 3D <see cref="Vector3"/>.
 		/// The <see cref="Vector3"/> y value is set to 0f and the <paramref name="vector2"/> y value is set to the <see cref="Vector3"/> z value.
 		/// </summary>
 		public static Vector3 To3d(this Vector2 vector2)
 		{
 			return new Vector3(vector2.x, 0f, vector2.y);
+		}
+
+		/// <summary>
+		/// Convert <paramref name="vector2"/> 2D into the correct 3D <see cref="Vector3"/>.
+		/// The <see cref="Vector3"/> y value is set to 0f and the <paramref name="vector2"/> y value is set to the <see cref="Vector3"/> z value.
+		/// Returns null if input is null.
+		/// </summary>
+		public static Vector3? To3d(this Vector2? vector2)
+		{
+			if (vector2 == null)
+				return null;
+
+			return new Vector3(vector2.Value.x, 0f, vector2.Value.y);
 		}
 
 		/// <summary>

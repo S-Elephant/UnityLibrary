@@ -651,6 +651,7 @@ LogEnabled = true;
 
 # Other
 
+- **Billboard**: A MonoBehaviour that always faces the assigned camera and that is unlike the `BillboardRenderer`, compatible with a `SpriteRenderer`.
 - **DeveloperNotes**: A MonoBehaviour that you can add that contains developer notes. Will self-destroy outside of Unity Editor.
 - **FloatRangeValue**: A serializable float with a min, max, value and percentage.
 - **IntRangeValue**: A serializable int with a min, max, value and percentage.

@@ -242,6 +242,37 @@ namespace Elephant.UnityLibrary.SpatialAlgorithms
 		}
 
 		/// <inheritdoc/>
+		public bool OverlapsAnyObject(Vector2 position, float radius)
+		{
+			Vector2Int minCell = WorldToGrid(position - Vector2.one * radius);
+			Vector2Int maxCell = WorldToGrid(position + Vector2.one * radius);
+
+			for (int x = minCell.x; x <= maxCell.x; x++)
+			{
+				for (int y = minCell.y; y <= maxCell.y; y++)
+				{
+					Vector2Int cellPos = new(x, y);
+					if (_grid.ContainsKey(cellPos))
+					{
+						foreach (ISpatialObject2d obj in _grid[cellPos])
+						{
+							// Check for overlap.
+							float combinedRadius = radius + obj.Radius;
+							if ((position - obj.Position).sqrMagnitude <= combinedRadius * combinedRadius)
+							{
+								// Overlap found.
+								return true;
+							}
+						}
+					}
+				}
+			}
+
+			// No overlaps found.
+			return false;
+		}
+
+		/// <inheritdoc/>
 		public void RemoveObject(ISpatialObject2d obj)
 		{
 			// Convert to a list to avoid modifying the collection during iteration.
