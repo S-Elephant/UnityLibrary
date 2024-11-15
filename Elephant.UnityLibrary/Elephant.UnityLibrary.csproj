@@ -106,6 +106,7 @@
     <Compile Include="Logging\Interfaces\IConsoleLogger.cs" />
     <Compile Include="Maths\MathRd.cs" />
     <Compile Include="Other\Billboard.cs" />
+    <Compile Include="Other\CooldownTimer.cs" />
     <Compile Include="Other\CoroutineStarter.cs" />
     <Compile Include="Other\DeveloperNotes.cs" />
     <Compile Include="Other\IntRangeValue.cs" />
