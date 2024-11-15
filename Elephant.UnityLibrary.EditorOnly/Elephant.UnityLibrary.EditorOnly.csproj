@@ -68,7 +68,8 @@
     <Compile Include="RenderNormals.cs" />
     <Compile Include="RenderNormalsData.cs" />
     <Compile Include="SettingsEditor.cs" />
-    <Compile Include="ToolWindows\BulkObjectTransformer.cs" />
+    <Compile Include="ToolWindows\BulkObjectTransformerEditor.cs" />
+    <Compile Include="ToolWindows\TimeScaleEditor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Elephant.UnityLibrary\Elephant.UnityLibrary.csproj">

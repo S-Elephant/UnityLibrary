@@ -6,7 +6,7 @@ namespace Elephant.UnityLibrary.EditorOnly.ToolWindows
 	/// <summary>
 	/// Apply bulk tranfsormation operations of all selected objects.
 	/// </summary>
-	internal class BulkObjectTransformer : EditorWindow
+	internal class BulkObjectTransformerEditor : EditorWindow
 	{
 		/// <summary>
 		/// Menu item path prefix.
@@ -44,7 +44,7 @@ namespace Elephant.UnityLibrary.EditorOnly.ToolWindows
 		[MenuItem(MenuItemPrefix + MenuItemTitle)]
 		private static void ShowWindow()
 		{
-			GetWindow<BulkObjectTransformer>(MenuItemTitle);
+			GetWindow<BulkObjectTransformerEditor>(MenuItemTitle);
 		}
 
 		/// <summary>

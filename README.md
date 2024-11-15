@@ -99,9 +99,11 @@ public virtual List<string> StopTrackedCoroutines(string? mainCategory = null, s
 
 They are located under "Tools > Elephant".
 
-![Render normals example](ReadmeResources/Menu.jpg)
+![Play from start scene](ReadmeResources/Menu.jpg)
 
-![Render normals example](ReadmeResources/BulkObjectTransformer.jpg)
+![Bulk object transformer](ReadmeResources/BulkObjectTransformer.jpg)
+
+![Time scale editor](ReadmeResources/TimeScaleEditor.jpg)
 
 # Loggers
 
