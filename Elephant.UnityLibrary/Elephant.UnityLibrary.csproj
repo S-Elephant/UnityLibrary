@@ -105,14 +105,18 @@
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\Interfaces\IConsoleLogger.cs" />
     <Compile Include="Maths\MathRd.cs" />
+    <Compile Include="Maths\RectGeometry.cs" />
+    <Compile Include="Networks\NetworkStatus.cs" />
     <Compile Include="Other\Billboard.cs" />
     <Compile Include="Other\CooldownTimer.cs" />
     <Compile Include="Other\CoroutineStarter.cs" />
     <Compile Include="Other\DeveloperNotes.cs" />
     <Compile Include="Other\IntRangeValue.cs" />
+    <Compile Include="Other\Mail.cs" />
     <Compile Include="Other\PrefabInstantiator.cs" />
     <Compile Include="Other\PrefabReference.cs" />
     <Compile Include="Other\FloatRangeValue.cs" />
+    <Compile Include="Other\ScenePreloader.cs" />
     <Compile Include="Other\UndoRedo.cs" />
     <Compile Include="Other\Utils.cs" />
     <Compile Include="Other\WorldTexts.cs" />
@@ -120,6 +124,8 @@
     <Compile Include="Pathfinding\Interfaces\IAStar2D.cs" />
     <Compile Include="Pathfinding\Interfaces\IGridCell2D.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Securities\Interfaces\INumericObfuscator.cs" />
+    <Compile Include="Securities\NumericObfuscator.cs" />
     <Compile Include="SpatialAlgorithms\Interfaces\ISpatialHash2D.cs" />
     <Compile Include="SpatialAlgorithms\Interfaces\ISpatialObject2d.cs" />
     <Compile Include="SpatialAlgorithms\SpatialHash2d.cs" />

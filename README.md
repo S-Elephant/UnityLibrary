@@ -10,14 +10,17 @@
 6. [Extensions](#extensions)
 7. [Unity Objects](#unity-objects)
 8. [Geo Systems](#geo-systems)
-9. [String Operations](#string-operations)
-10. [Spatial Algorithms](#spatial-algorithms)
-11. [Pathfinding](#pathfinding)
-12. [UGUI](#ugui)
-13. [FAQ](#faq)
-14. [Other](#other)
-15. [For Developers](#for-developers)
-16. [Version History](#version-history)
+9. [Math](#math)
+10. [Networks](#networks)
+11. [Securities](#securities)
+12. [String Operations](#string-operations)
+13. [Spatial Algorithms](#spatial-algorithms)
+14. [Pathfinding](#pathfinding)
+15. [UGUI](#ugui)
+16. [FAQ](#faq)
+17. [Other](#other)
+18. [For Developers](#for-developers)
+19. [Version History](#version-history)
 
 # About
 
@@ -510,6 +513,23 @@ protected override string BuildDirectoriesAndFilename(string languageKey)
 protected override string DefaultLanguageKey() => "your_language_key_here";
 ```
 
+# Math
+
+```c#
+RectGeometry.CalcMaxSquaresInRect(Rect containerRect, Rect squareSize)
+```
+
+# Networks
+
+```c#
+NetworkStatus.TestOverrideInternetConnectionToUnavailable
+NetworkStatus.HasReachableInternetConnection()
+```
+
+# Securities
+
+`NumericObfuscator` class that can obfuscate and deobfuscate `decimals`, `doubles`, `floats`, `ints`, `longs` which provides basic protection against memory hacking.
+
 # String Operations
 
 ```c#
@@ -658,8 +678,10 @@ LogEnabled = true;
 - **DeveloperNotes**: A MonoBehaviour that you can add that contains developer notes. Will self-destroy outside of Unity Editor.
 - **FloatRangeValue**: A serializable float with a min, max, value and percentage.
 - **IntRangeValue**: A serializable int with a min, max, value and percentage.
+- **Mail**: An e-mail wrapper compatible with PC, Android and iOS.
 - **PrefabInstantiator**: Contains alternative ways to instantiate prefabs.
 - **PrefabReference**: A simple MonoBehaviour with a prefab reference.
+- **ScenePreloader**: Preloads scenes to reduce user loading times.
 - **UndoRedo**: A complete generic undo and redo manager.
 
 # For Developers
