@@ -183,6 +183,17 @@ public static bool IsBetweenIE<T>(this T value, T min, T max) where T : ICompara
 public static bool IsBetweenEE<T>(this T value, T min, T max) where T : IComparable<T>
 ```
 
+## Color
+
+```c#
+public static Color Alpha(this Color color, float alpha)
+public static Color Alpha(this Color color, Color colorAlpha)
+public static Color Darken(this Color color, float blendFactor)
+public static Color Hue(this Color color, float hue)
+public static Color Lighten(this Color color, float blendFactor)
+public static Color Saturate(this Color color, float saturation)
+```
+
 ## Enumerable
 
 ```c#
