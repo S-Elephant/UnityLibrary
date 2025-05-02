@@ -59,6 +59,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Audio\AudioMgr2D.cs" />
+    <Compile Include="Audio\AudioConfig.cs" />
+    <Compile Include="Audio\PlaybackLoopModeType.cs" />
     <Compile Include="Cameras\ResolutionIndependentCamera.cs" />
     <Compile Include="Cameras\ScaleCameraWithScreenResolution.cs" />
     <Compile Include="Clockworks\SeasonType.cs" />

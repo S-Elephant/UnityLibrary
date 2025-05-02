@@ -212,9 +212,9 @@ namespace Elephant.UnityLibrary.Clockworks
 		/// </summary>
 		public virtual float LightIntensity(float hour)
 		{
-			if (hour >= 6 && hour <= 18) // Day time from 6 AM to 6 PM
+			if (hour >= 6 && hour <= 18) // Day time from 6 AM to 6 PM.
 			{
-				// Scale intensity up to maxIntensity at noon (hour 12) then down to evening
+				// Scale intensity up to maxIntensity at noon (hour 12) then down to evening.
 				float middayFactor = 1 - Mathf.Abs(hour - 12) / 6; // Peaks at noon.
 				return Mathf.Lerp(IntensityMin, IntensityMax, middayFactor);
 			}

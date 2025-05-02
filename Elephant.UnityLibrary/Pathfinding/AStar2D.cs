@@ -95,6 +95,7 @@ namespace Elephant.UnityLibrary.Pathfinding
 		/// <param name="width">Width of the grid.</param>
 		/// <param name="height">Height of the grid.</param>
 		/// <param name="destination">Destination coordinates for pathfinding purposes.</param>
+		/// <param name="ignorePlayerPositionBlocked">If true, will ignore the fact that the player position itself may be blocked.</param>
 		/// <returns>List of neighboring nodes that can be traversed.</returns>
 		private List<Node> GetNeighbors(Node currentNode, List<List<IGridCell2D>> grid, int width, int height, Vector2Int destination, bool ignorePlayerPositionBlocked)
 		{

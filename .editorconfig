@@ -15,7 +15,10 @@ dotnet_diagnostic.SA1005.severity = none
 dotnet_diagnostic.SA1101.severity = none
 
 # Make this field private..
-dotnet_diagnostic.S1104.severity = none
+dotnet_diagnostic.SA1104.severity = none
+
+# Block statements should not contain embedded comments
+dotnet_diagnostic.SA1108.severity = none
 
 # Split Parameters Must Start On Line After Declaration
 dotnet_diagnostic.SA1116.severity = none
@@ -52,6 +55,9 @@ dotnet_diagnostic.SA1204.severity = none
 
 # Readonly fields should appear before non-readonly fields.
 dotnet_diagnostic.SA1214.severity = none
+
+# Fields should begin with lower-case letter
+dotnet_diagnostic.SA1306.severity = none
 
 # Variable Names Must Not Be Prefixed
 dotnet_diagnostic.SA1308.severity = none

@@ -8,19 +8,20 @@
 4. [Menus and Windows](#menus-and-windows)
 5. [Loggers](#loggers)
 6. [Extensions](#extensions)
-7. [Unity Objects](#unity-objects)
-8. [Geo Systems](#geo-systems)
-9. [Math](#math)
-10. [Networks](#networks)
-11. [Securities](#securities)
-12. [String Operations](#string-operations)
-13. [Spatial Algorithms](#spatial-algorithms)
-14. [Pathfinding](#pathfinding)
-15. [UGUI](#ugui)
-16. [FAQ](#faq)
-17. [Other](#other)
-18. [For Developers](#for-developers)
-19. [Version History](#version-history)
+7. [Audio](#audio)
+8. [Unity Objects](#unity-objects)
+9. [Geo Systems](#geo-systems)
+10. [Math](#math)
+11. [Networks](#networks)
+12. [Securities](#securities)
+13. [String Operations](#string-operations)
+14. [Spatial Algorithms](#spatial-algorithms)
+15. [Pathfinding](#pathfinding)
+16. [UGUI](#ugui)
+17. [FAQ](#faq)
+18. [Other](#other)
+19. [For Developers](#for-developers)
+20. [Version History](#version-history)
 
 # About
 
@@ -351,6 +352,38 @@ public static int? Wrap(this int? value, int max, int min = 0);
 
 // Keeps the value between 1 and max. If it exceeds max then it'll start over at min again (keeping the overflow value).
 public static int? WrapOne(this int? value, int max);
+```
+
+
+
+# Audio
+
+AudioMgr2D class can be used either directly or by inheriting from it. It has among others volume controls and can play random music. Here's an example using inheritance:
+
+```c#
+public class AudioService : AudioMgr2D
+{
+    private SettingsService _settingsService = null!;
+  
+    public AudioService Initialize(SettingsService settingsService)
+    {
+        _settingsService = settingsService;
+        ApplyAudioConfig(_settingsService.Data.AudioSettings.ToAudioConfig());
+        return this;
+    }
+  
+    public void SaveSettingsToDisk()
+    {
+        if (!_IsInitialized)
+            return;
+
+        _settingsService.Data.AudioSettings = MyAudioSettings.FromAudioConfig(ToConfig());
+        _settingsService.SaveToDisk();
+    }
+  
+    public void PlayButtonClickSfx() => PlaySfx("Sfx_Click");
+    public void PlayLevelCompleteSfx() => PlaySfx("Sfx_LevelComplete");
+}
 ```
 
 

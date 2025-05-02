@@ -118,7 +118,7 @@ namespace Elephant.UnityLibrary.GeoSystems
 		public virtual void AddParent(Geometry? parent)
 		{
 			if (parent != null)
-				_parents.AddIfNotExists(parent);
+				_parents.AddUnique(parent);
 		}
 
 		/// <summary>
