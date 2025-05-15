@@ -152,7 +152,6 @@ namespace Elephant.UnityLibrary.Audio
 			if (Instance == null)
 			{
 				Instance = this;
-				DontDestroyOnLoad(gameObject);
 				InitializeSelf();
 			}
 			else
