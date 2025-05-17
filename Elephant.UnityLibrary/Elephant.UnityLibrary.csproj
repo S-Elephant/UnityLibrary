@@ -74,6 +74,7 @@
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Cameras\FlyCam.cs" />
+    <Compile Include="Extensions\FloatExtensions.cs" />
     <Compile Include="Extensions\GameObjectExtensions.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Extensions\RectExtensions.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Logging\ConsoleLoggerUtils.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\Interfaces\IConsoleLogger.cs" />
+    <Compile Include="Maths\MathConstants.cs" />
     <Compile Include="Maths\MathRd.cs" />
     <Compile Include="Maths\RectGeometry.cs" />
     <Compile Include="Networks\NetworkStatus.cs" />

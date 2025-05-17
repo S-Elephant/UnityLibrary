@@ -237,6 +237,18 @@ public static bool IsLast<TSource>(this IEnumerable<TSource> source, TSource ite
 public static bool AreAllItemsUnique<TSource>(this IEnumerable<TSource>? source);
 ```
 
+## Float
+
+```c#
+// Returns true if value is roughly zero.
+public static bool IsRoughlyZero(this float value, float tolerance = MathConstants.SafeGameTolerance)
+
+// Returns true if value is roughly non-zero.
+public static bool IsNotRoughlyZero(this float value, float tolerance = MathConstants.SafeGameTolerance)
+```
+
+
+
 ## GameObject
 
 ```c#

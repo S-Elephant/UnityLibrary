@@ -1,4 +1,5 @@
 ﻿using System;
+using Elephant.UnityLibrary.Maths;
 using UnityEngine;
 
 // Note to developers: Don't use generics here because Unity and generic serialization is.. You know.. Pretty much non-existent.
@@ -13,7 +14,7 @@ namespace Elephant.UnityLibrary.Other
 		/// <summary>
 		/// Floating point tolerance for all <see cref="FloatRangeValue"/>s. Defaults to <see cref="float.Epsilon"/>.
 		/// </summary>
-		public static float Tolerance = float.Epsilon;
+		public static float Tolerance = MathConstants.SafeGameTolerance;
 
 		/// <inheritdoc cref="Min"/>
 		[SerializeField] private float _min;
@@ -136,6 +137,22 @@ namespace Elephant.UnityLibrary.Other
 		public bool IsEmpty()
 		{
 			return Mathf.Abs(_value) < Mathf.Epsilon && Mathf.Abs(Min) < Mathf.Epsilon && Mathf.Abs(Max) < Mathf.Epsilon;
+		}
+
+		/// <summary>
+		/// Sets this value to its <see cref="FloatRangeValue.Max"/>.
+		/// </summary>
+		public void SetToMaxValue()
+		{
+			_value = _max;
+		}
+
+		/// <summary>
+		/// Sets this value to its <see cref="FloatRangeValue.Min"/>.
+		/// </summary>
+		public void SetToMinValue()
+		{
+			_value = _min;
 		}
 
 		/// <summary>

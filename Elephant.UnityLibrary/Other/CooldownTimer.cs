@@ -1,4 +1,5 @@
 ﻿using System;
+using Elephant.UnityLibrary.Maths;
 using UnityEngine;
 
 namespace Elephant.UnityLibrary.Other
@@ -49,7 +50,7 @@ namespace Elephant.UnityLibrary.Other
 		/// <returns>true if the cooldown is complete, false otherwise.</returns>
 		public bool IsReady()
 		{
-			return TimeRemaining <= float.Epsilon;
+			return TimeRemaining <= MathConstants.SafeGameTolerance;
 		}
 
 		/// <summary>
