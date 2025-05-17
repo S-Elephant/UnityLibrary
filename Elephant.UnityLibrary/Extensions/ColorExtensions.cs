@@ -64,7 +64,10 @@ namespace Elephant.UnityLibrary.Extensions
 		public static Color Lighten(this Color color, float blendFactor)
 		{
 			blendFactor = Mathf.Clamp01(blendFactor);
-			return Color.Lerp(color, Color.white, blendFactor);
+			Color result = Color.Lerp(color, Color.white, blendFactor);
+			result.a = color.a;
+
+			return result;
 		}
 
 		/// <summary>
