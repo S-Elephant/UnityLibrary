@@ -69,5 +69,37 @@ namespace UnityLibraryTests.Extensions
 			// Assert.
 			Assert.Equal(expected, value.IsNotRoughlyZero(tolerance));
 		}
+
+		/// <summary>
+		/// Tests <see cref="FloatExtensions.AreRoughlyEqual"/>.
+		/// </summary>
+		[Theory]
+		[InlineData(0f, 0f, MathConstants.SafeGameTolerance, true)]
+		[InlineData(1f, 1f, MathConstants.SafeGameTolerance, true)]
+		[InlineData(-1f, -1f, MathConstants.SafeGameTolerance, true)]
+		[InlineData(4.432f, 4.432f, MathConstants.SafeGameTolerance, true)]
+		[InlineData(float.MaxValue, float.MaxValue, MathConstants.SafeGameTolerance, true)]
+		[InlineData(float.MinValue, float.MinValue, MathConstants.SafeGameTolerance, true)]
+		[InlineData(44f, 80f, 40f, true)]
+		public void AreRoughlyEqual_ComparesCorrectly(float a, float b, float tolerance, bool expected)
+		{
+			Assert.Equal(expected, a.AreRoughlyEqual(b, tolerance));
+		}
+
+		/// <summary>
+		/// Tests <see cref="FloatExtensions.AreRoughlyUnequal"/>.
+		/// </summary>
+		[Theory]
+		[InlineData(0f, 0f, MathConstants.SafeGameTolerance, false)]
+		[InlineData(1f, 1f, MathConstants.SafeGameTolerance, false)]
+		[InlineData(-1f, -1f, MathConstants.SafeGameTolerance, false)]
+		[InlineData(4.432f, 4.432f, MathConstants.SafeGameTolerance, false)]
+		[InlineData(float.MaxValue, float.MaxValue, MathConstants.SafeGameTolerance, false)]
+		[InlineData(float.MinValue, float.MinValue, MathConstants.SafeGameTolerance, false)]
+		[InlineData(44f, 80f, 40f, false)]
+		public void AreRoughlyUnequal_ComparesCorrectly(float a, float b, float tolerance, bool expected)
+		{
+			Assert.Equal(expected, a.AreRoughlyUnequal(b, tolerance));
+		}
 	}
 }

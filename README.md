@@ -240,6 +240,12 @@ public static bool AreAllItemsUnique<TSource>(this IEnumerable<TSource>? source)
 ## Float
 
 ```c#
+// Determines if two float values are approximately equal within the specified tolerance.
+public static bool AreRoughlyEqual(this float value, float other, float tolerance = MathConstants.SafeGameTolerance)
+
+// Determines if two float values are approximately unequal within the specified tolerance.
+public static bool AreRoughlyUnequal(this float value, float other, float tolerance = MathConstants.SafeGameTolerance)
+
 // Returns true if value is roughly zero.
 public static bool IsRoughlyZero(this float value, float tolerance = MathConstants.SafeGameTolerance)
 
