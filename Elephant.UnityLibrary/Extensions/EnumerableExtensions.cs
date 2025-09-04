@@ -29,6 +29,8 @@ namespace Elephant.UnityLibrary.Extensions
 		/// <summary>
 		/// Return random element.
 		/// </summary>
+		/// <exception cref="InvalidOperationException">Thrown if <paramref name="source"/> is empty.</exception>
+		/// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
 		public static T GetRandom<T>(this IEnumerable<T> source)
 		{
 			return source.Shuffle().Take(1).Single();

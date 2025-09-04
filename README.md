@@ -299,6 +299,9 @@ public static IList<TSource> AddOrRemoveIfExists<TSource>(this IList<TSource> li
 // Add the item to the <paramref name="list"/> unless it already exists in that list in which case it will remove it instead.
 // If <paramref name="list"/> is null then nothing happens. Modifies the source list.
 public static IList<TSource>? AddOrRemoveIfExistsNullable<TSource>(this IList<TSource>? list, TSource item);
+
+// Return random element and remove it from the source list.
+public static T GetRandomAndRemove<T>(this List<T> source);
 ```
 
 ## Rect

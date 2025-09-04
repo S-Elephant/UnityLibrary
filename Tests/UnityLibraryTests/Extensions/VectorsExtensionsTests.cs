@@ -20,9 +20,13 @@ namespace UnityLibraryTests.Extensions
 		[InlineData(float.MaxValue, float.MaxValue, 0f, float.MaxValue, float.MaxValue, 0f)]
 		public void V2ToVector3ReturnsExpected(float x, float y, float optionalZ, float expectedX, float expectedY, float expectedZ)
 		{
-			Vector2 v2 = new Vector2(x, y);
+			// Arrange.
+			Vector2 v2 = new(x, y);
+
+			// Act.
 			Vector3 convertedValue = v2.ToVector3(optionalZ);
 
+			// Assert.
 			Vector3 expected = new(expectedX, expectedY, expectedZ);
 			Assert.Equal(expected, convertedValue);
 		}
@@ -40,9 +44,13 @@ namespace UnityLibraryTests.Extensions
 		[InlineData(float.MaxValue, float.MaxValue, 0f, 0f, float.MaxValue, float.MaxValue, 0f, 0f)]
 		public void V2ToVector4ReturnsExpected(float x, float y, float optionalZ, float optionalW, float expectedX, float expectedY, float expectedZ, float expectedW)
 		{
-			Vector2 v2 = new Vector2(x, y);
+			// Arrange.
+			Vector2 v2 = new(x, y);
+
+			// Act.
 			Vector4 convertedValue = v2.ToVector4(optionalZ, optionalW);
 
+			// Assert.
 			Vector4 expected = new(expectedX, expectedY, expectedZ, expectedW);
 			Assert.Equal(expected, convertedValue);
 		}
@@ -59,9 +67,13 @@ namespace UnityLibraryTests.Extensions
 		[InlineData(float.MaxValue, float.MaxValue, 0f, float.MaxValue, float.MaxValue)]
 		public void V3ToVector2ReturnsExpected(float x, float y, float z, float expectedX, float expectedY)
 		{
-			Vector3 v3 = new Vector3(x, y, z);
+			// Arrange.
+			Vector3 v3 = new(x, y, z);
+
+			// Act.
 			Vector3 convertedValue = v3.ToVector2();
 
+			// Assert.
 			Vector3 expected = new(expectedX, expectedY, 0f);
 			Assert.Equal(expected, convertedValue);
 		}
@@ -79,9 +91,13 @@ namespace UnityLibraryTests.Extensions
 		[InlineData(float.MaxValue, float.MaxValue, 0f, 0f, float.MaxValue, float.MaxValue, 0f, 0f)]
 		public void V3ToVector4ReturnsExpected(float x, float y, float z, float optionalW, float expectedX, float expectedY, float expectedZ, float expectedW)
 		{
-			Vector3 v3 = new Vector3(x, y, z);
+			// Arrange.
+			Vector3 v3 = new(x, y, z);
+
+			// Act.
 			Vector4 convertedValue = v3.ToVector4(optionalW);
 
+			// Assert.
 			Vector4 expected = new(expectedX, expectedY, expectedZ, expectedW);
 			Assert.Equal(expected, convertedValue);
 		}
@@ -98,9 +114,13 @@ namespace UnityLibraryTests.Extensions
 		[InlineData(float.MaxValue, float.MaxValue, float.MinValue, float.MaxValue, float.MaxValue, float.MaxValue)]
 		public void V4ToVector2ReturnsExpected(float x, float y, float z, float w, float expectedX, float expectedY)
 		{
-			Vector4 v4 = new Vector4(x, y, z, w);
+			// Arrange.
+			Vector4 v4 = new(x, y, z, w);
+
+			// Act.
 			Vector2 convertedValue = v4.ToVector2();
 
+			// Assert.
 			Vector2 expected = new(expectedX, expectedY);
 			Assert.Equal(expected, convertedValue);
 		}
@@ -118,9 +138,13 @@ namespace UnityLibraryTests.Extensions
 		[InlineData(float.MaxValue, float.MaxValue, float.MaxValue, float.MaxValue, float.MaxValue, float.MaxValue, float.MaxValue)]
 		public void V4ToVector3ReturnsExpected(float x, float y, float z, float w, float expectedX, float expectedY, float expectedZ)
 		{
-			Vector4 v4 = new Vector4(x, y, z, w);
+			// Arrange.
+			Vector4 v4 = new(x, y, z, w);
+
+			// Act.
 			Vector3 convertedValue = v4.ToVector3();
 
+			// Assert.
 			Vector3 expected = new(expectedX, expectedY, expectedZ);
 			Assert.Equal(expected, convertedValue);
 		}

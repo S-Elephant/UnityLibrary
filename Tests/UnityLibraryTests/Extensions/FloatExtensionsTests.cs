@@ -20,7 +20,7 @@ namespace UnityLibraryTests.Extensions
 		[InlineData(float.MaxValue, false)]
 		public void IsRoughlyZero_WithDefaultTolerance(float value, bool expected)
 		{
-			// Assert.
+			// Act & Assert.
 			Assert.Equal(expected, value.IsRoughlyZero());
 		}
 
@@ -36,7 +36,7 @@ namespace UnityLibraryTests.Extensions
 		[InlineData(float.MaxValue, true)]
 		public void IsNotRoughlyZero_WithDefaultTolerance(float value, bool expected)
 		{
-			// Assert.
+			// Act & Assert.
 			Assert.Equal(expected, value.IsNotRoughlyZero());
 		}
 
@@ -53,7 +53,7 @@ namespace UnityLibraryTests.Extensions
 		[InlineData(0.01f, 0.02f, true)]
 		public void IsRoughlyZero_RespectsCustomTolerance(float value, float tolerance, bool expected)
 		{
-			// Assert.
+			// Act & Assert.
 			Assert.Equal(expected, value.IsRoughlyZero(tolerance));
 		}
 
@@ -66,7 +66,7 @@ namespace UnityLibraryTests.Extensions
 		[InlineData(0.011f, 0.01f, true)]
 		public void IsNotRoughlyZero_RespectsCustomTolerance(float value, float tolerance, bool expected)
 		{
-			// Assert.
+			// Act & Assert.
 			Assert.Equal(expected, value.IsNotRoughlyZero(tolerance));
 		}
 
@@ -83,6 +83,7 @@ namespace UnityLibraryTests.Extensions
 		[InlineData(44f, 80f, 40f, true)]
 		public void AreRoughlyEqual_ComparesCorrectly(float a, float b, float tolerance, bool expected)
 		{
+			// Act & Assert.
 			Assert.Equal(expected, a.AreRoughlyEqual(b, tolerance));
 		}
 
@@ -99,6 +100,7 @@ namespace UnityLibraryTests.Extensions
 		[InlineData(44f, 80f, 40f, false)]
 		public void AreRoughlyUnequal_ComparesCorrectly(float a, float b, float tolerance, bool expected)
 		{
+			// Act & Assert.
 			Assert.Equal(expected, a.AreRoughlyUnequal(b, tolerance));
 		}
 	}

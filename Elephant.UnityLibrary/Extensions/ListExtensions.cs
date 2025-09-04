@@ -1,6 +1,8 @@
 ﻿#nullable enable
+
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Elephant.UnityLibrary.Extensions
 {
@@ -9,6 +11,12 @@ namespace Elephant.UnityLibrary.Extensions
 	/// </summary>
 	public static class ListExtensions
 	{
+		/// <summary>
+		/// Thread-local random number generator.
+		/// Each thread gets its own instance to avoid contention and improve performance.
+		/// </summary>
+		private static readonly ThreadLocal<Random> _threadRandom = new(() => new Random());
+
 		/// <summary>
 		/// Shuffle the <paramref name="list"/>. Modifies the <paramref name="list"/>
 		/// </summary>
@@ -91,6 +99,24 @@ namespace Elephant.UnityLibrary.Extensions
 				list.Add(item);
 
 			return list;
+		}
+
+		/// <summary>
+		/// Return random element and remove it from the <paramref name="source"/> list.
+		/// </summary>
+		/// <typeparam name="T">Type of elements in the list.</typeparam>
+		/// <param name="source">Source list.</param>
+		/// <returns>Random element from the list. This element is also removed from the list.</returns>
+		/// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="source"/> is empty.</exception>
+		/// <exception cref="NullReferenceException">Thrown if <paramref name="source"/> is null.</exception>
+		public static T GetRandomAndRemove<T>(this List<T> source)
+		{
+			int randomIndex = _threadRandom.Value.Next(source.Count);
+
+			T element = source[randomIndex];
+			source.RemoveAt(randomIndex);
+
+			return element;
 		}
 	}
 }
