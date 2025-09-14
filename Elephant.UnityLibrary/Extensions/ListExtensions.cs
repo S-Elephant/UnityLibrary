@@ -18,9 +18,11 @@ namespace Elephant.UnityLibrary.Extensions
 		private static readonly ThreadLocal<Random> _threadRandom = new(() => new Random());
 
 		/// <summary>
-		/// Shuffle the <paramref name="list"/>. Modifies the <paramref name="list"/>
+		/// Shuffle the <paramref name="list"/>.
+		/// Modifies the <paramref name="list"/>
 		/// </summary>
-		public static void Shuffle<T>(this IList<T> list)
+		/// <returns><paramref name="list"/> itself for fluent method chaining.</returns>
+		public static IList<T> Shuffle<T>(this IList<T> list)
 		{
 			int cnt = list.Count;
 			while (cnt > 1)
@@ -31,10 +33,14 @@ namespace Elephant.UnityLibrary.Extensions
 				list[k] = list[cnt];
 				list[cnt] = value;
 			}
+
+			return list;
 		}
 
 		/// <summary>
-		/// Add <paramref name="itemToAdd"/> only if it doesn't already exist in <paramref name="list"/>.
+		/// Add <paramref name="itemToAdd"/> only if it doesn't already
+		/// exist in <paramref name="list"/>.
+		/// Modifies the <paramref name="list"/>.
 		/// </summary>
 		[Obsolete("Use AddUnique() instead.")]
 		public static void AddIfNotExists<T>(this List<T> list, T itemToAdd)
@@ -44,21 +50,29 @@ namespace Elephant.UnityLibrary.Extensions
 		}
 
 		/// <summary>
-		/// Add <paramref name="itemToAdd"/> only if it doesn't already exist in <paramref name="list"/>.
+		/// Add <paramref name="itemToAdd"/> only if it doesn't already exist
+		/// in <paramref name="list"/>.
+		/// Modifies the <paramref name="list"/>.
 		/// </summary>
-		public static void AddUnique<T>(this List<T> list, T itemToAdd)
+		/// <returns><paramref name="list"/> itself for fluent method chaining.</returns>
+		public static List<T> AddUnique<T>(this List<T> list, T itemToAdd)
 		{
 			if (!list.Contains(itemToAdd))
 				list.Add(itemToAdd);
+
+			return list;
 		}
 
 		/// <summary>
-		/// Add a range of elements to the list if they don't already exist, using a <see cref="HashSet{T}"/> for efficiency.
+		/// Add a range of elements to the list if they don't already exist,
+		/// using a <see cref="HashSet{T}"/> for efficiency.
+		/// Modifies the <paramref name="list"/>.
 		/// </summary>
 		/// <typeparam name="T">Type of elements in the list.</typeparam>
 		/// <param name="list">List to which elements are added.</param>
 		/// <param name="items">Collection of items to be added.</param>
-		public static void AddRangeUnique<T>(this List<T> list, IEnumerable<T> items)
+		/// <returns><paramref name="list"/> itself for fluent method chaining.</returns>
+		public static List<T> AddRangeUnique<T>(this List<T> list, IEnumerable<T> items)
 		{
 			HashSet<T> existingItems = new(list); // Use HashSet for O(1) lookup.
 
@@ -67,10 +81,14 @@ namespace Elephant.UnityLibrary.Extensions
 				if (existingItems.Add(item))
 					list.Add(item);
 			}
+
+			return list;
 		}
 
 		/// <summary>
-		/// Add the item to the <paramref name="list"/> unless it already exists in that list in which case it will remove it instead.
+		/// Add the item to the <paramref name="list"/> unless it already exists in that
+		/// list in which case it will remove it instead.
+		/// May modify the <paramref name="list"/>.
 		/// </summary>
 		/// <returns>Altered <paramref name="list"/>.</returns>
 		public static IList<TSource> AddOrRemoveIfExists<TSource>(this IList<TSource> list, TSource item)
@@ -86,6 +104,7 @@ namespace Elephant.UnityLibrary.Extensions
 		/// <summary>
 		/// Add the item to the <paramref name="list"/> unless it already exists in that list in which case it will remove it instead.
 		/// If <paramref name="list"/> is null then nothing happens.
+		/// May modifiy the <paramref name="list"/>.
 		/// </summary>
 		/// <returns>Altered <paramref name="list"/>.</returns>
 		public static IList<TSource>? AddOrRemoveIfExistsNullable<TSource>(this IList<TSource>? list, TSource item)

@@ -37,8 +37,10 @@ namespace Elephant.UnityLibrary.Extensions
 		}
 
 		/// <summary>
-		/// Shuffle the elements. Modifies the <paramref name="source"/>.
+		/// Shuffle the elements.
+		/// Modifies the <paramref name="source"/>.
 		/// </summary>
+		/// <returns><paramref name="source"/> for fluent method chaining.</returns>
 		public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source)
 		{
 			return source.OrderBy(_ => _threadRandom.Value.Next());
@@ -46,7 +48,9 @@ namespace Elephant.UnityLibrary.Extensions
 
 		/// <summary>
 		/// Shuffle the elements using a seed. Modifies the <paramref name="source"/>.
+		/// Modifies the <paramref name="source"/>.
 		/// </summary>
+		/// <returns><paramref name="source"/> for fluent method chaining.</returns>
 		public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source, int seed)
 		{
 			Random random = new(seed);

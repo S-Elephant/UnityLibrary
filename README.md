@@ -284,20 +284,20 @@ public static Transform FindRecursively(this Transform parent, string name);
 ## List
 
 ```c#
-// Shuffle the elements. Modifies the source list.
-public static void Shuffle<T>(this IList<T> list);
+// Shuffle the elements. Modifies the source list. Return value is for fluent method chaining.
+public static IList<T> Shuffle<T>(this IList<T> list);
 
-// Add itemToAdd only if it doesn't already exist in list.
-public static void AddUnique<T>(this List<T> list, T itemToAdd);
+// Add itemToAdd only if it doesn't already exist in list. Modifies the source list. Return value is for fluent method chaining.
+public static IList<T> AddUnique<T>(this List<T> list, T itemToAdd);
 
-// Add items but only those that don't already exist in list.
-public static void AddRangeUnique<T>(this List<T> list, IEnumerable<T> items);
+// Add items but only those that don't already exist in list. Modifies the source list. Return value is for fluent method chaining.
+public static IList<T> AddRangeUnique<T>(this List<T> list, IEnumerable<T> items);
 
-// Add the item to the source list unless it already exists in that list in which case it will remove it instead. Modifies the source list.
+// Add the item to the source list unless it already exists in that list in which case it will remove it instead. Modifies the source list. May modify the source list. Return value is for fluent method chaining.
 public static IList<TSource> AddOrRemoveIfExists<TSource>(this IList<TSource> list, TSource item);
 
 // Add the item to the <paramref name="list"/> unless it already exists in that list in which case it will remove it instead.
-// If <paramref name="list"/> is null then nothing happens. Modifies the source list.
+// If <paramref name="list"/> is null then nothing happens. May modify the source list. Return value is for fluent method chaining.
 public static IList<TSource>? AddOrRemoveIfExistsNullable<TSource>(this IList<TSource>? list, TSource item);
 
 // Return random element and remove it from the source list.
