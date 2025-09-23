@@ -246,6 +246,15 @@ namespace Elephant.UnityLibrary.Audio
 			}
 		}
 
+		/// <summary>
+		/// Stop all music.
+		/// </summary>
+		public void StopAllMusic()
+		{
+			StopMusicLoopCoroutine();
+			_musicSource.Stop();
+		}
+
 		#region Play Random Music
 
 		/// <summary>
