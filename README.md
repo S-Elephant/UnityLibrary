@@ -744,6 +744,8 @@ LogEnabled = true;
 - **FloatRangeValue**: A serializable float with a min, max, value and percentage.
 - **IntRangeValue**: A serializable int with a min, max, value and percentage.
 - **Mail**: An e-mail wrapper compatible with PC, Android and iOS.
+- **NumberFormatter**: Formats large numbers into a more human-readable format (or shorter format) using customizable suffixes like: 'k', 'm', 'b', and 't'.
+  Note that values are truncated instead of rounded.
 - **PrefabInstantiator**: Contains alternative ways to instantiate prefabs.
 - **PrefabReference**: A simple MonoBehaviour with a prefab reference.
 - **ScenePreloader**: Preloads scenes to reduce user loading times.

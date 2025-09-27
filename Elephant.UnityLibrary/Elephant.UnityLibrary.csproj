@@ -118,6 +118,7 @@
     <Compile Include="Other\DeveloperNotes.cs" />
     <Compile Include="Other\IntRangeValue.cs" />
     <Compile Include="Other\Mail.cs" />
+    <Compile Include="Other\NumberFormatter.cs" />
     <Compile Include="Other\PrefabInstantiator.cs" />
     <Compile Include="Other\PrefabReference.cs" />
     <Compile Include="Other\FloatRangeValue.cs" />

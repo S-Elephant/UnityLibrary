@@ -12,6 +12,7 @@ namespace UnityLibraryTests.Extensions
 		/// Tests <see cref="FloatExtensions.IsRoughlyZero"/> with values just above/below <see cref="MathConstants.SafeGameTolerance"/>.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0f, true)]
 		[InlineData(0.001f + MathConstants.SafeGameTolerance, false)]
 		[InlineData(100f, false)]
@@ -28,6 +29,7 @@ namespace UnityLibraryTests.Extensions
 		/// Tests <see cref="FloatExtensions.IsNotRoughlyZero"/> with values just above/below <see cref="MathConstants.SafeGameTolerance"/>.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0f, false)]
 		[InlineData(MathConstants.SafeGameTolerance + 0.001f, true)]
 		[InlineData(100f, true)]
@@ -44,6 +46,7 @@ namespace UnityLibraryTests.Extensions
 		/// Tests custom epsilon values for <see cref="FloatExtensions.IsRoughlyZero"/>.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0f, MathConstants.SafeGameTolerance, true)]
 		[InlineData(0.01f, 0.01f + MathConstants.SafeGameTolerance, true)]
 		[InlineData(1f, 1f + MathConstants.SafeGameTolerance, true)]
@@ -61,6 +64,7 @@ namespace UnityLibraryTests.Extensions
 		/// Tests custom epsilon values for <see cref="FloatExtensions.IsNotRoughlyZero"/>.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0.01f, 0.01f + MathConstants.SafeGameTolerance, false)]
 		[InlineData(0.009f, 0.01f, false)]
 		[InlineData(0.011f, 0.01f, true)]
@@ -74,6 +78,7 @@ namespace UnityLibraryTests.Extensions
 		/// Tests <see cref="FloatExtensions.AreRoughlyEqual"/>.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0f, 0f, MathConstants.SafeGameTolerance, true)]
 		[InlineData(1f, 1f, MathConstants.SafeGameTolerance, true)]
 		[InlineData(-1f, -1f, MathConstants.SafeGameTolerance, true)]
@@ -91,6 +96,7 @@ namespace UnityLibraryTests.Extensions
 		/// Tests <see cref="FloatExtensions.AreRoughlyUnequal"/>.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0f, 0f, MathConstants.SafeGameTolerance, false)]
 		[InlineData(1f, 1f, MathConstants.SafeGameTolerance, false)]
 		[InlineData(-1f, -1f, MathConstants.SafeGameTolerance, false)]

@@ -1,5 +1,4 @@
-﻿using Elephant.UnityLibrary.Extensions;
-using Elephant.UnityLibrary.Maths;
+﻿using Elephant.UnityLibrary.Maths;
 using Elephant.UnityLibrary.Other;
 
 namespace UnityLibraryTests.Others
@@ -13,6 +12,7 @@ namespace UnityLibraryTests.Others
 		/// <see cref="FloatRangeValue.Value"/> tests.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0f, 0f, 0f, 0f)]
 		[InlineData(-1f, 0f, 0f, 0f)]
 		[InlineData(1f, 0f, 0f, 0f)]
@@ -36,6 +36,7 @@ namespace UnityLibraryTests.Others
 		/// <see cref="FloatRangeValue.IsMaxValue"/> tests.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0f, 0f, 0f, true)]
 		[InlineData(1000f, 1000f, 1000f, true)]
 		[InlineData(float.MinValue, float.MinValue, float.MinValue, true)]
@@ -65,6 +66,7 @@ namespace UnityLibraryTests.Others
 		/// <see cref="FloatRangeValue.IsMinValue"/> tests.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0f, 0f, 0f, true)]
 		[InlineData(1000f, 1000f, 1000f, true)]
 		[InlineData(float.MinValue, float.MinValue, float.MinValue, true)]
@@ -94,6 +96,7 @@ namespace UnityLibraryTests.Others
 		/// <see cref="FloatRangeValue.SetToMinValue"/> tests.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0f, 0f, 0f, 0f)]
 		[InlineData(1000f, 1000f, 1000f, 1000f)]
 		[InlineData(-1000f, -1000f, -1000f, -1000f)]
@@ -122,6 +125,7 @@ namespace UnityLibraryTests.Others
 		/// <see cref="FloatRangeValue.SetToMaxValue"/> tests.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(0f, 0f, 0f, 0f)]
 		[InlineData(1000f, 1000f, 1000f, 1000f)]
 		[InlineData(-1000f, -1000f, -1000f, -1000f)]

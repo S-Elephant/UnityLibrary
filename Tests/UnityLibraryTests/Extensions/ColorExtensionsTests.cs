@@ -23,6 +23,7 @@ namespace UnityLibraryTests.Extensions
 		/// modifies saturation while preserving alpha.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[MemberData(nameof(SaturateTestCases))]
 		public void Saturate_ModifiesSaturation_PreservesAlpha(Color input, float saturation, Color expected)
 		{
@@ -41,6 +42,7 @@ namespace UnityLibraryTests.Extensions
 		/// only the alpha channel.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void Alpha_ModifiesOnlyAlpha()
 		{
 			// Arrange.
@@ -61,6 +63,7 @@ namespace UnityLibraryTests.Extensions
 		/// the brightness while preserving the alpha value.
 		/// </summary>
 		[Fact]
+		[SpeedVeryFast, UnitTest]
 		public void Brighten_IncreasesValue_PreservesAlpha()
 		{
 			// Arrange.

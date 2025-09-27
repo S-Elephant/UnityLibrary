@@ -12,6 +12,7 @@ namespace UnityLibraryTests.Securities
 		/// Tests that obfuscating and deobfuscating various decimal values returns the original value.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(98765.4321)]
 		[InlineData(-12345.6789)]
 		[InlineData(0)]
@@ -34,6 +35,7 @@ namespace UnityLibraryTests.Securities
 		/// Tests that obfuscating and deobfuscating a double returns the original value.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(98765.4321)]
 		[InlineData(-12345.6789)]
 		[InlineData(0)]
@@ -56,6 +58,7 @@ namespace UnityLibraryTests.Securities
 		/// Tests that obfuscating and deobfuscating a float returns the original value.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(12345.6789f)]
 		[InlineData(-1234.5678f)]
 		[InlineData(0f)]
@@ -78,6 +81,7 @@ namespace UnityLibraryTests.Securities
 		/// Tests that obfuscating and deobfuscating an int returns the original value.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(123456789)]
 		[InlineData(-98765432)]
 		[InlineData(0)]
@@ -100,6 +104,7 @@ namespace UnityLibraryTests.Securities
 		/// Tests that obfuscating and deobfuscating a long returns the original value.
 		/// </summary>
 		[Theory]
+		[SpeedVeryFast, UnitTest]
 		[InlineData(9876543210123)]
 		[InlineData(-9876543210123)]
 		[InlineData(0)]
