@@ -48,5 +48,21 @@ namespace Elephant.UnityLibrary.Extensions
 
 			return null;
 		}
+
+		/// <summary>
+		/// Sets the layer of the game object and all its children recursively.
+		/// </summary>
+		/// <param name="gameObject"><see cref="GameObject"/> and all of its children to set the layers for. Cannot be null.</param>
+		/// <param name="targetLayer">
+		/// Target layer to set (between 0 to 31, inclusive). This is the same integer value as the one shown in Unity's
+		/// inspector "Tags and Layers" or through "Project Settings... > Tags and Layers"
+		/// </param>
+		public static void SetLayerRecursively(this GameObject gameObject, int targetLayer)
+		{
+			gameObject.layer = targetLayer;
+
+			foreach (Transform child in gameObject.transform)
+				SetLayerRecursively(child.gameObject, targetLayer);
+		}
 	}
 }

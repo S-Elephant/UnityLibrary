@@ -742,6 +742,7 @@ LogEnabled = true;
 - **CooldownTimer**: Manages a cooldown timer that can be updated, reset, and checked for readiness.
 - **DeveloperNotes**: A MonoBehaviour that you can add that contains developer notes. Will self-destroy outside of Unity Editor.
 - **FloatRangeValue**: A serializable float with a min, max, value and percentage.
+- **GizmosUtils**: Gizmos utillities.
 - **IntRangeValue**: A serializable int with a min, max, value and percentage.
 - **Mail**: An e-mail wrapper compatible with PC, Android and iOS.
 - **NumberFormatter**: Formats large numbers into a more human-readable format (or shorter format) using customizable suffixes like: 'k', 'm', 'b', and 't'.

@@ -116,6 +116,7 @@
     <Compile Include="Other\CooldownTimer.cs" />
     <Compile Include="Other\CoroutineStarter.cs" />
     <Compile Include="Other\DeveloperNotes.cs" />
+    <Compile Include="Other\GizmosUtils.cs" />
     <Compile Include="Other\IntRangeValue.cs" />
     <Compile Include="Other\Mail.cs" />
     <Compile Include="Other\NumberFormatter.cs" />
